@@ -49,13 +49,8 @@
             font-size: 0.9rem;
             line-height: 1.4;
             color: #cbd5e1;
-            display: flex;
-            gap: 0.5rem;
-            cursor: pointer;
             transition: color 0.2s;
         }
-        .news-list li:hover { color: #60a5fa; }
-        .news-list li::before { content: "•"; color: #3b82f6; }
 
         .calc-table th, .calc-table td {
             border: 1px solid #334155;
@@ -147,13 +142,13 @@
             <div class="grid grid-cols-1 gap-4 h-full min-h-[450px]">
                 <div class="news-card flex flex-col">
                     <div class="flex justify-between items-center mb-3 border-b border-slate-600 pb-2">
-                        <h3 class="text-lg font-bold text-blue-400"><i class="fas fa-building mr-2"></i>구글 앱스 스크립트(Apps Script) 연동 실시간 뉴스 피드</h3>
-                        <button onclick="fetchAppsScriptNews()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded transition-colors">
-                            <i class="fas fa-sync-alt mr-1"></i>데이터 수동 새로고침
+                        <h3 class="text-lg font-bold text-blue-400"><i class="fas fa-newspaper mr-2"></i>구글 뉴스 실시간 검색 피드 (삼성전자 / 증시)</h3>
+                        <button onclick="fetchGoogleNews()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded transition-colors">
+                            <i class="fas fa-sync-alt mr-1"></i>뉴스 새로고침
                         </button>
                     </div>
-                    <ul id="apps-script-news-list" class="news-list flex-1 overflow-y-auto max-h-[450px]">
-                        <li class="text-slate-400 italic">앱스 스크립트 웹 앱 엔드포인트에서 데이터를 수신하는 중...</li>
+                    <ul id="google-news-list" class="news-list flex-1 overflow-y-auto max-h-[450px]">
+                        <li class="text-slate-400 italic">구글 뉴스에서 최신 정보를 불러오는 중...</li>
                     </ul>
                 </div>
             </div>
@@ -326,8 +321,6 @@
 
     <script>
         let currentChartInstance = null;
-        
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID/exec";
 
         function updateClock() {
             const now = new Date();
@@ -363,36 +356,45 @@
             }
         }
 
-        async function fetchAppsScriptNews() {
-            const listEl = document.getElementById('apps-script-news-list');
-            listEl.innerHTML = '<li class="text-slate-400 italic">앱스 스크립트 데이터 동기화 중...</li>';
+        async function fetchGoogleNews() {
+            const listEl = document.getElementById('google-news-list');
+            listEl.innerHTML = '<li class="text-slate-400 italic">구글 뉴스에서 최신 정보를 불러오는 중...</li>';
             
             try {
-                const response = await fetch(APPS_SCRIPT_URL);
+                const searchQuery = encodeURIComponent('삼성전자 증시');
+                const rssUrl = `https://news.google.com/rss/search?q=${searchQuery}&hl=ko&gl=KR&ceid=KR:ko`;
+                const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
                 const data = await response.json();
                 
-                if(data && data.length > 0) {
+                if(data && data.status === 'ok' && data.items && data.items.length > 0) {
                     listEl.innerHTML = '';
-                    data.forEach(item => {
+                    data.items.forEach(item => {
                         const li = document.createElement('li');
-                        li.textContent = item.title;
-                        li.onclick = () => openNewsDetail(item.title, item.content || item.summary || '내용 없음');
+                        li.className = "pb-2 border-b border-slate-700/60 flex flex-col gap-1";
+                        
+                        const a = document.createElement('a');
+                        a.href = item.link;
+                        a.target = '_blank';
+                        a.className = "text-blue-400 hover:text-blue-300 font-medium flex items-center gap-2";
+                        a.innerHTML = `<i class="fas fa-external-link-alt text-xs text-slate-500"></i> ${item.title}`;
+                        
+                        const dateSpan = document.createElement('span');
+                        dateSpan.className = "text-xs text-slate-500 font-mono pl-4";
+                        dateSpan.textContent = new Date(item.pubDate).toLocaleString();
+
+                        li.appendChild(a);
+                        li.appendChild(dateSpan);
                         listEl.appendChild(li);
                     });
                 } else {
-                    listEl.innerHTML = '<li class="text-yellow-400">수신된 데이터가 없음. 스크립트 배포 및 반환 구조 점검 필요.</li>';
+                    listEl.innerHTML = '<li class="text-yellow-400">수신된 뉴스가 없습니다.</li>';
                 }
             } catch (err) {
-                listEl.innerHTML = `
-                    <li class="text-red-400 flex flex-col gap-1">
-                        <span>[연동 에러] 앱스 스크립트 웹 앱 URL(APPS_SCRIPT_URL) 주소 및 CORS 허용 상태를 점검해야 함.</span>
-                        <span class="text-xs text-slate-400">※ 스크립트 doGet(e) 함수가 JSON 출력을 올바르게 반환하는지 검토 필요.</span>
-                    </li>
-                `;
+                listEl.innerHTML = '<li class="text-red-400">구글 뉴스 데이터를 불러오는 중 오류가 발생했습니다.</li>';
             }
         }
 
-        fetchAppsScriptNews();
+        fetchGoogleNews();
 
         async function openMarketDetail(name, symbol, price, change) {
             const modal = document.getElementById('detail-modal');
@@ -449,22 +451,6 @@
                     }
                 });
             }, 50);
-        }
-
-        function openNewsDetail(title, fullContent) {
-            const modal = document.getElementById('detail-modal');
-            document.getElementById('modal-title-text').textContent = "뉴스 원문 상세 내용";
-            
-            document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-3">
-                    <h4 class="text-base font-bold text-yellow-400 leading-snug">${title}</h4>
-                    <div class="p-4 bg-slate-900 rounded border border-slate-700 text-slate-200 leading-relaxed text-sm">
-                        ${fullContent}
-                    </div>
-                </div>
-            `;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
         }
 
         function closeDetailModal() {
