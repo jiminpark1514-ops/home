@@ -9,80 +9,80 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .tab-btn.active { background-color: #3b82f6; color: white; font-weight: bold; }
         ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #1e293b; } ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
         
-        .news-box { background-color: #1e293b; border-radius: 0.5rem; border: 1px solid #334155; display: flex; flex-direction: column; height: 350px; }
-        .news-header { padding: 0.75rem 1rem; border-bottom: 1px solid #334155; font-weight: bold; color: #60a5fa; display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; }
-        .news-content { padding: 0.75rem 1rem; overflow-y: auto; flex-grow: 1; }
-        .news-item { margin-bottom: 0.6rem; border-bottom: 1px solid #334155; padding-bottom: 0.4rem; }
-        .news-link { color: #cbd5e1; font-size: 0.85rem; transition: color 0.2s; display: block; line-height: 1.3; }
+        .news-box { background-color: #1e293b; border-radius: 0.5rem; border: 1px solid #334155; display: flex; flex-direction: column; height: 300px; }
+        .news-header { padding: 0.75rem; border-bottom: 1px solid #334155; font-weight: bold; color: #60a5fa; font-size: 0.85rem; display: flex; justify-content: space-between; }
+        .news-content { padding: 0.75rem; overflow-y: auto; flex-grow: 1; }
+        .news-item { margin-bottom: 0.5rem; border-bottom: 1px solid #334155; padding-bottom: 0.3rem; }
+        .news-link { color: #cbd5e1; font-size: 0.8rem; display: block; }
         .news-link:hover { color: #3b82f6; }
-        .news-date { font-size: 0.7rem; color: #64748b; font-family: monospace; }
+        .calc-table th { background-color: #0f172a; padding: 0.5rem; text-align: center; }
+        .calc-table td { padding: 0.5rem; text-align: right; border: 1px solid #334155; }
     </style>
 </head>
-<body class="h-screen flex flex-col p-4">
+<body class="h-screen flex flex-col">
 
-    <header class="mb-4 flex justify-between items-center bg-slate-800 p-4 rounded-lg border border-slate-700">
-        <h1 class="text-xl font-bold text-white"><i class="fas fa-chart-line text-blue-500 mr-2"></i>삼전 데일리 뉴스 센터</h1>
-        <div id="clock" class="text-slate-400 font-mono text-sm">0000.00.00 00:00:00</div>
+    <header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center shrink-0">
+        <h1 class="text-xl font-bold text-white"><i class="fas fa-chart-line text-blue-500 mr-2"></i>달려라 삼전 STUDIO</h1>
+        <div class="flex gap-2">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active px-4 py-2 rounded bg-slate-700">대시보드</button>
+            <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-4 py-2 rounded bg-slate-700">자금관리</button>
+        </div>
+        <div id="clock" class="text-slate-400 font-mono text-sm">00:00:00</div>
     </header>
 
-    <!-- 6개 영역 뉴스 그리드 -->
-    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 flex-grow">
-        
-        <section class="news-box">
-            <div class="news-header"><span>반도체 및 수출</span><i class="fas fa-microchip"></i></div>
-            <div class="news-content" id="list-semi">로딩 중...</div>
+    <main class="flex-1 overflow-auto p-4">
+        <!-- 대시보드 탭 -->
+        <section id="content-dashboard" class="flex flex-col gap-4">
+            <div class="grid grid-cols-6 gap-2">
+                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">삼성전자</div><div class="font-bold">연동대기</div></div>
+                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">KOSPI</div><div class="font-bold">2,750.24</div></div>
+                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">KOSDAQ</div><div class="font-bold">880.15</div></div>
+                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">S&P500</div><div class="font-bold">5,200.50</div></div>
+                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">NASDAQ</div><div class="font-bold">16,400.20</div></div>
+                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">나스닥선물</div><div class="font-bold">16,450.00</div></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <section class="news-box"><div class="news-header">반도체 및 수출</div><div class="news-content" id="list-semi">로딩...</div></section>
+                <section class="news-box"><div class="news-header">채권금리</div><div class="news-content" id="list-bond">로딩...</div></section>
+                <section class="news-box"><div class="news-header">기준금리</div><div class="news-content" id="list-base">로딩...</div></section>
+                <section class="news-box"><div class="news-header">연준(Fed) 관련</div><div class="news-content" id="list-fed">로딩...</div></section>
+                <section class="news-box"><div class="news-header">삼성 매출/실적/분석</div><div class="news-content" id="list-samsung">로딩...</div></section>
+                <section class="news-box"><div class="news-header">신용/대출/마진잔고</div><div class="news-content" id="list-credit">로딩...</div></section>
+            </div>
         </section>
 
-        <section class="news-box">
-            <div class="news-header"><span>채권금리</span><i class="fas fa-percent"></i></div>
-            <div class="news-content" id="list-bond">로딩 중...</div>
+        <!-- 계산기 탭 -->
+        <section id="content-calculator" class="hidden flex flex-col gap-4">
+            <div class="bg-slate-800 p-6 rounded border border-slate-700">
+                <label class="text-slate-400 text-sm">가용자금 (원)</label>
+                <input type="text" id="calc-total-funds" value="60,000,000" class="bg-slate-900 p-2 rounded w-full text-lg mb-4" oninput="calculateFunds()">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-900 p-4 rounded border">보유현금: <span id="val-reserved-cash">24,000,000</span></div>
+                    <div class="bg-blue-900 p-4 rounded border">투자금: <span id="val-invest-cash">36,000,000</span></div>
+                </div>
+            </div>
         </section>
-
-        <section class="news-box">
-            <div class="news-header"><span>기준금리</span><i class="fas fa-university"></i></div>
-            <div class="news-content" id="list-base">로딩 중...</div>
-        </section>
-
-        <section class="news-box">
-            <div class="news-header"><span>연준(Fed) 관련</span><i class="fas fa-landmark"></i></div>
-            <div class="news-content" id="list-fed">로딩 중...</div>
-        </section>
-
-        <section class="news-box">
-            <div class="news-header"><span>삼성 매출/실적/기업분석</span><i class="fas fa-building"></i></div>
-            <div class="news-content" id="list-samsung">로딩 중...</div>
-        </section>
-
-        <section class="news-box">
-            <div class="news-header"><span>신용/대출/마진잔고</span><i class="fas fa-exclamation-triangle"></i></div>
-            <div class="news-content" id="list-credit">로딩 중...</div>
-        </section>
-
     </main>
 
     <script>
+        function switchTab(tabName) {
+            document.getElementById('content-dashboard').classList.toggle('hidden', tabName !== 'dashboard');
+            document.getElementById('content-calculator').classList.toggle('hidden', tabName !== 'calculator');
+        }
+
         async function fetchNews(query, containerId) {
             const container = document.getElementById(containerId);
             try {
-                const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
-                const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
-                const data = await response.json();
-                
-                if(data.items && data.items.length > 0) {
-                    container.innerHTML = data.items.slice(0, 8).map(item => `
-                        <div class="news-item">
-                            <a href="${item.link}" target="_blank" class="news-link">${item.title}</a>
-                            <div class="news-date">${new Date(item.pubDate).toLocaleDateString()}</div>
-                        </div>
-                    `).join('');
-                } else {
-                    container.innerHTML = '<p class="text-slate-500 text-xs">뉴스 없음</p>';
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q=' + encodeURIComponent(query) + '&hl=ko&gl=KR&ceid=KR:ko')}`);
+                const data = await res.json();
+                if(data.items) {
+                    container.innerHTML = data.items.slice(0, 6).map(item => `<div class="news-item"><a href="${item.link}" target="_blank" class="news-link">${item.title}</a></div>`).join('');
                 }
-            } catch (err) {
-                container.innerHTML = '<p class="text-red-500 text-xs">불러오기 실패</p>';
-            }
+            } catch(e) { container.innerHTML = '불러오기 실패'; }
         }
 
         window.onload = () => {
@@ -90,16 +90,12 @@
             fetchNews('채권금리', 'list-bond');
             fetchNews('기준금리', 'list-base');
             fetchNews('연준 FOMC', 'list-fed');
-            fetchNews('삼성전자 매출 실적 기업분석', 'list-samsung');
+            fetchNews('삼성전자 매출 실적 분석', 'list-samsung');
             fetchNews('주식 신용잔고 마진콜', 'list-credit');
         };
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleString();
-        }
+        function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString(); }
         setInterval(updateClock, 1000);
-        updateClock();
     </script>
 </body>
 </html>
