@@ -11,13 +11,20 @@
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #0f172a; color: #f8fafc; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .tab-btn.active { background-color: #2563eb !important; border-bottom: 2px solid #60a5fa; }
+        .tab-btn.active { background-color: #3b82f6 !important; border-bottom: 2px solid #60a5fa; }
+        
+        /* 뉴스 스타일 */
         .news-box { background-color: #1e293b; border-radius: 0.5rem; border: 1px solid #334155; height: 300px; display: flex; flex-direction: column; }
         .news-header { padding: 0.75rem; border-bottom: 1px solid #334155; font-weight: bold; color: #60a5fa; font-size: 0.85rem; }
         .news-content { padding: 0.75rem; overflow-y: auto; flex-grow: 1; }
         .news-item { margin-bottom: 0.5rem; border-bottom: 1px solid #334155; padding-bottom: 0.3rem; }
         .news-link { color: #cbd5e1; font-size: 0.8rem; text-decoration: none; }
         .news-link:hover { color: #3b82f6; }
+
+        /* 계산기 스타일 */
+        .calc-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .calc-table th { background-color: #0f172a; padding: 0.5rem; text-align: center; border: 1px solid #334155; }
+        .calc-table td { padding: 0.5rem; text-align: right; border: 1px solid #334155; }
     </style>
 </head>
 <body class="p-4">
@@ -42,20 +49,45 @@
 
     <!-- 자금관리 탭 -->
     <section id="calculator" class="tab-content">
-        <div class="bg-slate-800 p-8 rounded-lg border border-slate-700 max-w-2xl mx-auto">
-            <h2 class="text-xl font-bold mb-6 text-blue-400">자금 관리 계산기</h2>
-            <div class="mb-4">
-                <label class="block text-slate-400 mb-2">총 가용 자금 (원)</label>
-                <input type="number" id="total-funds" value="60000000" class="w-full bg-slate-900 border border-slate-600 p-3 rounded text-white" oninput="calculate()">
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-slate-900 p-4 rounded border border-slate-700">
-                    <p class="text-slate-400">보유 현금 (40%)</p>
-                    <p id="calc-cash" class="text-2xl font-bold text-white">0</p>
+        <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 max-w-5xl mx-auto">
+            <div class="flex gap-6 mb-6">
+                <div>
+                    <label class="block text-slate-400 text-sm">가용자금 (원)</label>
+                    <input type="text" id="calc-total-funds" value="60,000,000" class="bg-slate-900 p-2 rounded w-48 text-lg font-bold" oninput="calculateFunds()">
                 </div>
-                <div class="bg-blue-900/30 p-4 rounded border border-blue-800">
-                    <p class="text-blue-400">투자 가능 금액 (60%)</p>
-                    <p id="calc-invest" class="text-2xl font-bold text-white">0</p>
+                <div>
+                    <label class="block text-slate-400 text-sm">연령대</label>
+                    <select id="calc-age" class="bg-slate-900 p-2 rounded w-32" onchange="calculateFunds()">
+                        <option value="under30">30대 이하</option>
+                        <option value="over40" selected>40대 이상</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-8">
+                <!-- 평시 전략 -->
+                <div>
+                    <h3 class="font-bold text-blue-400">&lt;평시&gt; 투자 전략</h3>
+                    <input type="text" id="calc-base-price-1" value="374,500" class="bg-slate-900 p-1 w-full mt-2" oninput="syncPrices(1)">
+                    <table class="calc-table text-xs">
+                        <thead><tr><th>구간</th><th>매수가</th><th>비중</th><th>금액</th></tr></thead>
+                        <tbody>
+                            <tr><td>-20%</td><td id="m1-p20">299,600</td><td><input type="number" id="m1-w20" value="40" class="w-12 bg-slate-700 text-center" oninput="calculateFunds()">%</td><td id="m1-a20">0</td></tr>
+                            <tr><td>-30%</td><td id="m1-p30">262,150</td><td><input type="number" id="m1-w30" value="30" class="w-12 bg-slate-700 text-center" oninput="calculateFunds()">%</td><td id="m1-a30">0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 위기 전략 -->
+                <div>
+                    <h3 class="font-bold text-yellow-500">&lt;위기&gt; 대응 전략</h3>
+                    <input type="text" id="calc-base-price-2" value="374,500" class="bg-slate-900 p-1 w-full mt-2" oninput="syncPrices(2)">
+                    <table class="calc-table text-xs">
+                        <thead><tr><th>구간</th><th>매수가</th><th>비중</th><th>금액</th></tr></thead>
+                        <tbody>
+                            <tr><td>-40%</td><td id="m2-p40">224,700</td><td><input type="number" id="m2-w40" value="50" class="w-12 bg-slate-700 text-center" oninput="calculateFunds()">%</td><td id="m2-a40">0</td></tr>
+                            <tr><td>-65%</td><td id="m2-p65">131,075</td><td><input type="number" id="m2-w65" value="50" class="w-12 bg-slate-700 text-center" oninput="calculateFunds()">%</td><td id="m2-a65">0</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -69,10 +101,28 @@
             document.getElementById('btn-' + tabId).classList.add('active');
         }
 
-        function calculate() {
-            const total = document.getElementById('total-funds').value;
-            document.getElementById('calc-cash').textContent = (total * 0.4).toLocaleString() + ' 원';
-            document.getElementById('calc-invest').textContent = (total * 0.6).toLocaleString() + ' 원';
+        function numFormat(num) { return Math.round(num).toLocaleString('ko-KR'); }
+        function numParse(str) { return Number(String(str).replace(/,/g, '')) || 0; }
+
+        function syncPrices(source) {
+            let val = document.getElementById(source === 1 ? 'calc-base-price-1' : 'calc-base-price-2').value;
+            document.getElementById('calc-base-price-1').value = val;
+            document.getElementById('calc-base-price-2').value = val;
+            calculateFunds();
+        }
+
+        function calculateFunds() {
+            let totalFunds = numParse(document.getElementById('calc-total-funds').value);
+            let investCash = totalFunds * (document.getElementById('calc-age').value === 'under30' ? 0.7 : 0.6);
+            let basePrice = numParse(document.getElementById('calc-base-price-1').value);
+
+            // 평시 전략 계산
+            document.getElementById('m1-a20').textContent = numFormat(investCash * (Number(document.getElementById('m1-w20').value)/100));
+            document.getElementById('m1-a30').textContent = numFormat(investCash * (Number(document.getElementById('m1-w30').value)/100));
+
+            // 위기 전략 계산
+            document.getElementById('m2-a40').textContent = numFormat(investCash * (Number(document.getElementById('m2-w40').value)/100));
+            document.getElementById('m2-a65').textContent = numFormat(investCash * (Number(document.getElementById('m2-w65').value)/100));
         }
 
         async function fetchNews(query, containerId) {
@@ -83,11 +133,11 @@
                 if(data.items) {
                     container.innerHTML = data.items.slice(0, 6).map(item => `<div class="news-item"><a href="${item.link}" target="_blank" class="news-link">${item.title}</a></div>`).join('');
                 }
-            } catch(e) { container.innerHTML = '로딩 실패'; }
+            } catch(e) { container.innerHTML = '불러오기 실패'; }
         }
 
         window.onload = () => {
-            calculate();
+            calculateFunds();
             fetchNews('반도체 수출', 'list-semi');
             fetchNews('채권금리', 'list-bond');
             fetchNews('기준금리', 'list-base');
