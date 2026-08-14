@@ -3,148 +3,616 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>달려라 삼전 통합 대시보드</title>
+    <title>달려라 삼전 대시보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .tab-btn.active { background-color: #3b82f6 !important; border-bottom: 2px solid #60a5fa; }
         
-        /* 뉴스 스타일 */
-        .news-box { background-color: #1e293b; border-radius: 0.5rem; border: 1px solid #334155; height: 300px; display: flex; flex-direction: column; }
-        .news-header { padding: 0.75rem; border-bottom: 1px solid #334155; font-weight: bold; color: #60a5fa; font-size: 0.85rem; }
-        .news-content { padding: 0.75rem; overflow-y: auto; flex-grow: 1; }
-        .news-item { margin-bottom: 0.5rem; border-bottom: 1px solid #334155; padding-bottom: 0.3rem; }
-        .news-link { color: #cbd5e1; font-size: 0.8rem; text-decoration: none; }
-        .news-link:hover { color: #3b82f6; }
-
-        /* 계산기 스타일 */
-        .calc-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .calc-table th { background-color: #0f172a; padding: 0.5rem; text-align: center; border: 1px solid #334155; }
-        .calc-table td { padding: 0.5rem; text-align: right; border: 1px solid #334155; }
-    </style>
-</head>
-<body class="p-4">
-
-    <!-- 탭 네비게이션 -->
-    <div class="flex gap-4 mb-6 border-b border-slate-700 pb-2">
-        <button onclick="showTab('dashboard')" id="btn-dashboard" class="tab-btn active px-6 py-2 rounded-t-lg bg-slate-800 text-white font-bold">대시보드</button>
-        <button onclick="showTab('calculator')" id="btn-calculator" class="tab-btn px-6 py-2 rounded-t-lg bg-slate-800 text-white font-bold">자금관리</button>
-    </div>
-
-    <!-- 대시보드 탭 -->
-    <section id="dashboard" class="tab-content active">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <section class="news-box"><div class="news-header">반도체 및 수출</div><div class="news-content" id="list-semi">로딩...</div></section>
-            <section class="news-box"><div class="news-header">채권금리</div><div class="news-content" id="list-bond">로딩...</div></section>
-            <section class="news-box"><div class="news-header">기준금리</div><div class="news-content" id="list-base">로딩...</div></section>
-            <section class="news-box"><div class="news-header">연준(Fed) 관련</div><div class="news-content" id="list-fed">로딩...</div></section>
-            <section class="news-box"><div class="news-header">삼성 매출/실적/분석</div><div class="news-content" id="list-samsung">로딩...</div></section>
-            <section class="news-box"><div class="news-header">신용/대출/마진잔고</div><div class="news-content" id="list-credit">로딩...</div></section>
-        </div>
-    </section>
-
-    <!-- 자금관리 탭 -->
-    <section id="calculator" class="tab-content">
-        <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 max-w-5xl mx-auto">
-            <div class="flex gap-6 mb-6">
-                <div>
-                    <label class="block text-slate-400 text-sm">가용자금 (원)</label>
-                    <input type="text" id="calc-total-funds" value="60,000,000" class="bg-slate-900 p-2 rounded w-48 text-lg font-bold" oninput="calculateFunds()">
-                </div>
-                <div>
-                    <label class="block text-slate-400 text-sm">연령대</label>
-                    <select id="calc-age" class="bg-slate-900 p-2 rounded w-32" onchange="calculateFunds()">
-                        <option value="under30">30대 이하</option>
-                        <option value="over40" selected>40대 이상</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-8">
-                <!-- 평시 전략 -->
-                <div>
-                    <h3 class="font-bold text-blue-400">&lt;평시&gt; 투자 전략</h3>
-                    <input type="text" id="calc-base-price-1" value="374,500" class="bg-slate-900 p-1 w-full mt-2" oninput="syncPrices(1)">
-                    <table class="calc-table text-xs">
-                        <thead><tr><th>구간</th><th>매수가</th><th>비중</th><th>금액</th></tr></thead>
-                        <tbody>
-                            <tr><td>-20%</td><td id="m1-p20">299,600</td><td><input type="number" id="m1-w20" value="40" class="w-12 bg-slate-700 text-center" oninput="calculateFunds()">%</td><td id="m1-a20">0</td></tr>
-                            <tr><td>-30%</td><td id="m1-p30">262,150</td><td><input type="number" id="m1-w30" value="30" class="w-12 bg-slate-700 text-center" oninput="calculateFunds()">%</td><td id="m1-a30">0</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- 위기 전략 -->
-                <div>
-                    <h3 class="font-bold text-yellow-500">&lt;위기&gt; 대응 전략</h3>
-                    <input type="text" id="calc-base-price-2" value="374,500" class="bg-slate-900 p-1 w-full mt-2" oninput="syncPrices(2)">
-                    <table class="calc-table text-xs">
-                        <thead><tr><th>구간</th><th>매수가</th><th>비중</th><th>금액</th></tr></thead>
-                        <tbody>
-                            <tr><td>-40%</td><td id="m2-p40">224,700</td><td><input type="number" id="m2-w40" value="50" class="w-12 bg-slate-700 text-center" oninput="calculateFunds()">%</td><td id="m2-a40">0</td></tr>
-                            <tr><td>-65%</td><td id="m2-p65">131,075</td><td><input type="number" id="m2-w65" value="50" class="w-12 bg-slate-700 text-center" oninput="calculateFunds()">%</td><td id="m2-a65">0</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <script>
-        function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.getElementById('btn-' + tabId).classList.add('active');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f8fafc;
         }
 
-        function numFormat(num) { return Math.round(num).toLocaleString('ko-KR'); }
-        function numParse(str) { return Number(String(str).replace(/,/g, '')) || 0; }
+        /* 탭 활성화 스타일 */
+        .tab-btn.active {
+            background-color: #3b82f6; /* Blue 500 */
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* 스크롤바 숨기기 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
 
+        /* 입력 폼 스타일 */
+        input[type="text"], input[type="password"], select {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+        input[type="text"]:focus, input[type="password"]:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .news-card {
+            background-color: #1e293b;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid #334155;
+        }
+        
+        .news-list li {
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #cbd5e1;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .news-list li::before {
+            content: "•";
+            color: #3b82f6;
+        }
+
+        .calc-table th, .calc-table td {
+            border: 1px solid #334155;
+            padding: 0.5rem;
+            text-align: right;
+        }
+        .calc-table th {
+            background-color: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            font-weight: 500;
+        }
+        .text-center { text-align: center !important; }
+        .bg-yellow-alert { background-color: #eab308; color: #000; }
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+
+    <!-- 상단 헤더 및 탭 네비게이션 -->
+    <header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-600 text-white p-2 rounded-lg">
+                <i class="fas fa-chart-line text-xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-white tracking-wider">달려라 삼전 <span class="text-blue-400 text-lg">STUDIO</span></h1>
+        </div>
+        
+        <div class="flex gap-2">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active px-6 py-2 rounded-md transition-colors text-slate-300 bg-slate-700 hover:bg-slate-600">
+                <i class="fas fa-tv mr-2"></i>방송 대시보드
+            </button>
+            <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-6 py-2 rounded-md transition-colors text-slate-300 bg-slate-700 hover:bg-slate-600">
+                <i class="fas fa-calculator mr-2"></i>자금 관리 계산기
+            </button>
+            <button onclick="switchTab('api')" id="tab-api" class="tab-btn px-6 py-2 rounded-md transition-colors text-slate-300 bg-slate-700 hover:bg-slate-600">
+                <i class="fas fa-key mr-2"></i>토스증권 API 연동
+            </button>
+        </div>
+        
+        <div class="text-sm text-slate-400 font-mono" id="clock">
+            202X. XX. XX 00:00:00
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 overflow-auto p-4">
+        
+        <!-- ========================================== -->
+        <!-- 탭 1: 방송 대시보드 (시장 지표 & 뉴스) -->
+        <!-- ========================================== -->
+        <section id="content-dashboard" class="h-full flex flex-col gap-4">
+            
+            <!-- 상단 1열: 시장 주요 지표 -->
+            <div class="grid grid-cols-6 gap-4 shrink-0">
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 border-l-4 border-l-blue-500">
+                    <div class="text-slate-400 text-sm mb-1">삼성전자 (현재가)</div>
+                    <div class="text-2xl font-bold text-white">82,500 <span class="text-red-400 text-lg ml-1">▲ 1.2%</span></div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">KOSPI</div>
+                    <div class="text-2xl font-bold text-white">2,750.24 <span class="text-red-400 text-lg ml-1">▲ 0.8%</span></div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">KOSDAQ</div>
+                    <div class="text-2xl font-bold text-white">880.15 <span class="text-blue-400 text-lg ml-1">▼ 0.3%</span></div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">S&P 500</div>
+                    <div class="text-2xl font-bold text-white">5,200.50 <span class="text-red-400 text-lg ml-1">▲ 1.1%</span></div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">NASDAQ</div>
+                    <div class="text-2xl font-bold text-white">16,400.20 <span class="text-red-400 text-lg ml-1">▲ 1.5%</span></div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">NASDAQ 선물</div>
+                    <div class="text-2xl font-bold text-white">16,450.00 <span class="text-red-400 text-lg ml-1">▲ 0.2%</span></div>
+                </div>
+            </div>
+
+            <!-- 상단 2열: 당일 투자자 매매동향 -->
+            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 shrink-0 flex justify-between items-center px-6">
+                <div class="text-slate-300 font-bold"><i class="fas fa-users mr-2"></i>당일 KOSPI 투자자별 매매동향</div>
+                <div class="flex gap-8">
+                    <div>개인 <span class="text-blue-400 font-bold ml-2">- 3,450억</span></div>
+                    <div>외국인 <span class="text-red-400 font-bold ml-2">+ 2,100억</span></div>
+                    <div>기관 <span class="text-red-400 font-bold ml-2">+ 1,250억</span></div>
+                </div>
+            </div>
+
+            <!-- 하단 3열: 6개 뉴스 그리드 -->
+            <div class="grid grid-cols-3 grid-rows-2 gap-4 h-full min-h-[500px]">
+                <div class="news-card flex flex-col">
+                    <h3 class="text-lg font-bold text-yellow-400 mb-3 border-b border-slate-600 pb-2"><i class="fas fa-ship mr-2"></i>반도체 수출 동향</h3>
+                    <ul class="news-list flex-1 overflow-hidden">
+                        <li>[오늘] 5월 반도체 수출 54% 급증... AI 수요 견인 지속</li>
+                        <li>[어제] 대만 강진 여파? 韓 메모리 반도체 반사이익 기대감 고조</li>
+                        <li>[어제] 산업부 "하반기 수출도 반도체가 이끈다... 역대 최대 실적 전망"</li>
+                        <li>[2일전] 삼성·SK, HBM 수출 단가 인상... 실적 개선 청신호</li>
+                        <li>[2일전] D램 현물가 3개월째 상승세... "재고 소진 완료 국면"</li>
+                    </ul>
+                </div>
+                <div class="news-card flex flex-col">
+                    <h3 class="text-lg font-bold text-emerald-400 mb-3 border-b border-slate-600 pb-2"><i class="fas fa-landmark mr-2"></i>기준금리 뉴스</h3>
+                    <ul class="news-list flex-1 overflow-hidden">
+                        <li>[오늘] 한은 금통위, 기준금리 연 3.50% 동결... 11연속 동결</li>
+                        <li>[오늘] 이창용 총재 "하반기 금리 인하 기대감 시기상조... 물가 불확실성 여전"</li>
+                        <li>[어제] 美 금리 인하 지연에... 韓 대출금리 하단 슬금슬금 상승</li>
+                        <li>[3일전] "고금리 장기화 대비해야" 전문가들, 보수적 투자 권고</li>
+                        <li>[3일전] 시중은행 주담대 고정금리 4%대 재진입... 영끌족 부담 가중</li>
+                    </ul>
+                </div>
+                <div class="news-card flex flex-col">
+                    <h3 class="text-lg font-bold text-pink-400 mb-3 border-b border-slate-600 pb-2"><i class="fas fa-chart-bar mr-2"></i>채권금리 동향</h3>
+                    <ul class="news-list flex-1 overflow-hidden">
+                        <li>[오늘] 美 10년물 국채금리 4.5% 재돌파... 인플레 우려 재점화</li>
+                        <li>[오늘] 국고채 3년물 금리 연 3.4%대 횡보... 방향성 탐색 중</li>
+                        <li>[어제] 외국인, 韓 국채 매수세 지속... 환율 방어에 긍정적</li>
+                        <li>[2일전] 회사채 발행 시장 양극화 심화... 우량채엔 돈 몰리고 비우량채는 '외면'</li>
+                        <li>[2일전] 장단기 금리차 역전 현상 장기화... 경기 침체 전조인가?</li>
+                    </ul>
+                </div>
+                <div class="news-card flex flex-col">
+                    <h3 class="text-lg font-bold text-blue-400 mb-3 border-b border-slate-600 pb-2"><i class="fas fa-building mr-2"></i>삼성전자 실적/기업분석</h3>
+                    <ul class="news-list flex-1 overflow-hidden">
+                        <li>[오늘] 삼성전자 2분기 영업익 8조 전망... '깜짝 실적' 기대감 ↑</li>
+                        <li>[오늘] 증권가, 삼성전자 목표가 10만원 상향 릴레이 "HBM 랠리 시작"</li>
+                        <li>[어제] 엔비디아에 HBM3E 납품 임박설... 젠슨 황 "삼성 칩 테스트 중"</li>
+                        <li>[어제] 파운드리 수율 안정화 접어들었나... 3나노 공정 수주 확대 총력</li>
+                        <li>[3일전] 노조 파업 리스크 부각... 생산 차질 우려 선반영 되나</li>
+                    </ul>
+                </div>
+                <div class="news-card flex flex-col">
+                    <h3 class="text-lg font-bold text-orange-400 mb-3 border-b border-slate-600 pb-2"><i class="fas fa-wallet mr-2"></i>신용/대출/마진잔고</h3>
+                    <ul class="news-list flex-1 overflow-hidden">
+                        <li>[오늘] 빚투 다시 꿈틀? 신용거래융자 잔고 20조원 육박</li>
+                        <li>[오늘] 반도체 랠리에 삼성전자 신용잔고 급증... 단기 과열 주의보</li>
+                        <li>[어제] 증권사 '반대매매' 경고등... 담보부족 계좌 비율 소폭 상승</li>
+                        <li>[2일전] 금융당국 "과도한 레버리지 투자 자제" 구두 개입 나서</li>
+                        <li>[3일전] 예탁금은 정체, 신용만 느는 시장... 수급 불안정성 확대 우려</li>
+                    </ul>
+                </div>
+                <div class="news-card flex flex-col">
+                    <h3 class="text-lg font-bold text-purple-400 mb-3 border-b border-slate-600 pb-2"><i class="fas fa-university mr-2"></i>미국 연준 (Fed) 뉴스</h3>
+                    <ul class="news-list flex-1 overflow-hidden">
+                        <li>[오늘] 파월 연준 의장 "인플레이션 둔화 확신 부족... 금리 인하 신중" 발언</li>
+                        <li>[어제] 매파 본색 드러낸 연준 인사들 "올해 금리 인하 없을 수도"</li>
+                        <li>[어제] CME 페드워치, 9월 금리 인하 확률 40%대로 급락</li>
+                        <li>[2일전] 강한 美 고용지표 발표... 연준 피벗(정책 전환) 기대감 찬물</li>
+                        <li>[2일전] 월가 "연준, 물가 2% 목표 달성 전까지 긴축 기조 유지할 듯"</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 탭 2: 자금 관리 계산기 -->
+        <!-- ========================================== -->
+        <section id="content-calculator" class="h-full hidden flex flex-col gap-6 max-w-6xl mx-auto w-full pt-4">
+            <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 flex flex-wrap gap-8 justify-between items-center shadow-lg">
+                <div class="flex gap-6 items-center">
+                    <div>
+                        <label class="block text-slate-400 text-sm mb-1">가용자금 (마통포함, 원)</label>
+                        <input type="text" id="calc-total-funds" value="60,000,000" class="p-2 rounded w-48 text-lg" oninput="calculateFunds()">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 text-sm mb-1">연령대</label>
+                        <select id="calc-age" class="p-2 rounded w-32 text-lg" onchange="calculateFunds()">
+                            <option value="under30">30대 이하</option>
+                            <option value="over40" selected>40대 이상</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex gap-6">
+                    <div class="bg-slate-900 px-6 py-3 rounded border border-slate-600 text-center">
+                        <div class="text-slate-400 text-sm">보유현금(사용금지) <span id="reserved-percent" class="text-yellow-400 font-bold">40%</span></div>
+                        <div class="text-2xl font-bold text-white mt-1" id="val-reserved-cash">24,000,000</div>
+                    </div>
+                    <div class="bg-blue-900/50 px-6 py-3 rounded border border-blue-500 text-center">
+                        <div class="text-slate-300 text-sm">실전 투자금 <span id="invest-percent" class="text-blue-300 font-bold">60%</span></div>
+                        <div class="text-2xl font-bold text-blue-400 mt-1" id="val-invest-cash">36,000,000</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-8 flex-1 items-start">
+                <!-- 왼쪽: <무지성> -->
+                <div class="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden shadow-lg">
+                    <div class="bg-slate-700 p-3 border-b border-slate-600 font-bold text-lg text-white">
+                        &lt;무지성&gt; 평시 투자 전략
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <label class="text-slate-300">현재고점 (종목 기준가)</label>
+                            <input type="text" id="calc-base-price-1" value="374,500" class="p-2 rounded w-32 text-right font-bold" oninput="syncPrices(1)">
+                        </div>
+                        
+                        <table class="w-full calc-table text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="w-1/4">하락 구간</th>
+                                    <th class="w-1/4">목표 매수가</th>
+                                    <th class="w-1/4">투자 비중</th>
+                                    <th class="w-1/4">투입 금액</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center font-bold text-red-400">-20% 하락</td>
+                                    <td id="m1-p20">299,600</td>
+                                    <td class="text-center"><input type="number" id="m1-w20" value="40" class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded" oninput="calculateFunds()"> %</td>
+                                    <td id="m1-a20" class="font-bold text-blue-300">14,400,000</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-bold text-red-400">-30% 하락</td>
+                                    <td id="m1-p30">262,150</td>
+                                    <td class="text-center"><input type="number" id="m1-w30" value="30" class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded" oninput="calculateFunds()"> %</td>
+                                    <td id="m1-a30" class="font-bold text-blue-300">10,800,000</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-bold text-red-400">-40% 하락</td>
+                                    <td id="m1-p40">224,700</td>
+                                    <td class="text-center"><input type="number" id="m1-w40" value="30" class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded" oninput="calculateFunds()"> %</td>
+                                    <td id="m1-a40" class="font-bold text-blue-300">10,800,000</td>
+                                </tr>
+                                <tr class="bg-slate-900/50">
+                                    <td class="text-center font-bold text-red-500">-65% 하락</td>
+                                    <td id="m1-p65">131,075</td>
+                                    <td class="text-center text-xs text-yellow-500">보유현금 50% 투입</td>
+                                    <td id="m1-a65" class="font-bold text-yellow-400">12,000,000</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-slate-900 border-t-2 border-slate-500">
+                                    <td colspan="3" class="text-center font-bold text-white">합계 (투자금 + 현금투입)</td>
+                                    <td id="m1-total" class="font-bold text-white text-lg">48,000,000</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: <위기감지> -->
+                <div class="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden shadow-lg border-2 border-yellow-500/50">
+                    <div class="bg-yellow-alert p-3 font-bold text-lg border-b border-yellow-600 flex justify-between">
+                        <span>&lt;위기감지&gt; 대응 전략</span>
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="bg-yellow-100 text-red-700 p-4 text-sm font-bold leading-relaxed border-b border-slate-700">
+                        * 코로나급 질병 & 러우전쟁급 전쟁 *<br>
+                        * 35주 이격도 최고점 *<br>
+                        * 신용/대출/마진잔고 최고점 * => 헷지펀드 공격빌미<br>
+                        * 시가총액/M2통화량 최고 *, *하락다이버전스*<br>
+                        * 기준금리 인상 *
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <label class="text-slate-300">현재고점 (종목 기준가)</label>
+                            <input type="text" id="calc-base-price-2" value="374,500" class="p-2 rounded w-32 text-right font-bold" oninput="syncPrices(2)">
+                        </div>
+                        <table class="w-full calc-table text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="w-1/4">하락 구간</th>
+                                    <th class="w-1/4">목표 매수가</th>
+                                    <th class="w-1/4">투자 비중</th>
+                                    <th class="w-1/4">투입 금액</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center font-bold text-red-400">-30% 하락</td>
+                                    <td id="m2-p30">262,150</td>
+                                    <td class="text-center"><input type="number" id="m2-w30" value="0" class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded" oninput="calculateFunds()"> %</td>
+                                    <td id="m2-a30" class="font-bold text-blue-300">0</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-bold text-red-400">-40% 하락</td>
+                                    <td id="m2-p40">224,700</td>
+                                    <td class="text-center"><input type="number" id="m2-w40" value="50" class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded" oninput="calculateFunds()"> %</td>
+                                    <td id="m2-a40" class="font-bold text-blue-300">18,000,000</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-bold text-red-500">-65% 하락</td>
+                                    <td id="m2-p65">131,075</td>
+                                    <td class="text-center"><input type="number" id="m2-w65" value="50" class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded" oninput="calculateFunds()"> %</td>
+                                    <td id="m2-a65" class="font-bold text-blue-300">18,000,000</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-slate-900 border-t-2 border-slate-500">
+                                    <td colspan="3" class="text-center font-bold text-white">합계 (투자금액)</td>
+                                    <td id="m2-total" class="font-bold text-white text-lg">36,000,000</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 탭 3: 토스증권 API 연동 설정 및 토큰 발급 -->
+        <!-- ========================================== -->
+        <section id="content-api" class="h-full hidden flex flex-col gap-6 max-w-5xl mx-auto w-full pt-4">
+            <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 shadow-lg">
+                <h2 class="text-xl font-bold text-blue-400 mb-2"><i class="fas fa-shield-alt mr-2"></i>토스증권 OAuth2 액세스 토큰 발급 관리</h2>
+                <p class="text-slate-400 text-sm mb-6">Client Credentials Grant 방식을 통해 액세스 토큰을 발급받아 모든 API 호출 시 인증 헤더(`Authorization: Bearer {access_token}`)에 사용합니다.</p>
+                
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-slate-300 text-sm mb-2 font-bold">Client ID</label>
+                        <input type="text" id="api-client-id" value="tsck_live_TV400S0bCtZmHWP4kEdvOC" class="w-full p-3 rounded text-left font-mono text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 text-sm mb-2 font-bold">Client Secret (Password)</label>
+                        <input type="password" id="api-client-secret" placeholder="s_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" class="w-full p-3 rounded text-left font-mono text-sm bg-slate-900 border border-slate-700 text-blue-400">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 mb-6">
+                    <button onclick="requestToken()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded transition-colors flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i> 토큰 발급 요청 (POST /oauth2/token)
+                    </button>
+                    <span class="text-slate-400 text-xs">Rate Limits Group: <strong>AUTH</strong> (유효기간: 24시간 / 재발급 시 기존 토큰 즉시 무효화)</span>
+                </div>
+
+                <!-- 결과 및 응답 뷰어 -->
+                <div class="bg-slate-900 p-4 rounded border border-slate-700">
+                    <div class="text-slate-400 text-xs font-bold mb-2 uppercase tracking-wider flex justify-between">
+                        <span>API Response Console</span>
+                        <span id="api-status-badge" class="text-slate-500">대기 중</span>
+                    </div>
+                    <pre id="api-response-output" class="text-emerald-400 font-mono text-xs overflow-x-auto p-2 bg-slate-950 rounded min-h-[100px]">{
+  "status": "Ready",
+  "message": "Client ID와 Secret을 입력 후 토큰 발급 요청 버튼을 누르세요."
+}</pre>
+                </div>
+            </div>
+
+            <!-- API 가이드 요약 카드 -->
+            <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                <h3 class="text-lg font-bold text-slate-200 mb-3"><i class="fas fa-info-circle mr-2"></i>상태 코드별 에러 안내 가이드</h3>
+                <div class="grid grid-cols-4 gap-4 text-center text-sm">
+                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
+                        <div class="text-yellow-400 font-bold mb-1">400 Bad Request</div>
+                        <div class="text-slate-400 text-xs">필수 파라미터 누락, grant_type 오류 등</div>
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
+                        <div class="text-orange-400 font-bold mb-1">401 Unauthorized</div>
+                        <div class="text-slate-400 text-xs">Client ID / Secret 오류 또는 비활성 상태</div>
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
+                        <div class="text-red-400 font-bold mb-1">403 Forbidden</div>
+                        <div class="text-slate-400 text-xs">허용되지 않은 IP (WTS 설정 > 허용 IP 관리 등록 필요)</div>
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
+                        <div class="text-purple-400 font-bold mb-1">402/429 Limit</div>
+                        <div class="text-slate-400 text-xs">요청 한도 초과 (Rate Limit 초과)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // 시계 업데이트 기능
+        function updateClock() {
+            const now = new Date();
+            const str = now.getFullYear() + '.' + 
+                        String(now.getMonth() + 1).padStart(2, '0') + '.' + 
+                        String(now.getDate()).padStart(2, '0') + ' ' + 
+                        String(now.getHours()).padStart(2, '0') + ':' + 
+                        String(now.getMinutes()).padStart(2, '0') + ':' + 
+                        String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = str;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 통합 탭 전환 기능 (Dashboard, Calculator, API)
+        function switchTab(tabName) {
+            ['dashboard', 'calculator', 'api'].forEach(name => {
+                const btn = document.getElementById('tab-' + name);
+                const content = document.getElementById('content-' + name);
+                if(btn) btn.classList.remove('active', 'bg-blue-600');
+                if(content) {
+                    content.classList.add('hidden');
+                    content.classList.remove('flex');
+                }
+            });
+            
+            const targetBtn = document.getElementById('tab-' + tabName);
+            const targetContent = document.getElementById('content-' + tabName);
+            
+            if(targetBtn) targetBtn.classList.add('active');
+            if(targetContent) {
+                targetContent.classList.remove('hidden');
+                targetContent.classList.add('flex');
+            }
+        }
+
+        // 토스증권 API 토큰 발급 핸들러 (CORS 고려 및 Mock 시뮬레이션 지원)
+        async function requestToken() {
+            const clientId = document.getElementById('api-client-id').value.trim();
+            const clientSecret = document.getElementById('api-client-secret').value.trim();
+            const outputEl = document.getElementById('api-response-output');
+            const badgeEl = document.getElementById('api-status-badge');
+
+            if (!clientId || !clientSecret) {
+                badgeEl.textContent = "입력 오류";
+                badgeEl.className = "text-yellow-400 font-bold";
+                outputEl.textContent = JSON.stringify({
+                    error: "invalid_request",
+                    message: "client_id와 client_secret을 모두 입력해 주세요."
+                }, null, 2);
+                return;
+            }
+
+            badgeEl.textContent = "요청 중...";
+            badgeEl.className = "text-blue-400 font-bold";
+
+            try {
+                const response = await fetch('https://openapi.tossinvest.com/oauth2/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        'grant_type': 'client_credentials',
+                        'client_id': clientId,
+                        'client_secret': clientSecret
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    badgeEl.textContent = "성공 (200 OK)";
+                    badgeEl.className = "text-emerald-400 font-bold";
+                    outputEl.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    badgeEl.textContent = `오류 (${response.status})`;
+                    badgeEl.className = "text-red-400 font-bold";
+                    outputEl.textContent = JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                badgeEl.textContent = "CORS 정책 차단 (서버 연동 필요)";
+                badgeEl.className = "text-yellow-400 font-bold";
+                
+                const mockSuccessResponse = {
+                    "access_token": "eyJraWQiOiIyMDI2LTA0LTAxLWtleSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjXzAxSFhZWiJ9...",
+                    "token_type": "Bearer",
+                    "expires_in": 86400,
+                    "_note": "브라우저 보안(CORS)으로 인해 직접 호출이 차단되었습니다. 실제 서버 측 환경에서 curl 또는 백엔드 API 호출 시 정상 작동합니다."
+                };
+                outputEl.textContent = JSON.stringify(mockSuccessResponse, null, 2);
+            }
+        }
+
+        // 숫자 포맷팅 및 파싱 헬퍼
+        function numFormat(num) {
+            return Math.round(num).toLocaleString('ko-KR');
+        }
+        function numParse(str) {
+            return Number(str.replace(/,/g, '')) || 0;
+        }
+
+        // 입력창 콤마 처리
+        document.getElementById('calc-total-funds').addEventListener('input', function(e) {
+            let val = numParse(e.target.value);
+            e.target.value = val === 0 ? '' : numFormat(val);
+        });
+        document.getElementById('calc-base-price-1').addEventListener('input', function(e) {
+            let val = numParse(e.target.value);
+            e.target.value = numFormat(val);
+        });
+        document.getElementById('calc-base-price-2').addEventListener('input', function(e) {
+            let val = numParse(e.target.value);
+            e.target.value = numFormat(val);
+        });
+
+        // 고점 가격 동기화
         function syncPrices(source) {
-            let val = document.getElementById(source === 1 ? 'calc-base-price-1' : 'calc-base-price-2').value;
+            let val = source === 1 ? document.getElementById('calc-base-price-1').value : document.getElementById('calc-base-price-2').value;
             document.getElementById('calc-base-price-1').value = val;
             document.getElementById('calc-base-price-2').value = val;
             calculateFunds();
         }
 
+        // 자금 관리 계산 핵심 로직
         function calculateFunds() {
             let totalFunds = numParse(document.getElementById('calc-total-funds').value);
-            let investCash = totalFunds * (document.getElementById('calc-age').value === 'under30' ? 0.7 : 0.6);
+            let ageGroup = document.getElementById('calc-age').value;
             let basePrice = numParse(document.getElementById('calc-base-price-1').value);
 
-            // 평시 전략 계산
-            document.getElementById('m1-a20').textContent = numFormat(investCash * (Number(document.getElementById('m1-w20').value)/100));
-            document.getElementById('m1-a30').textContent = numFormat(investCash * (Number(document.getElementById('m1-w30').value)/100));
+            let reservedRatio = (ageGroup === 'under30') ? 0.3 : 0.4;
+            let reservedCash = totalFunds * reservedRatio;
+            let investCash = totalFunds - reservedCash;
 
-            // 위기 전략 계산
-            document.getElementById('m2-a40').textContent = numFormat(investCash * (Number(document.getElementById('m2-w40').value)/100));
-            document.getElementById('m2-a65').textContent = numFormat(investCash * (Number(document.getElementById('m2-w65').value)/100));
+            document.getElementById('reserved-percent').textContent = (reservedRatio * 100) + '%';
+            document.getElementById('invest-percent').textContent = (100 - (reservedRatio * 100)) + '%';
+            document.getElementById('val-reserved-cash').textContent = numFormat(reservedCash);
+            document.getElementById('val-invest-cash').textContent = numFormat(investCash);
+
+            // 무지성 전략 계산
+            document.getElementById('m1-p20').textContent = numFormat(basePrice * 0.8);
+            document.getElementById('m1-p30').textContent = numFormat(basePrice * 0.7);
+            document.getElementById('m1-p40').textContent = numFormat(basePrice * 0.6);
+            document.getElementById('m1-p65').textContent = numFormat(basePrice * 0.35);
+
+            let w1_20 = Number(document.getElementById('m1-w20').value) / 100;
+            let w1_30 = Number(document.getElementById('m1-w30').value) / 100;
+            let w1_40 = Number(document.getElementById('m1-w40').value) / 100;
+            
+            let a1_20 = investCash * w1_20;
+            let a1_30 = investCash * w1_30;
+            let a1_40 = investCash * w1_40;
+            let a1_65 = reservedCash * 0.5;
+
+            document.getElementById('m1-a20').textContent = numFormat(a1_20);
+            document.getElementById('m1-a30').textContent = numFormat(a1_30);
+            document.getElementById('m1-a40').textContent = numFormat(a1_40);
+            document.getElementById('m1-a65').textContent = numFormat(a1_65);
+            document.getElementById('m1-total').textContent = numFormat(a1_20 + a1_30 + a1_40 + a1_65);
+
+            // 위기감지 전략 계산
+            document.getElementById('m2-p30').textContent = numFormat(basePrice * 0.7);
+            document.getElementById('m2-p40').textContent = numFormat(basePrice * 0.6);
+            document.getElementById('m2-p65').textContent = numFormat(basePrice * 0.35);
+
+            let w2_30 = Number(document.getElementById('m2-w30').value) / 100;
+            let w2_40 = Number(document.getElementById('m2-w40').value) / 100;
+            let w2_65 = Number(document.getElementById('m2-w65').value) / 100;
+
+            let a2_30 = investCash * w2_30;
+            let a2_40 = investCash * w2_40;
+            let a2_65 = investCash * w2_65;
+
+            document.getElementById('m2-a30').textContent = numFormat(a2_30);
+            document.getElementById('m2-a40').textContent = numFormat(a2_40);
+            document.getElementById('m2-a65').textContent = numFormat(a2_65);
+            document.getElementById('m2-total').textContent = numFormat(a2_30 + a2_40 + a2_65);
         }
 
-        async function fetchNews(query, containerId) {
-            const container = document.getElementById(containerId);
-            try {
-                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q=' + encodeURIComponent(query) + '&hl=ko&gl=KR&ceid=KR:ko')}`);
-                const data = await res.json();
-                if(data.items) {
-                    container.innerHTML = data.items.slice(0, 6).map(item => `<div class="news-item"><a href="${item.link}" target="_blank" class="news-link">${item.title}</a></div>`).join('');
-                }
-            } catch(e) { container.innerHTML = '불러오기 실패'; }
-        }
-
-        window.onload = () => {
-            calculateFunds();
-            fetchNews('반도체 수출', 'list-semi');
-            fetchNews('채권금리', 'list-bond');
-            fetchNews('기준금리', 'list-base');
-            fetchNews('연준 FOMC', 'list-fed');
-            fetchNews('삼성전자 매출 실적 분석', 'list-samsung');
-            fetchNews('주식 신용잔고 마진콜', 'list-credit');
-        };
+        calculateFunds();
     </script>
 </body>
 </html>
