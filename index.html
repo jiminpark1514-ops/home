@@ -125,23 +125,23 @@
                 <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 border-l-4 border-l-blue-500 lg:col-span-6 flex flex-col justify-between">
                     <div class="flex justify-between items-start mb-2">
                         <div>
-                            <div class="text-slate-400 text-xs mb-0.5">삼성전자 (005930) KOSPI[cite: 3]</div>
-                            <div class="text-2xl font-bold text-white">274,500<span class="text-sm font-normal text-slate-300 ml-1">원</span> <span class="text-base text-red-400 ml-1 font-semibold"><i class="fas fa-caret-up"></i> 6,500 (+2.43%)</span>[cite: 3]</div>
+                            <div class="text-slate-400 text-xs mb-0.5">삼성전자 (005930) KOSPI</div>
+                            <div class="text-2xl font-bold text-white">274,500<span class="text-sm font-normal text-slate-300 ml-1">원</span> <span class="text-base text-red-400 ml-1 font-semibold"><i class="fas fa-caret-up"></i> 6,500 (+2.43%)</span></div>
                         </div>
                         <div class="bg-slate-900 px-2 py-1 rounded border border-slate-700 text-right">
                             <div class="text-[10px] text-slate-400 mb-0.5">네이버 증권 시세</div>
-                            <a href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" class="text-[11px] text-blue-400 hover:text-blue-300 underline">상세보기</a>[cite: 3]
+                            <a href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" class="text-[11px] text-blue-400 hover:text-blue-300 underline">상세보기</a>
                         </div>
                     </div>
                     <div class="grid grid-cols-4 gap-1 bg-slate-900/60 p-2 rounded text-center text-xs mb-2 border border-slate-700/50">
-                        <div><span class="text-slate-500 block text-[10px]">시초가</span><span class="text-slate-200 font-bold">272,500원</span>[cite: 3]</div>
-                        <div><span class="text-slate-500 block text-[10px]">고가</span><span class="text-red-400 font-bold">278,000원</span>[cite: 3]</div>
-                        <div><span class="text-slate-500 block text-[10px]">저가</span><span class="text-blue-400 font-bold">266,000원</span>[cite: 3]</div>
-                        <div><span class="text-slate-500 block text-[10px]">전일가</span><span class="text-white font-bold">268,000원</span>[cite: 3]</div>
+                        <div><span class="text-slate-500 block text-[10px]">시초가</span><span class="text-slate-200 font-bold">272,500원</span></div>
+                        <div><span class="text-slate-500 block text-[10px]">고가</span><span class="text-red-400 font-bold">278,000원</span></div>
+                        <div><span class="text-slate-500 block text-[10px]">저가</span><span class="text-blue-400 font-bold">266,000원</span></div>
+                        <div><span class="text-slate-500 block text-[10px]">전일가</span><span class="text-white font-bold">268,000원</span></div>
                     </div>
                     <div class="flex justify-between items-center text-xs bg-slate-900 px-3 py-1.5 rounded border border-slate-700/50">
-                        <span class="text-slate-400 font-medium"><i class="fas fa-info-circle mr-1 text-blue-400"></i>PER 22.19배 | PBR 3.82배 | 시총 1,604조 8,035억원</span>[cite: 3]
-                        <span class="text-emerald-400 font-bold">네이버 증권 연동 완료[cite: 3]</span>
+                        <span class="text-slate-400 font-medium"><i class="fas fa-info-circle mr-1 text-blue-400"></i>PER 22.19배 | PBR 3.82배 | 시총 1,604조 8,035억원</span>
+                        <span class="text-emerald-400 font-bold">네이버 증권 연동 완료</span>
                     </div>
                 </div>
 
@@ -159,7 +159,7 @@
                         <div class="text-lg font-bold text-white" id="idx-sp500">조회 중...</div>
                     </div>
                     <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
-                        <div class="text-slate-400 text-xs mb-1">나스닥 ETF (QQQ)</div>
+                        <div class="text-lg font-bold text-white" id="idx-nasdaq">나스닥 ETF (QQQ)</div>
                         <div class="text-lg font-bold text-white" id="idx-nasdaq">조회 중...</div>
                     </div>
                     <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
@@ -466,11 +466,14 @@
         }
 
         function fetchRealtimeMarketData() {
-            fetchIndexQuote('NVDA', 'idx-kospi');
-            fetchIndexQuote('MSFT', 'idx-kosdaq');
-            fetchIndexQuote('SPY', 'idx-sp500');
-            fetchIndexQuote('QQQ', 'idx-nasdaq');
-            fetchIndexQuote('TSLA', 'idx-exchange');
+            // Promise.all을 활용해 개별 마켓 지표 조회를 병렬 처리하여 지연 시간 최소화
+            return Promise.all([
+                fetchIndexQuote('NVDA', 'idx-kospi'),
+                fetchIndexQuote('MSFT', 'idx-kosdaq'),
+                fetchIndexQuote('SPY', 'idx-sp500'),
+                fetchIndexQuote('QQQ', 'idx-nasdaq'),
+                fetchIndexQuote('TSLA', 'idx-exchange')
+            ]);
         }
 
         async function fetchNews(query, containerId) {
@@ -594,14 +597,18 @@
         window.onload = () => {
             loadSavedSession();
             calculateFunds();
-            fetchRealtimeMarketData();
 
-            fetchNews('반도체 수출', 'list-semi');
-            fetchNews('채권금리', 'list-bond');
-            fetchNews('기준금리', 'list-base');
-            fetchNews('연준 FOMC', 'list-fed');
-            fetchNews('삼성전자 매출 실적 기업분석', 'list-samsung');
-            fetchNews('주식 신용잔고 마진콜', 'list-credit');
+            // 비동기 호출 최적화: Promise.allSettled를 통해 여러 개의 외부 API 요청을 병렬로 처리하되,
+            // 개별 요청의 지연이나 실패가 서로에게 영향을 주지 않고 가장 빠르게 동시 로딩되도록 개선
+            Promise.allSettled([
+                fetchRealtimeMarketData(),
+                fetchNews('반도체 수출', 'list-semi'),
+                fetchNews('채권금리', 'list-bond'),
+                fetchNews('기준금리', 'list-base'),
+                fetchNews('연준 FOMC', 'list-fed'),
+                fetchNews('삼성전자 매출 실적 기업분석', 'list-samsung'),
+                fetchNews('주식 신용잔고 마진콜', 'list-credit')
+            ]);
         };
     </script>
 </body>
