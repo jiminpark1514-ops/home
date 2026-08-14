@@ -189,16 +189,6 @@
                 </div>
             </div>
 
-            <!-- 상단 2열: 당일 투자자 매매동향 -->
-            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 shrink-0 flex justify-between items-center px-6">
-                <div class="text-slate-300 font-bold"><i class="fas fa-users mr-2"></i>당일 KOSPI 투자자별 매매동향</div>
-                <div class="flex gap-8">
-                    <div>개인 <span class="text-blue-400 font-bold ml-2">- 3,450억</span></div>
-                    <div>외국인 <span class="text-red-400 font-bold ml-2">+ 2,100억</span></div>
-                    <div>기관 <span class="text-red-400 font-bold ml-2">+ 1,250억</span></div>
-                </div>
-            </div>
-
             <!-- 하단 3열: 6개 구글 뉴스 그리드 -->
             <div class="grid grid-cols-3 grid-rows-2 gap-4 h-full min-h-[500px]">
                 <div class="news-card">
@@ -426,7 +416,7 @@
             }
         }
 
-        // 아주 조금 더 넓어진 가로폭과 화면 중앙에 위치하도록 수정된 뉴스 창 열기 함수
+        // 뉴스 창 열기 함수 (폭 740px, 화면 중앙 배치)
         function openNewsWindow(url) {
             const width = 740;
             const height = 850;
