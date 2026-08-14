@@ -3,75 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>달려라 삼전 대시보드</title>
+    <title>달려라 삼전 통합 대시보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .tab-btn.active { background-color: #3b82f6; color: white; font-weight: bold; }
-        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #1e293b; } ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-        
-        .news-box { background-color: #1e293b; border-radius: 0.5rem; border: 1px solid #334155; display: flex; flex-direction: column; height: 300px; }
-        .news-header { padding: 0.75rem; border-bottom: 1px solid #334155; font-weight: bold; color: #60a5fa; font-size: 0.85rem; display: flex; justify-content: space-between; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-btn.active { background-color: #2563eb !important; border-bottom: 2px solid #60a5fa; }
+        .news-box { background-color: #1e293b; border-radius: 0.5rem; border: 1px solid #334155; height: 300px; display: flex; flex-direction: column; }
+        .news-header { padding: 0.75rem; border-bottom: 1px solid #334155; font-weight: bold; color: #60a5fa; font-size: 0.85rem; }
         .news-content { padding: 0.75rem; overflow-y: auto; flex-grow: 1; }
         .news-item { margin-bottom: 0.5rem; border-bottom: 1px solid #334155; padding-bottom: 0.3rem; }
-        .news-link { color: #cbd5e1; font-size: 0.8rem; display: block; }
+        .news-link { color: #cbd5e1; font-size: 0.8rem; text-decoration: none; }
         .news-link:hover { color: #3b82f6; }
-        .calc-table th { background-color: #0f172a; padding: 0.5rem; text-align: center; }
-        .calc-table td { padding: 0.5rem; text-align: right; border: 1px solid #334155; }
     </style>
 </head>
-<body class="h-screen flex flex-col">
+<body class="p-4">
 
-    <header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center shrink-0">
-        <h1 class="text-xl font-bold text-white"><i class="fas fa-chart-line text-blue-500 mr-2"></i>달려라 삼전 STUDIO</h1>
-        <div class="flex gap-2">
-            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active px-4 py-2 rounded bg-slate-700">대시보드</button>
-            <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-4 py-2 rounded bg-slate-700">자금관리</button>
+    <!-- 탭 네비게이션 -->
+    <div class="flex gap-4 mb-6 border-b border-slate-700 pb-2">
+        <button onclick="showTab('dashboard')" id="btn-dashboard" class="tab-btn active px-6 py-2 rounded-t-lg bg-slate-800 text-white font-bold">대시보드</button>
+        <button onclick="showTab('calculator')" id="btn-calculator" class="tab-btn px-6 py-2 rounded-t-lg bg-slate-800 text-white font-bold">자금관리</button>
+    </div>
+
+    <!-- 대시보드 탭 -->
+    <section id="dashboard" class="tab-content active">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <section class="news-box"><div class="news-header">반도체 및 수출</div><div class="news-content" id="list-semi">로딩...</div></section>
+            <section class="news-box"><div class="news-header">채권금리</div><div class="news-content" id="list-bond">로딩...</div></section>
+            <section class="news-box"><div class="news-header">기준금리</div><div class="news-content" id="list-base">로딩...</div></section>
+            <section class="news-box"><div class="news-header">연준(Fed) 관련</div><div class="news-content" id="list-fed">로딩...</div></section>
+            <section class="news-box"><div class="news-header">삼성 매출/실적/분석</div><div class="news-content" id="list-samsung">로딩...</div></section>
+            <section class="news-box"><div class="news-header">신용/대출/마진잔고</div><div class="news-content" id="list-credit">로딩...</div></section>
         </div>
-        <div id="clock" class="text-slate-400 font-mono text-sm">00:00:00</div>
-    </header>
+    </section>
 
-    <main class="flex-1 overflow-auto p-4">
-        <!-- 대시보드 탭 -->
-        <section id="content-dashboard" class="flex flex-col gap-4">
-            <div class="grid grid-cols-6 gap-2">
-                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">삼성전자</div><div class="font-bold">연동대기</div></div>
-                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">KOSPI</div><div class="font-bold">2,750.24</div></div>
-                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">KOSDAQ</div><div class="font-bold">880.15</div></div>
-                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">S&P500</div><div class="font-bold">5,200.50</div></div>
-                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">NASDAQ</div><div class="font-bold">16,400.20</div></div>
-                <div class="bg-slate-800 p-3 rounded border border-slate-700 text-center"><div class="text-xs text-slate-400">나스닥선물</div><div class="font-bold">16,450.00</div></div>
+    <!-- 자금관리 탭 -->
+    <section id="calculator" class="tab-content">
+        <div class="bg-slate-800 p-8 rounded-lg border border-slate-700 max-w-2xl mx-auto">
+            <h2 class="text-xl font-bold mb-6 text-blue-400">자금 관리 계산기</h2>
+            <div class="mb-4">
+                <label class="block text-slate-400 mb-2">총 가용 자금 (원)</label>
+                <input type="number" id="total-funds" value="60000000" class="w-full bg-slate-900 border border-slate-600 p-3 rounded text-white" oninput="calculate()">
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <section class="news-box"><div class="news-header">반도체 및 수출</div><div class="news-content" id="list-semi">로딩...</div></section>
-                <section class="news-box"><div class="news-header">채권금리</div><div class="news-content" id="list-bond">로딩...</div></section>
-                <section class="news-box"><div class="news-header">기준금리</div><div class="news-content" id="list-base">로딩...</div></section>
-                <section class="news-box"><div class="news-header">연준(Fed) 관련</div><div class="news-content" id="list-fed">로딩...</div></section>
-                <section class="news-box"><div class="news-header">삼성 매출/실적/분석</div><div class="news-content" id="list-samsung">로딩...</div></section>
-                <section class="news-box"><div class="news-header">신용/대출/마진잔고</div><div class="news-content" id="list-credit">로딩...</div></section>
-            </div>
-        </section>
-
-        <!-- 계산기 탭 -->
-        <section id="content-calculator" class="hidden flex flex-col gap-4">
-            <div class="bg-slate-800 p-6 rounded border border-slate-700">
-                <label class="text-slate-400 text-sm">가용자금 (원)</label>
-                <input type="text" id="calc-total-funds" value="60,000,000" class="bg-slate-900 p-2 rounded w-full text-lg mb-4" oninput="calculateFunds()">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-900 p-4 rounded border">보유현금: <span id="val-reserved-cash">24,000,000</span></div>
-                    <div class="bg-blue-900 p-4 rounded border">투자금: <span id="val-invest-cash">36,000,000</span></div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-900 p-4 rounded border border-slate-700">
+                    <p class="text-slate-400">보유 현금 (40%)</p>
+                    <p id="calc-cash" class="text-2xl font-bold text-white">0</p>
+                </div>
+                <div class="bg-blue-900/30 p-4 rounded border border-blue-800">
+                    <p class="text-blue-400">투자 가능 금액 (60%)</p>
+                    <p id="calc-invest" class="text-2xl font-bold text-white">0</p>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
     <script>
-        function switchTab(tabName) {
-            document.getElementById('content-dashboard').classList.toggle('hidden', tabName !== 'dashboard');
-            document.getElementById('content-calculator').classList.toggle('hidden', tabName !== 'calculator');
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        function calculate() {
+            const total = document.getElementById('total-funds').value;
+            document.getElementById('calc-cash').textContent = (total * 0.4).toLocaleString() + ' 원';
+            document.getElementById('calc-invest').textContent = (total * 0.6).toLocaleString() + ' 원';
         }
 
         async function fetchNews(query, containerId) {
@@ -82,10 +83,11 @@
                 if(data.items) {
                     container.innerHTML = data.items.slice(0, 6).map(item => `<div class="news-item"><a href="${item.link}" target="_blank" class="news-link">${item.title}</a></div>`).join('');
                 }
-            } catch(e) { container.innerHTML = '불러오기 실패'; }
+            } catch(e) { container.innerHTML = '로딩 실패'; }
         }
 
         window.onload = () => {
+            calculate();
             fetchNews('반도체 수출', 'list-semi');
             fetchNews('채권금리', 'list-bond');
             fetchNews('기준금리', 'list-base');
@@ -93,9 +95,6 @@
             fetchNews('삼성전자 매출 실적 분석', 'list-samsung');
             fetchNews('주식 신용잔고 마진콜', 'list-credit');
         };
-
-        function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString(); }
-        setInterval(updateClock, 1000);
     </script>
 </body>
 </html>
