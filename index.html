@@ -125,23 +125,25 @@
                 <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 border-l-4 border-l-blue-500 lg:col-span-6 flex flex-col justify-between">
                     <div class="flex justify-between items-start mb-2">
                         <div>
-                            <div class="text-slate-400 text-xs mb-0.5">삼성전자 (005930) KOSPI[cite: 3]</div>
-                            <div class="text-2xl font-bold text-white">274,500<span class="text-sm font-normal text-slate-300 ml-1">원</span> <span class="text-base text-red-400 ml-1 font-semibold"><i class="fas fa-caret-up"></i> 6,500 (+2.43%)</span>[cite: 3]</div>
+                            <div class="text-slate-400 text-xs mb-0.5">애플 (AAPL - Finnhub 실시간 연동)</div>
+                            <div class="text-2xl font-bold text-white" id="samsung-price">실시간 조회 중... <span id="samsung-change" class="text-base ml-1"></span></div>
                         </div>
                         <div class="bg-slate-900 px-2 py-1 rounded border border-slate-700 text-right">
-                            <div class="text-[10px] text-slate-400 mb-0.5">네이버 증권 시세</div>
-                            <a href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" class="text-[11px] text-blue-400 hover:text-blue-300 underline">상세보기</a>[cite: 3]
+                            <div class="text-[10px] text-slate-400 mb-0.5">실시간 시세 동향</div>
+                            <button onclick="fetchRealtimeMarketData()" class="text-[11px] text-blue-400 hover:text-blue-300 underline bg-transparent border-0 cursor-pointer">새로고침</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-4 gap-1 bg-slate-900/60 p-2 rounded text-center text-xs mb-2 border border-slate-700/50">
-                        <div><span class="text-slate-500 block text-[10px]">시초가</span><span class="text-slate-200 font-bold">272,500원</span>[cite: 3]</div>
-                        <div><span class="text-slate-500 block text-[10px]">고가</span><span class="text-red-400 font-bold">278,000원</span>[cite: 3]</div>
-                        <div><span class="text-slate-500 block text-[10px]">저가</span><span class="text-blue-400 font-bold">266,000원</span>[cite: 3]</div>
-                        <div><span class="text-slate-500 block text-[10px]">전일가</span><span class="text-white font-bold">268,000원</span>[cite: 3]</div>
+                        <div><span class="text-slate-500 block text-[10px]">시초가</span><span class="text-slate-200 font-bold" id="s-open">-</span></div>
+                        <div><span class="text-slate-500 block text-[10px]">고가</span><span class="text-red-400 font-bold" id="s-high">-</span></div>
+                        <div><span class="text-slate-500 block text-[10px]">저가</span><span class="text-blue-400 font-bold" id="s-low">-</span></div>
+                        <div><span class="text-slate-500 block text-[10px]">종가(현재)</span><span class="text-white font-bold" id="s-close">-</span></div>
                     </div>
                     <div class="flex justify-between items-center text-xs bg-slate-900 px-3 py-1.5 rounded border border-slate-700/50">
-                        <span class="text-slate-400 font-medium"><i class="fas fa-info-circle mr-1 text-blue-400"></i>PER 22.19배 | PBR 3.82배 | 시총 1,604조 8,035억원</span>[cite: 3]
-                        <span class="text-emerald-400 font-bold">네이버 증권 연동 완료[cite: 3]</span>
+                        <span class="text-slate-400 font-medium"><i class="fas fa-chart-bar mr-1 text-blue-400"></i>시장 수급 지표</span>
+                        <div class="flex gap-4">
+                            <span>연결 상태 <span class="text-emerald-400 font-bold">Finnhub API 실시간 연결</span></span>
+                        </div>
                     </div>
                 </div>
 
@@ -442,6 +444,33 @@
             window.open(url, 'newsWindow', `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`);
         }
 
+        async function fetchFinnhubQuote(symbol, priceElemId, openId, highId, lowId, closeId) {
+            try {
+                const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    const price = data.c;
+                    const change = data.d;
+                    const percent = data.dp;
+                    
+                    let signSymbol = change > 0 ? '▲' : (change < 0 ? '▼' : '');
+                    let colorClass = change > 0 ? 'text-red-400' : (change < 0 ? 'text-blue-400' : 'text-slate-200');
+
+                    if (document.getElementById(priceElemId)) {
+                        document.getElementById(priceElemId).innerHTML = `$${price.toLocaleString()} <span class="${colorClass} text-base ml-1">${signSymbol} ${percent.toFixed(2)}%</span>`;
+                    }
+                    if (openId && document.getElementById(openId)) document.getElementById(openId).textContent = `$${data.o.toLocaleString()}`;
+                    if (highId && document.getElementById(highId)) document.getElementById(highId).textContent = `$${data.h.toLocaleString()}`;
+                    if (lowId && document.getElementById(lowId)) document.getElementById(lowId).textContent = `$${data.l.toLocaleString()}`;
+                    if (closeId && document.getElementById(closeId)) document.getElementById(closeId).textContent = `$${data.c.toLocaleString()}`;
+                }
+            } catch (err) {
+                if (document.getElementById(priceElemId)) {
+                    document.getElementById(priceElemId).innerHTML = '<span class="text-red-400 text-sm">시세 조회 실패</span>';
+                }
+            }
+        }
+
         async function fetchIndexQuote(symbol, elemId) {
             try {
                 const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`);
@@ -466,6 +495,7 @@
         }
 
         function fetchRealtimeMarketData() {
+            fetchFinnhubQuote('AAPL', 'samsung-price', 's-open', 's-high', 's-low', 's-close');
             fetchIndexQuote('NVDA', 'idx-kospi');
             fetchIndexQuote('MSFT', 'idx-kosdaq');
             fetchIndexQuote('SPY', 'idx-sp500');
