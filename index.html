@@ -327,7 +327,6 @@
     <script>
         let currentChartInstance = null;
         
-        // 사용자가 작성한 구글 앱스 스크립트 웹 앱 배포 URL 지정 위치
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID/exec";
 
         function updateClock() {
@@ -364,7 +363,6 @@
             }
         }
 
-        // 구글 앱스 스크립트 엔드포인트에서 실제 뉴스를 비동기로 가져오는 함수
         async function fetchAppsScriptNews() {
             const listEl = document.getElementById('apps-script-news-list');
             listEl.innerHTML = '<li class="text-slate-400 italic">앱스 스크립트 데이터 동기화 중...</li>';
@@ -394,7 +392,6 @@
             }
         }
 
-        // 페이지 로드 시 앱스 스크립트 뉴스 자동 호출
         fetchAppsScriptNews();
 
         async function openMarketDetail(name, symbol, price, change) {
@@ -484,7 +481,7 @@
             return Math.round(num).toLocaleString('ko-KR');
         }
         function numParse(str) {
-            return Number(str.replace(/,/g, '')) || 0;
+            return Number(String(str).replace(/,/g, '')) || 0;
         }
 
         document.getElementById('calc-total-funds').addEventListener('input', function(e) {
