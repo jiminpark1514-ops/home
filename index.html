@@ -73,9 +73,11 @@
             transition: color 0.2s;
             display: block;
             line-height: 1.3;
+            text-decoration: none;
         }
         .news-link:hover {
             color: #3b82f6;
+            text-decoration: underline;
         }
         .news-date {
             font-size: 0.7rem;
@@ -116,9 +118,6 @@
             </button>
             <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-6 py-2 rounded-md transition-colors text-slate-300 bg-slate-700 hover:bg-slate-600">
                 <i class="fas fa-calculator mr-2"></i>자금 관리 계산기
-            </button>
-            <button onclick="switchTab('api')" id="tab-api" class="tab-btn px-6 py-2 rounded-md transition-colors text-slate-300 bg-slate-700 hover:bg-slate-600">
-                <i class="fas fa-key mr-2"></i>토스증권 API 연동
             </button>
         </div>
         
@@ -361,69 +360,6 @@
             </div>
         </section>
 
-        <!-- ========================================== -->
-        <!-- 탭 3: 토스증권 API 연동 설정 및 토큰 발급 -->
-        <!-- ========================================== -->
-        <section id="content-api" class="h-full hidden flex flex-col gap-6 max-w-5xl mx-auto w-full pt-4">
-            <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 shadow-lg">
-                <h2 class="text-xl font-bold text-blue-400 mb-2"><i class="fas fa-shield-alt mr-2"></i>토스증권 OAuth2 액세스 토큰 발급 관리</h2>
-                <p class="text-slate-400 text-sm mb-6">Client Credentials Grant 방식을 통해 액세스 토큰을 발급받아 모든 API 호출 시 인증 헤더(`Authorization: Bearer {access_token}`)에 사용합니다.</p>
-                
-                <div class="grid grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <label class="block text-slate-300 text-sm mb-2 font-bold">Client ID</label>
-                        <input type="text" id="api-client-id" value="tsck_live_TV400S0bCtZmHWP4kEdvOC" class="w-full p-3 rounded text-left font-mono text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-slate-300 text-sm mb-2 font-bold">Client Secret (Password)</label>
-                        <input type="password" id="api-client-secret" placeholder="s_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" class="w-full p-3 rounded text-left font-mono text-sm bg-slate-900 border border-slate-700 text-blue-400">
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-4 mb-6">
-                    <button onclick="requestToken()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded transition-colors flex items-center gap-2">
-                        <i class="fas fa-paper-plane"></i> 토큰 발급 요청 (POST /oauth2/token)
-                    </button>
-                    <span class="text-slate-400 text-xs">Rate Limits Group: <strong>AUTH</strong> (유효기간: 24시간 / 재발급 시 기존 토큰 즉시 무효화)</span>
-                </div>
-
-                <!-- 결과 및 응답 뷰어 -->
-                <div class="bg-slate-900 p-4 rounded border border-slate-700">
-                    <div class="text-slate-400 text-xs font-bold mb-2 uppercase tracking-wider flex justify-between">
-                        <span>API Response Console</span>
-                        <span id="api-status-badge" class="text-slate-500">대기 중</span>
-                    </div>
-                    <pre id="api-response-output" class="text-emerald-400 font-mono text-xs overflow-x-auto p-2 bg-slate-950 rounded min-h-[100px]">{
-  "status": "Ready",
-  "message": "Client ID와 Secret을 입력 후 토큰 발급 요청 버튼을 누르세요."
-}</pre>
-                </div>
-            </div>
-
-            <!-- API 가이드 요약 카드 -->
-            <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
-                <h3 class="text-lg font-bold text-slate-200 mb-3"><i class="fas fa-info-circle mr-2"></i>상태 코드별 에러 안내 가이드</h3>
-                <div class="grid grid-cols-4 gap-4 text-center text-sm">
-                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                        <div class="text-yellow-400 font-bold mb-1">400 Bad Request</div>
-                        <div class="text-slate-400 text-xs">필수 파라미터 누락, grant_type 오류 등</div>
-                    </div>
-                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                        <div class="text-orange-400 font-bold mb-1">401 Unauthorized</div>
-                        <div class="text-slate-400 text-xs">Client ID / Secret 오류 또는 비활성 상태</div>
-                    </div>
-                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                        <div class="text-red-400 font-bold mb-1">403 Forbidden</div>
-                        <div class="text-slate-400 text-xs">허용되지 않은 IP (WTS 설정 > 허용 IP 관리 등록 필요)</div>
-                    </div>
-                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                        <div class="text-purple-400 font-bold mb-1">402/429 Limit</div>
-                        <div class="text-slate-400 text-xs">요청 한도 초과 (Rate Limit 초과)</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <script>
@@ -441,9 +377,9 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 통합 탭 전환 기능 (Dashboard, Calculator, API)
+        // 탭 전환 기능 (Dashboard, Calculator)
         function switchTab(tabName) {
-            ['dashboard', 'calculator', 'api'].forEach(name => {
+            ['dashboard', 'calculator'].forEach(name => {
                 const btn = document.getElementById('tab-' + name);
                 const content = document.getElementById('content-' + name);
                 if(btn) btn.classList.remove('active', 'bg-blue-600');
@@ -463,7 +399,7 @@
             }
         }
 
-        // 구글 뉴스 RSS 연동 함수
+        // 구글 뉴스 RSS 연동 함수 (원문 링크 보장)
         async function fetchNews(query, containerId) {
             const container = document.getElementById(containerId);
             try {
@@ -474,7 +410,7 @@
                 if(data.items && data.items.length > 0) {
                     container.innerHTML = data.items.slice(0, 8).map(item => `
                         <div class="news-item">
-                            <a href="${item.link}" target="_blank" class="news-link">${item.title}</a>
+                            <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="news-link">${item.title}</a>
                             <div class="news-date">${new Date(item.pubDate).toLocaleDateString()}</div>
                         </div>
                     `).join('');
@@ -483,64 +419,6 @@
                 }
             } catch (err) {
                 container.innerHTML = '<p class="text-red-500 text-xs">불러오기 실패</p>';
-            }
-        }
-
-        // 토스증권 API 토큰 발급 핸들러
-        async function requestToken() {
-            const clientId = document.getElementById('api-client-id').value.trim();
-            const clientSecret = document.getElementById('api-client-secret').value.trim();
-            const outputEl = document.getElementById('api-response-output');
-            const badgeEl = document.getElementById('api-status-badge');
-
-            if (!clientId || !clientSecret) {
-                badgeEl.textContent = "입력 오류";
-                badgeEl.className = "text-yellow-400 font-bold";
-                outputEl.textContent = JSON.stringify({
-                    error: "invalid_request",
-                    message: "client_id와 client_secret을 모두 입력해 주세요."
-                }, null, 2);
-                return;
-            }
-
-            badgeEl.textContent = "요청 중...";
-            badgeEl.className = "text-blue-400 font-bold";
-
-            try {
-                const response = await fetch('https://openapi.tossinvest.com/oauth2/token', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        'grant_type': 'client_credentials',
-                        'client_id': clientId,
-                        'client_secret': clientSecret
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (response.ok) {
-                    badgeEl.textContent = "성공 (200 OK)";
-                    badgeEl.className = "text-emerald-400 font-bold";
-                    outputEl.textContent = JSON.stringify(data, null, 2);
-                } else {
-                    badgeEl.textContent = `오류 (${response.status})`;
-                    badgeEl.className = "text-red-400 font-bold";
-                    outputEl.textContent = JSON.stringify(data, null, 2);
-                }
-            } catch (error) {
-                badgeEl.textContent = "CORS 정책 차단 (서버 연동 필요)";
-                badgeEl.className = "text-yellow-400 font-bold";
-                
-                const mockSuccessResponse = {
-                    "access_token": "eyJraWQiOiIyMDI2LTA0LTAxLWtleSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjXzAxSFhZWiJ9...",
-                    "token_type": "Bearer",
-                    "expires_in": 86400,
-                    "_note": "브라우저 보안(CORS)으로 인해 직접 호출이 차단되었습니다. 실제 서버 측 환경에서 curl 또는 백엔드 API 호출 시 정상 작동합니다."
-                };
-                outputEl.textContent = JSON.stringify(mockSuccessResponse, null, 2);
             }
         }
 
