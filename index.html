@@ -125,7 +125,7 @@
     <main class="flex-1 overflow-auto p-4">
         
         <!-- ========================================== -->
-        <!-- 탭 1: 방송 대시보드 (시장 지표 & 구글 뉴스) -->
+        <!-- 탭 1: 대시보드 (시장 지표 & 구글 뉴스) -->
         <!-- ========================================== -->
         <section id="content-dashboard" class="h-full flex flex-col gap-4">
             
@@ -425,7 +425,7 @@
             window.open(url, 'newsWindow', `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`);
         }
 
-        // 구글 뉴스 RSS 연동 함수 (제목 앞에 [월/일] 표시 및 하단 날짜 제거)
+        // 구글 뉴스 RSS 연동 함수 (최신순 정렬 적용)
         async function fetchNews(query, containerId) {
             const container = document.getElementById(containerId);
             try {
@@ -434,7 +434,10 @@
                 const data = await response.json();
                 
                 if(data.items && data.items.length > 0) {
-                    container.innerHTML = data.items.slice(0, 8).map(item => {
+                    // 발행일 기준 내림차순(최신순) 정렬
+                    const sortedItems = data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                    
+                    container.innerHTML = sortedItems.slice(0, 8).map(item => {
                         const pubDate = new Date(item.pubDate);
                         const dateStr = `[${pubDate.getMonth() + 1}/${pubDate.getDate()}] `;
                         return `
@@ -496,7 +499,7 @@
             document.getElementById('val-reserved-cash').textContent = numFormat(reservedCash);
             document.getElementById('val-invest-cash').textContent = numFormat(investCash);
 
-            // 무지성 전략 계산
+            // 일반 전략 계산
             document.getElementById('m1-p20').textContent = numFormat(basePrice * 0.8);
             document.getElementById('m1-p30').textContent = numFormat(basePrice * 0.7);
             document.getElementById('m1-p40').textContent = numFormat(basePrice * 0.6);
