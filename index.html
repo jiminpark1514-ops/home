@@ -5,124 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>달려라 삼전 대시보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .tab-btn.active { background-color: #3b82f6; color: white; font-weight: bold; }
-        .news-tab.active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
         ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #1e293b; } ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-        .news-card { background-color: #1e293b; border-radius: 0.5rem; padding: 1rem; border: 1px solid #334155; }
-        .news-list li { margin-bottom: 0.75rem; font-size: 0.9rem; line-height: 1.4; color: #cbd5e1; }
-        .clickable-card { cursor: pointer; transition: transform 0.1s, border-color 0.2s; }
-        .clickable-card:hover { border-color: #3b82f6; transform: translateY(-2px); }
+        
+        /* 뉴스 박스 스타일 */
+        .news-box { background-color: #1e293b; border-radius: 0.5rem; border: 1px solid #334155; display: flex; flex-direction: column; height: 400px; }
+        .news-header { padding: 1rem; border-bottom: 1px solid #334155; font-weight: bold; color: #60a5fa; display: flex; justify-content: space-between; align-items: center; }
+        .news-content { padding: 1rem; overflow-y: auto; flex-grow: 1; }
+        .news-item { margin-bottom: 0.75rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
+        .news-link { color: #cbd5e1; font-size: 0.9rem; transition: color 0.2s; display: block; }
+        .news-link:hover { color: #3b82f6; }
+        .news-date { font-size: 0.75rem; color: #64748b; font-family: monospace; }
     </style>
 </head>
-<body class="h-screen flex flex-col">
+<body class="h-screen flex flex-col p-4">
 
-    <header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center shrink-0">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-600 text-white p-2 rounded-lg"><i class="fas fa-chart-line text-xl"></i></div>
-            <h1 class="text-2xl font-bold text-white tracking-wider">달려라 삼전 <span class="text-blue-400 text-lg">STUDIO</span></h1>
-        </div>
-        <div class="flex gap-2">
-            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active px-6 py-2 rounded-md transition-colors text-slate-300 bg-slate-700">방송 대시보드</button>
-            <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-6 py-2 rounded-md transition-colors text-slate-300 bg-slate-700">자금 관리 계산기</button>
-        </div>
-        <div class="text-sm text-slate-400 font-mono" id="clock">0000.00.00 00:00:00</div>
+    <!-- 헤더 -->
+    <header class="mb-4 flex justify-between items-center bg-slate-800 p-4 rounded-lg border border-slate-700">
+        <h1 class="text-xl font-bold text-white"><i class="fas fa-chart-line text-blue-500 mr-2"></i>달려라 삼전 NEWS DASHBOARD</h1>
+        <div id="clock" class="text-slate-400 font-mono">0000.00.00 00:00:00</div>
     </header>
 
-    <main class="flex-1 overflow-auto p-4">
-        <section id="content-dashboard" class="h-full flex flex-col gap-4">
-            <!-- 시세 그리드 -->
-            <div class="grid grid-cols-6 gap-4 shrink-0">
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 border-l-4 border-l-blue-500">
-                    <div class="text-slate-400 text-sm">삼성전자</div>
-                    <div class="text-xl font-bold text-white">연동 대기</div>
-                </div>
-                <!-- ... (나머지 시세 박스 생략) ... -->
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <div class="text-slate-400 text-sm">KOSPI</div>
-                    <div class="text-2xl font-bold text-white">2,750.24</div>
-                </div>
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <div class="text-slate-400 text-sm">KOSDAQ</div>
-                    <div class="text-2xl font-bold text-white">880.15</div>
-                </div>
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <div class="text-slate-400 text-sm">S&P 500</div>
-                    <div class="text-2xl font-bold text-white">5,200.50</div>
-                </div>
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <div class="text-slate-400 text-sm">NASDAQ</div>
-                    <div class="text-2xl font-bold text-white">16,400.20</div>
-                </div>
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <div class="text-slate-400 text-sm">NASDAQ 선물</div>
-                    <div class="text-2xl font-bold text-white">16,450.00</div>
-                </div>
-            </div>
-
-            <!-- 뉴스 섹션 -->
-            <div class="news-card flex-1 flex flex-col">
-                <div class="flex items-center gap-4 border-b border-slate-700 pb-2 mb-3">
-                    <h3 class="font-bold text-blue-400"><i class="fas fa-newspaper mr-2"></i>카테고리별 뉴스</h3>
-                    <div class="flex gap-4 text-sm font-medium text-slate-400" id="news-tabs">
-                        <span onclick="loadNews('반도체 수출', this)" class="news-tab active cursor-pointer">반도체/수출</span>
-                        <span onclick="loadNews('기준금리 채권금리 연준', this)" class="news-tab cursor-pointer">금리/채권/연준</span>
-                        <span onclick="loadNews('삼성전자 실적 분석', this)" class="news-tab cursor-pointer">삼성분석</span>
-                        <span onclick="loadNews('주식 신용잔고 마진콜', this)" class="news-tab cursor-pointer">신용/대출/마진</span>
-                    </div>
-                </div>
-                <ul id="news-list" class="news-list overflow-y-auto flex-1">
-                    <li class="text-slate-400 italic">뉴스를 불러오는 중...</li>
-                </ul>
-            </div>
-        </section>
+    <!-- 뉴스 그리드 (4분할) -->
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 flex-grow">
         
-        <!-- 계산기 섹션(기존 코드 유지) -->
-        <section id="content-calculator" class="hidden">...</section>
+        <!-- 1. 반도체/수출 -->
+        <section class="news-box" id="box-semiconductor">
+            <div class="news-header"><span>반도체 및 수출입</span><i class="fas fa-microchip"></i></div>
+            <div class="news-content" id="list-semiconductor">로딩 중...</div>
+        </section>
+
+        <!-- 2. 기준금리/채권/연준 -->
+        <section class="news-box" id="box-fed">
+            <div class="news-header"><span>기준금리/채권/연준(Fed)</span><i class="fas fa-university"></i></div>
+            <div class="news-content" id="list-fed">로딩 중...</div>
+        </section>
+
+        <!-- 3. 삼성분석 -->
+        <section class="news-box" id="box-samsung">
+            <div class="news-header"><span>삼성전자 매출/실적/분석</span><i class="fas fa-building"></i></div>
+            <div class="news-content" id="list-samsung">로딩 중...</div>
+        </section>
+
+        <!-- 4. 신용/대출/마진 -->
+        <section class="news-box" id="box-credit">
+            <div class="news-header"><span>신용/대출/마진잔고(시장리스크)</span><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="news-content" id="list-credit">로딩 중...</div>
+        </section>
+
     </main>
 
     <script>
-        // 뉴스 로드 함수
-        async function loadNews(query, el) {
-            // 탭 스타일 변경
-            document.querySelectorAll('.news-tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-
-            const listEl = document.getElementById('news-list');
-            listEl.innerHTML = '<li class="text-slate-400 italic">뉴스 로딩 중...</li>';
-            
+        // 뉴스 데이터를 가져오는 공통 함수
+        async function fetchNews(query, containerId) {
+            const container = document.getElementById(containerId);
             try {
                 const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
                 const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
                 const data = await response.json();
                 
-                if(data.items) {
-                    listEl.innerHTML = '';
-                    data.items.forEach(item => {
-                        listEl.innerHTML += `
-                            <li class="pb-2 border-b border-slate-700/60 flex flex-col">
-                                <a href="${item.link}" target="_blank" class="text-blue-400 hover:text-blue-300 font-medium">
-                                    <i class="fas fa-external-link-alt text-xs mr-1"></i> ${item.title}
-                                </a>
-                                <span class="text-xs text-slate-500 font-mono">${new Date(item.pubDate).toLocaleString()}</span>
-                            </li>`;
-                    });
+                if(data.items && data.items.length > 0) {
+                    container.innerHTML = data.items.slice(0, 8).map(item => `
+                        <div class="news-item">
+                            <a href="${item.link}" target="_blank" class="news-link">${item.title}</a>
+                            <div class="news-date">${new Date(item.pubDate).toLocaleDateString()}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p class="text-slate-500">관련 뉴스 없음</p>';
                 }
             } catch (err) {
-                listEl.innerHTML = '<li class="text-red-400">데이터를 불러올 수 없습니다.</li>';
+                container.innerHTML = '<p class="text-red-500">불러오기 실패</p>';
             }
         }
 
-        // 초기 로드
-        loadNews('반도체 수출', document.querySelector('.news-tab'));
+        // 각 영역별 자동 실행
+        window.onload = () => {
+            fetchNews('반도체 수출', 'list-semiconductor');
+            fetchNews('기준금리 채권금리 연준', 'list-fed');
+            fetchNews('삼성전자 매출 실적 기업분석', 'list-samsung');
+            fetchNews('주식 신용잔고 대출 마진잔고', 'list-credit');
+        };
 
-        // 기타 기존 함수들 (switchTab 등 생략)
-        function updateClock() { /* ... */ }
+        // 시계
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleString();
+        }
         setInterval(updateClock, 1000);
+        updateClock();
     </script>
 </body>
 </html>
