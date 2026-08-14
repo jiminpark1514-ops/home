@@ -400,9 +400,13 @@
             }
         }
 
-        // 세로가 긴 직사각형 새 창으로 뉴스 오픈
+        // 넓어진 가로폭과 화면 중앙에 위치하도록 수정된 뉴스 창 열기 함수
         function openNewsWindow(url) {
-            window.open(url, '_blank', 'width=480,height=850,scrollbars=yes,resizable=yes');
+            const width = 680;
+            const height = 850;
+            const left = (window.screen.width - width) / 2;
+            const top = (window.screen.height - height) / 2;
+            window.open(url, 'newsWindow', `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`);
         }
 
         // 구글 뉴스 RSS 연동 함수
