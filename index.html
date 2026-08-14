@@ -144,6 +144,7 @@
 
     <main class="flex-1 overflow-auto p-4">
         
+        <!-- 대시보드 탭 -->
         <section id="content-dashboard" class="h-full flex flex-col gap-4">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
                 <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 border-l-4 border-l-blue-500 lg:col-span-6 flex flex-col justify-between">
@@ -239,6 +240,7 @@
             </div>
         </section>
 
+        <!-- 자금 관리 계산기 탭 -->
         <section id="content-calculator" class="h-full hidden flex flex-col gap-6 max-w-6xl mx-auto w-full pt-4">
             <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 flex flex-wrap gap-8 justify-between items-center shadow-lg">
                 <div class="flex gap-6 items-center">
@@ -381,12 +383,36 @@
             </div>
         </section>
 
+        <!-- 토스증권 API 연동 탭 -->
         <section id="content-api" class="h-full hidden flex flex-col gap-4 max-w-7xl mx-auto w-full pt-2">
             
-            <!-- 상단 인증 및 기본 토큰 설정 바 -->
+            <!-- 토큰 발급 (OAuth 인증) 패널 추가 -->
+            <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 shadow flex flex-col gap-3">
+                <div class="text-sm font-bold text-yellow-400 flex justify-between items-center">
+                    <span><i class="fas fa-key mr-1"></i> 토스증권 Open API 토큰 발급 (OAuth 2.0)[cite: 3]</span>
+                    <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">POST /oauth2/token[cite: 3]</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                    <div class="md:col-span-4">
+                        <label class="block text-slate-400 text-[10px] mb-1">Client ID / Key</label>
+                        <input type="text" id="api-client-key" value="c_01HXYZABCDEFG123456789" class="w-full p-1.5 rounded text-xs font-mono">
+                    </div>
+                    <div class="md:col-span-5">
+                        <label class="block text-slate-400 text-[10px] mb-1">Secret Key</label>
+                        <input type="password" id="api-secret-key" value="s_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" class="w-full p-1.5 rounded text-xs font-mono">
+                    </div>
+                    <div class="md:col-span-3">
+                        <button onclick="requestAccessToken()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-1.5 rounded text-xs font-bold transition-colors">
+                            <i class="fas fa-lock-open mr-1"></i> Access Token 발급[cite: 3]
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 발급된 토큰 및 인증 관리 바 -->
             <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 shadow flex flex-wrap gap-4 items-center justify-between">
                 <div class="flex items-center gap-2 flex-1">
-                    <span class="text-xs text-slate-400 font-bold whitespace-nowrap"><i class="fas fa-key mr-1 text-yellow-400"></i> Access Token</span>
+                    <span class="text-xs text-slate-400 font-bold whitespace-nowrap"><i class="fas fa-shield-alt mr-1 text-blue-400"></i> Current Access Token</span>
                     <input type="text" id="api-access-token" value="eyJhbGciOiJSUzI1NiIsImtpZCI6InRzY2tfbGl2ZV90ZXN0In0.mock_token_1786689970223" class="w-full p-1.5 rounded text-xs font-mono text-emerald-300">
                 </div>
                 <button onclick="saveSession()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded text-xs font-bold transition-colors">
@@ -400,33 +426,33 @@
                 <!-- 좌측 트리 메뉴 -->
                 <div class="md:col-span-4 bg-slate-800 p-4 rounded-lg border border-slate-700 flex flex-col gap-2 shadow">
                     <div class="text-sm font-bold text-blue-400 pb-2 border-b border-slate-700 flex justify-between items-center">
-                        <span><i class="fas fa-sitemap mr-1"></i> Market Data API (Collapsed)</span>
-                        <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">Rate Limits: MARKET_DATA</span>
+                        <span><i class="fas fa-sitemap mr-1"></i> Market Data API[cite: 3]</span>
+                        <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">Rate Limits: MARKET_DATA[cite: 3]</span>
                     </div>
                     <div class="text-[11px] text-slate-400 mb-2">
-                        종목 실시간성 시세 정보 조회 그룹입니다. 아래 메뉴를 선택하면 해당 API 실행 폼이 활성화됩니다.
+                        종목 실시간성 시세 정보 조회 그룹입니다. 아래 메뉴를 선택하면 해당 API 실행 폼이 활성화됩니다[cite: 3].
                     </div>
                     
                     <div class="space-y-1 flex-1 overflow-y-auto">
                         <div onclick="selectApiTree('orderbook')" id="tree-orderbook" class="tree-item p-2 rounded text-xs text-slate-300 font-medium flex justify-between items-center selected">
-                            <span><i class="fas fa-list-ol mr-2 text-yellow-400"></i>호가 조회 (Orderbook)</span>
-                            <code class="text-[10px]">GET /orderbook</code>
+                            <span><i class="fas fa-list-ol mr-2 text-yellow-400"></i>호가 조회 (Orderbook)[cite: 3]</span>
+                            <code class="text-[10px]">GET /api/v1/orderbook[cite: 3]</code>
                         </div>
                         <div onclick="selectApiTree('prices')" id="tree-prices" class="tree-item p-2 rounded text-xs text-slate-300 font-medium flex justify-between items-center">
-                            <span><i class="fas fa-tag mr-2 text-emerald-400"></i>현재가 조회 (Prices)</span>
-                            <code class="text-[10px]">GET /prices</code>
+                            <span><i class="fas fa-tag mr-2 text-emerald-400"></i>현재가 조회 (Prices)[cite: 3]</span>
+                            <code class="text-[10px]">GET /api/v1/prices[cite: 3]</code>
                         </div>
                         <div onclick="selectApiTree('trades')" id="tree-trades" class="tree-item p-2 rounded text-xs text-slate-300 font-medium flex justify-between items-center">
-                            <span><i class="fas fa-history mr-2 text-pink-400"></i>최근 체결 내역 조회 (Trades)</span>
-                            <code class="text-[10px]">GET /trades</code>
+                            <span><i class="fas fa-history mr-2 text-pink-400"></i>최근 체결 내역 조회 (Trades)[cite: 3]</span>
+                            <code class="text-[10px]">GET /api/v1/trades[cite: 3]</code>
                         </div>
                         <div onclick="selectApiTree('price-limits')" id="tree-price-limits" class="tree-item p-2 rounded text-xs text-slate-300 font-medium flex justify-between items-center">
-                            <span><i class="fas fa-arrows-alt-v mr-2 text-orange-400"></i>상/하한가 조회 (Price Limits)</span>
-                            <code class="text-[10px]">GET /price-limits</code>
+                            <span><i class="fas fa-arrows-alt-v mr-2 text-orange-400"></i>상/하한가 조회 (Price Limits)[cite: 3]</span>
+                            <code class="text-[10px]">GET /api/v1/price-limits[cite: 3]</code>
                         </div>
                         <div onclick="selectApiTree('candles')" id="tree-candles" class="tree-item p-2 rounded text-xs text-slate-300 font-medium flex justify-between items-center">
-                            <span><i class="fas fa-chart-bar mr-2 text-purple-400"></i>캔들 차트 조회 (Candles)</span>
-                            <code class="text-[10px]">GET /candles</code>
+                            <span><i class="fas fa-chart-bar mr-2 text-purple-400"></i>캔들 차트 조회 (Candles)[cite: 3]</span>
+                            <code class="text-[10px]">GET /api/v1/candles[cite: 3]</code>
                         </div>
                     </div>
                 </div>
@@ -442,10 +468,10 @@
                     <!-- 응답 결과 출력 콘솔 -->
                     <div class="flex-1 flex flex-col">
                         <div class="flex justify-between items-center mb-1">
-                            <span class="text-xs text-slate-400 font-bold"><i class="fas fa-terminal mr-1"></i> API 응답 결과 및 헤더 (Rate Limits Group 준수)</span>
+                            <span class="text-xs text-slate-400 font-bold"><i class="fas fa-terminal mr-1"></i> API 응답 결과 및 헤더 (Rate Limits Group 준수)[cite: 3]</span>
                             <button onclick="clearApiResponse()" class="text-xs text-slate-400 hover:text-white">지우기</button>
                         </div>
-                        <pre id="api-response-output" class="bg-slate-900 p-3 rounded border border-slate-700 text-xs font-mono text-emerald-300 flex-1 min-h-[220px] overflow-y-auto">// 메뉴를 선택하고 요청 전송 버튼을 눌러주세요.</pre>
+                        <pre id="api-response-output" class="bg-slate-900 p-3 rounded border border-slate-700 text-xs font-mono text-emerald-300 flex-1 min-h-[220px] overflow-y-auto">// 메뉴를 선택하거나 토큰 발급을 진행해주세요.</pre>
                     </div>
 
                 </div>
@@ -474,6 +500,7 @@
                 if(localStorage.getItem('m2-w65')) document.getElementById('m2-w65').value = localStorage.getItem('m2-w65');
                 
                 if(localStorage.getItem('api-access-token')) document.getElementById('api-access-token').value = localStorage.getItem('api-access-token');
+                if(localStorage.getItem('api-client-key')) document.getElementById('api-client-key').value = localStorage.getItem('api-client-key');
 
                 const savedTab = localStorage.getItem('activeTab');
                 if(savedTab) {
@@ -497,8 +524,56 @@
                 localStorage.setItem('m2-w65', document.getElementById('m2-w65').value);
                 
                 localStorage.setItem('api-access-token', document.getElementById('api-access-token').value);
+                localStorage.setItem('api-client-key', document.getElementById('api-client-key').value);
             } catch (e) {
                 console.error("Session save error:", e);
+            }
+        }
+
+        async function requestAccessToken() {
+            const clientKey = document.getElementById('api-client-key').value.trim();
+            const secretKey = document.getElementById('api-secret-key').value.trim();
+            const output = document.getElementById('api-response-output');
+
+            if (!clientKey || !secretKey) {
+                output.textContent = JSON.stringify({ error: "missing_credentials", message: "Client ID와 Secret Key를 모두 입력해주세요." }, null, 2);
+                return;
+            }
+
+            output.textContent = "토큰 발급 요청 중...[cite: 3]";
+            saveSession();
+
+            // 공식 스펙 경로 /oauth2/token 반영[cite: 3]
+            const endpoint = "https://openapi.tossinvest.com/oauth2/token";
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ grant_type: "client_credentials", client_id: clientKey, client_secret: secretKey })
+                }).catch(() => null);
+
+                if (res && res.ok) {
+                    const data = await res.json();
+                    const token = data.accessToken || data.access_token;
+                    if(token) {
+                        document.getElementById('api-access-token').value = token;
+                    }
+                    output.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    const mockToken = "eyJraWQiOiIyMDI2LTA0LTAxLWtleSIsImFsZyI6IlJTMjU2In0.mock_issued_" + Date.now();
+                    document.getElementById('api-access-token').value = mockToken;
+                    output.textContent = JSON.stringify({
+                        _note: "브라우저 CORS 제한 대응 토큰 발급 Mock 응답[cite: 3]",
+                        endpoint: endpoint,
+                        token_type: "Bearer",
+                        access_token: mockToken,
+                        expires_in: 86400
+                    }, null, 2);
+                }
+                saveSession();
+            } catch (err) {
+                output.textContent = JSON.stringify({ error: { code: "token_issuance_failed", message: err.message } }, null, 2);
             }
         }
 
@@ -523,12 +598,12 @@
             if (type === 'orderbook') {
                 html = `
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-yellow-400">호가 조회 (GET /api/v1/orderbook)</span>
-                        <span class="text-[10px] text-slate-400">Rate Limits Group: MARKET_DATA</span>
+                        <span class="text-xs font-bold text-yellow-400">호가 조회 (GET /api/v1/orderbook)[cite: 3]</span>
+                        <span class="text-[10px] text-slate-400">Rate Limits Group: MARKET_DATA[cite: 3]</span>
                     </div>
                     <div class="flex gap-2 items-end">
                         <div class="flex-1">
-                            <label class="block text-slate-400 text-[10px] mb-1">symbol (종목 심볼, 예: 005930)</label>
+                            <label class="block text-slate-400 text-[10px] mb-1">symbol (종목 심볼, 예: 005930)[cite: 3]</label>
                             <input type="text" id="p-symbol" value="005930" class="w-full p-1.5 rounded text-xs font-bold text-center">
                         </div>
                         <button onclick="executeMarketApi('orderbook')" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded text-xs font-bold h-7">요청 전송</button>
@@ -537,12 +612,12 @@
             } else if (type === 'prices') {
                 html = `
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-emerald-400">현재가 조회 (GET /api/v1/prices)</span>
-                        <span class="text-[10px] text-slate-400">Rate Limits Group: MARKET_DATA</span>
+                        <span class="text-xs font-bold text-emerald-400">현재가 조회 (GET /api/v1/prices)[cite: 3]</span>
+                        <span class="text-[10px] text-slate-400">Rate Limits Group: MARKET_DATA[cite: 3]</span>
                     </div>
                     <div class="flex gap-2 items-end">
                         <div class="flex-1">
-                            <label class="block text-slate-400 text-[10px] mb-1">symbols (최대 200개 콤마 구분, 예: 005930,000660)</label>
+                            <label class="block text-slate-400 text-[10px] mb-1">symbols (최대 200개 콤마 구분, 예: 005930,000660)[cite: 3]</label>
                             <input type="text" id="p-symbols" value="005930,000660" class="w-full p-1.5 rounded text-xs font-bold">
                         </div>
                         <button onclick="executeMarketApi('prices')" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded text-xs font-bold h-7">요청 전송</button>
@@ -551,16 +626,16 @@
             } else if (type === 'trades') {
                 html = `
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-pink-400">최근 체결 내역 조회 (GET /api/v1/trades)</span>
-                        <span class="text-[10px] text-slate-400">Rate Limits Group: MARKET_DATA</span>
+                        <span class="text-xs font-bold text-pink-400">최근 체결 내역 조회 (GET /api/v1/trades)[cite: 3]</span>
+                        <span class="text-[10px] text-slate-400">Rate Limits Group: MARKET_DATA[cite: 3]</span>
                     </div>
                     <div class="flex gap-2 items-end">
                         <div class="flex-1">
-                            <label class="block text-slate-400 text-[10px] mb-1">symbol</label>
+                            <label class="block text-slate-400 text-[10px] mb-1">symbol[cite: 3]</label>
                             <input type="text" id="p-symbol" value="005930" class="w-full p-1.5 rounded text-xs font-bold text-center">
                         </div>
                         <div class="w-24">
-                            <label class="block text-slate-400 text-[10px] mb-1">count (1~50)</label>
+                            <label class="block text-slate-400 text-[10px] mb-1">count (1~50)[cite: 3]</label>
                             <input type="text" id="p-count" value="50" class="w-full p-1.5 rounded text-xs font-bold text-center">
                         </div>
                         <button onclick="executeMarketApi('trades')" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded text-xs font-bold h-7">요청 전송</button>
@@ -569,12 +644,12 @@
             } else if (type === 'price-limits') {
                 html = `
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-orange-400">상/하한가 조회 (GET /api/v1/price-limits)</span>
-                        <span class="text-[10px] text-slate-400">Rate Limits Group: MARKET_DATA</span>
+                        <span class="text-xs font-bold text-orange-400">상/하한가 조회 (GET /api/v1/price-limits)[cite: 3]</span>
+                        <span class="text-[10px] text-slate-400">Rate Limits Group: MARKET_DATA[cite: 3]</span>
                     </div>
                     <div class="flex gap-2 items-end">
                         <div class="flex-1">
-                            <label class="block text-slate-400 text-[10px] mb-1">symbol</label>
+                            <label class="block text-slate-400 text-[10px] mb-1">symbol[cite: 3]</label>
                             <input type="text" id="p-symbol" value="005930" class="w-full p-1.5 rounded text-xs font-bold text-center">
                         </div>
                         <button onclick="executeMarketApi('price-limits')" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded text-xs font-bold h-7">요청 전송</button>
@@ -583,23 +658,23 @@
             } else if (type === 'candles') {
                 html = `
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-purple-400">캔들 차트 조회 (GET /api/v1/candles)</span>
-                        <span class="text-[10px] text-slate-400">Rate Limits Group: MARKET_DATA_CHART</span>
+                        <span class="text-xs font-bold text-purple-400">캔들 차트 조회 (GET /api/v1/candles)[cite: 3]</span>
+                        <span class="text-[10px] text-slate-400">Rate Limits Group: MARKET_DATA_CHART[cite: 3]</span>
                     </div>
                     <div class="grid grid-cols-4 gap-2 items-end">
                         <div>
-                            <label class="block text-slate-400 text-[10px] mb-1">symbol</label>
+                            <label class="block text-slate-400 text-[10px] mb-1">symbol[cite: 3]</label>
                             <input type="text" id="p-symbol" value="005930" class="w-full p-1.5 rounded text-xs font-bold text-center">
                         </div>
                         <div>
-                            <label class="block text-slate-400 text-[10px] mb-1">interval</label>
+                            <label class="block text-slate-400 text-[10px] mb-1">interval[cite: 3]</label>
                             <select id="p-interval" class="w-full p-1.5 rounded text-xs font-bold">
                                 <option value="1m">1m</option>
                                 <option value="1d" selected>1d</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-slate-400 text-[10px] mb-1">count (max 200)</label>
+                            <label class="block text-slate-400 text-[10px] mb-1">count (max 200)[cite: 3]</label>
                             <input type="text" id="p-count" value="200" class="w-full p-1.5 rounded text-xs font-bold text-center">
                         </div>
                         <div>
@@ -620,7 +695,7 @@
                 return;
             }
 
-            output.textContent = "API 요청 전송 중...";
+            output.textContent = "API 요청 전송 중...[cite: 3]";
             saveSession();
 
             let endpoint = '';
@@ -660,7 +735,7 @@
                     if (type === 'orderbook') {
                         mockResult = {
                             result: {
-                                timestamp: "2026-03-25T09:30:00.123+09:00",
+                                timestamp: "2026-08-14T15:00:00.123+09:00",
                                 currency: "KRW",
                                 asks: [
                                     { price: "72300", volume: "1200" },
@@ -677,22 +752,22 @@
                     } else if (type === 'prices') {
                         mockResult = {
                             result: [
-                                { symbol: "005930", timestamp: "2026-03-25T09:30:00.123+09:00", lastPrice: "72000", currency: "KRW" },
-                                { symbol: "000660", timestamp: "2026-03-25T09:30:00.123+09:00", lastPrice: "185000", currency: "KRW" }
+                                { symbol: "005930", timestamp: "2026-08-14T15:00:00.123+09:00", lastPrice: "72000", currency: "KRW" },
+                                { symbol: "000660", timestamp: "2026-08-14T15:00:00.123+09:00", lastPrice: "185000", currency: "KRW" }
                             ]
                         };
                     } else if (type === 'trades') {
                         mockResult = {
                             result: [
-                                { price: "72000", volume: "120", timestamp: "2026-03-25T09:30:42.000+09:00", currency: "KRW" },
-                                { price: "71900", volume: "50", timestamp: "2026-03-25T09:30:41.500+09:00", currency: "KRW" },
-                                { price: "72000", volume: "200", timestamp: "2026-03-25T09:30:40.800+09:00", currency: "KRW" }
+                                { price: "72000", volume: "120", timestamp: "2026-08-14T15:00:42.000+09:00", currency: "KRW" },
+                                { price: "71900", volume: "50", timestamp: "2026-08-14T15:00:41.500+09:00", currency: "KRW" },
+                                { price: "72000", volume: "200", timestamp: "2026-08-14T15:00:40.800+09:00", currency: "KRW" }
                             ]
                         };
                     } else if (type === 'price-limits') {
                         mockResult = {
                             result: {
-                                timestamp: "2026-03-25T09:30:00.123+09:00",
+                                timestamp: "2026-08-14T15:00:00.123+09:00",
                                 upperLimitPrice: "93000",
                                 lowerLimitPrice: "50400",
                                 currency: "KRW"
@@ -700,14 +775,17 @@
                         };
                     } else if (type === 'candles') {
                         mockResult = {
-                            result: [
-                                { timestamp: "2026-03-25T09:30:00.000+09:00", open: "71800", high: "72100", low: "71700", close: "72000", volume: "150000" }
-                            ]
+                            result: {
+                                candles: [
+                                    { timestamp: "2026-08-14T15:00:00+09:00", openPrice: "71800", highPrice: "72100", lowPrice: "71700", closePrice: "72000", volume: "150000", currency: "KRW" }
+                                ],
+                                nextBefore: null
+                            }
                         };
                     }
 
                     output.textContent = JSON.stringify({
-                        _note: "브라우저 CORS 제한 대응 Mock 응답 데이터",
+                        _note: "브라우저 CORS 제한 대응 Mock 응답 데이터[cite: 3]",
                         endpoint: endpoint,
                         rate_limits_group: rateLimitGroup,
                         headers_sent: { Authorization: "Bearer " + token.substring(0, 15) + "..." },
@@ -793,7 +871,7 @@
                 ],
                 '주식 신용잔고 마진콜': [
                     { title: "국내 증시 신용거래융자 잔고 추이 및 리스크 관리", link: "https://news.google.com/search?q=%EC%8B%A0%EC%9A%A9%EC%9E%90%EA%B3%A0" },
-                    { title: "변동성 장세 속 반대매매 물량 출회 주의보", link: "https://news.google.com/search?q=%EB%B0%98%EB%8C%80%EB%A7%A4%EB%A7%A4" }
+                    { title: "변동성 장세 속 반대매매 물량 출회 주의보", link: "https://news.google.com/search?q=%반대매매" }
                 ]
             };
             return mockNewsMap[query] || [
