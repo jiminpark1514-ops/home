@@ -69,22 +69,16 @@
         
         .news-link {
             color: #cbd5e1;
-            font-size: 0.85rem;
+            font-size: 0.92rem;
             transition: color 0.2s;
             display: block;
-            line-height: 1.3;
+            line-height: 1.4;
             text-decoration: none;
             cursor: pointer;
         }
         .news-link:hover {
             color: #3b82f6;
             text-decoration: underline;
-        }
-        .news-date {
-            font-size: 0.7rem;
-            color: #64748b;
-            font-family: monospace;
-            margin-top: 2px;
         }
 
         .calc-table th, .calc-table td {
@@ -135,31 +129,63 @@
         <!-- ========================================== -->
         <section id="content-dashboard" class="h-full flex flex-col gap-4">
             
-            <!-- 상단 1열: 시장 주요 지표 -->
-            <div class="grid grid-cols-6 gap-4 shrink-0">
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 border-l-4 border-l-blue-500">
-                    <div class="text-slate-400 text-sm mb-1">삼성전자 (현재가)</div>
-                    <div class="text-2xl font-bold text-white">82,500 <span class="text-red-400 text-lg ml-1">▲ 1.2%</span></div>
+            <!-- 상단 1열: 시장 주요 지표 및 삼성전자 상세 정보 -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
+                <!-- 삼성전자 상세 카드 (col-span-6) -->
+                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 border-l-4 border-l-blue-500 lg:col-span-6 flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <div class="text-slate-400 text-xs mb-0.5">삼성전자 (현재가)</div>
+                            <div class="text-2xl font-bold text-white">82,500 <span class="text-red-400 text-base ml-1">▲ 1.2%</span></div>
+                        </div>
+                        <!-- 30분봉 미니 차트 (SVG) -->
+                        <div class="bg-slate-900 px-2 py-1 rounded border border-slate-700 text-right">
+                            <div class="text-[10px] text-slate-400 mb-0.5">30분봉 미니차트</div>
+                            <svg width="120" height="35" class="overflow-visible">
+                                <polyline fill="none" stroke="#ef4444" stroke-width="2" points="0,25 20,20 40,28 60,15 80,18 100,8 120,12" />
+                            </svg>
+                        </div>
+                    </div>
+                    <!-- 시초가, 고가, 저가, 종가 -->
+                    <div class="grid grid-cols-4 gap-1 bg-slate-900/60 p-2 rounded text-center text-xs mb-2 border border-slate-700/50">
+                        <div><span class="text-slate-500 block text-[10px]">시초가</span><span class="text-slate-200 font-bold">81,800</span></div>
+                        <div><span class="text-slate-500 block text-[10px]">고가</span><span class="text-red-400 font-bold">83,000</span></div>
+                        <div><span class="text-slate-500 block text-[10px]">저가</span><span class="text-blue-400 font-bold">81,500</span></div>
+                        <div><span class="text-slate-500 block text-[10px]">종가(현재)</span><span class="text-white font-bold">82,500</span></div>
+                    </div>
+                    <!-- 삼성전자 매매동향 -->
+                    <div class="flex justify-between items-center text-xs bg-slate-900 px-3 py-1.5 rounded border border-slate-700/50">
+                        <span class="text-slate-400 font-medium"><i class="fas fa-chart-bar mr-1 text-blue-400"></i>종목 매매동향</span>
+                        <div class="flex gap-4">
+                            <span>개인 <span class="text-blue-400 font-bold">-1,200억</span></span>
+                            <span>외인 <span class="text-red-400 font-bold">+850억</span></span>
+                            <span>기관 <span class="text-red-400 font-bold">+450억</span></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <div class="text-slate-400 text-sm mb-1">KOSPI</div>
-                    <div class="text-2xl font-bold text-white">2,750.24 <span class="text-red-400 text-lg ml-1">▲ 0.8%</span></div>
-                </div>
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <div class="text-slate-400 text-sm mb-1">KOSDAQ</div>
-                    <div class="text-2xl font-bold text-white">880.15 <span class="text-blue-400 text-lg ml-1">▼ 0.3%</span></div>
-                </div>
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <div class="text-slate-400 text-sm mb-1">S&P 500</div>
-                    <div class="text-2xl font-bold text-white">5,200.50 <span class="text-red-400 text-lg ml-1">▲ 1.1%</span></div>
-                </div>
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <div class="text-slate-400 text-sm mb-1">NASDAQ</div>
-                    <div class="text-2xl font-bold text-white">16,400.20 <span class="text-red-400 text-lg ml-1">▲ 1.5%</span></div>
-                </div>
-                <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                    <div class="text-slate-400 text-sm mb-1">NASDAQ 선물</div>
-                    <div class="text-2xl font-bold text-white">16,450.00 <span class="text-red-400 text-lg ml-1">▲ 0.2%</span></div>
+
+                <!-- 기타 지수 카드들 (col-span-6, 5개 지수를 3열 그리드로 배치하여 작게 표시) -->
+                <div class="lg:col-span-6 grid grid-cols-3 gap-3">
+                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+                        <div class="text-slate-400 text-xs mb-1">KOSPI</div>
+                        <div class="text-lg font-bold text-white">2,750.24 <span class="text-red-400 text-xs ml-1">▲ 0.8%</span></div>
+                    </div>
+                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+                        <div class="text-slate-400 text-xs mb-1">KOSDAQ</div>
+                        <div class="text-lg font-bold text-white">880.15 <span class="text-blue-400 text-xs ml-1">▼ 0.3%</span></div>
+                    </div>
+                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+                        <div class="text-slate-400 text-xs mb-1">S&P 500</div>
+                        <div class="text-lg font-bold text-white">5,200.50 <span class="text-red-400 text-xs ml-1">▲ 1.1%</span></div>
+                    </div>
+                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+                        <div class="text-slate-400 text-xs mb-1">NASDAQ</div>
+                        <div class="text-lg font-bold text-white">16,400.2 <span class="text-red-400 text-xs ml-1">▲ 1.5%</span></div>
+                    </div>
+                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+                        <div class="text-slate-400 text-xs mb-1">NASDAQ 선물</div>
+                        <div class="text-lg font-bold text-white">16,450.0 <span class="text-red-400 text-xs ml-1">▲ 0.2%</span></div>
+                    </div>
                 </div>
             </div>
 
@@ -400,16 +426,16 @@
             }
         }
 
-        // 넓어진 가로폭과 화면 중앙에 위치하도록 수정된 뉴스 창 열기 함수
+        // 아주 조금 더 넓어진 가로폭과 화면 중앙에 위치하도록 수정된 뉴스 창 열기 함수
         function openNewsWindow(url) {
-            const width = 680;
+            const width = 740;
             const height = 850;
             const left = (window.screen.width - width) / 2;
             const top = (window.screen.height - height) / 2;
             window.open(url, 'newsWindow', `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`);
         }
 
-        // 구글 뉴스 RSS 연동 함수
+        // 구글 뉴스 RSS 연동 함수 (제목 앞에 [월/일] 표시 및 하단 날짜 제거)
         async function fetchNews(query, containerId) {
             const container = document.getElementById(containerId);
             try {
@@ -418,12 +444,15 @@
                 const data = await response.json();
                 
                 if(data.items && data.items.length > 0) {
-                    container.innerHTML = data.items.slice(0, 8).map(item => `
-                        <div class="news-item">
-                            <a onclick="openNewsWindow('${item.link}')" class="news-link">${item.title}</a>
-                            <div class="news-date">${new Date(item.pubDate).toLocaleDateString()}</div>
-                        </div>
-                    `).join('');
+                    container.innerHTML = data.items.slice(0, 8).map(item => {
+                        const pubDate = new Date(item.pubDate);
+                        const dateStr = `[${pubDate.getMonth() + 1}/${pubDate.getDate()}] `;
+                        return `
+                            <div class="news-item">
+                                <a onclick="openNewsWindow('${item.link}')" class="news-link">${dateStr}${item.title}</a>
+                            </div>
+                        `;
+                    }).join('');
                 } else {
                     container.innerHTML = '<p class="text-slate-500 text-xs">뉴스 없음</p>';
                 }
