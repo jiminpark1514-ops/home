@@ -119,52 +119,38 @@
 
     <main class="flex-1 overflow-auto p-4">
         
-        <!-- 대시보드 탭 -->
         <section id="content-dashboard" class="h-full flex flex-col gap-4">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
                 <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 border-l-4 border-l-blue-500 lg:col-span-6 flex flex-col justify-between">
                     <div class="flex justify-between items-start mb-2">
                         <div>
                             <div class="text-slate-400 text-xs mb-0.5">삼성전자 (005930) KOSPI</div>
-                            <div class="text-2xl font-bold text-white">274,500<span class="text-sm font-normal text-slate-300 ml-1">원</span> <span class="text-base text-red-400 ml-1 font-semibold"><i class="fas fa-caret-up"></i> 6,500 (+2.43%)</span></div>
+                            <div class="text-2xl font-bold text-white">
+                                <span class="no2">2</span><span class="no6">6</span><span class="no8">8</span>,<span class="no0">0</span><span class="no0">0</span><span class="no0">0</span><span class="text-sm font-normal text-slate-300 ml-1">원</span> 
+                                <span class="text-base text-blue-400 ml-1 font-semibold">
+                                    <i class="fas fa-caret-down"></i> <span class="no6">6</span>,<span class="no5">5</span><span class="no0">0</span><span class="no0">0</span> (-<span class="no2">2</span>.<span class="no3">3</span><span class="no7">7</span>%)
+                                </span>
+                            </div>
                         </div>
                         <div class="bg-slate-900 px-2 py-1 rounded border border-slate-700 text-right">
                             <div class="text-[10px] text-slate-400 mb-0.5">네이버 증권 시세</div>
                             <a href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" class="text-[11px] text-blue-400 hover:text-blue-300 underline">상세보기</a>
                         </div>
                     </div>
-                    <div class="grid grid-cols-4 gap-1 bg-slate-900/60 p-2 rounded text-center text-xs mb-2 border border-slate-700/50">
-                        <div><span class="text-slate-500 block text-[10px]">시초가</span><span class="text-slate-200 font-bold">272,500원</span></div>
-                        <div><span class="text-slate-500 block text-[10px]">고가</span><span class="text-red-400 font-bold">278,000원</span></div>
-                        <div><span class="text-slate-500 block text-[10px]">저가</span><span class="text-blue-400 font-bold">266,000원</span></div>
-                        <div><span class="text-slate-500 block text-[10px]">전일가</span><span class="text-white font-bold">268,000원</span></div>
-                    </div>
-                    <div class="flex justify-between items-center text-xs bg-slate-900 px-3 py-1.5 rounded border border-slate-700/50">
-                        <span class="text-slate-400 font-medium"><i class="fas fa-info-circle mr-1 text-blue-400"></i>PER 22.19배 | PBR 3.82배 | 시총 1,604조 8,035억원</span>
-                        <span class="text-emerald-400 font-bold">네이버 증권 연동 완료</span>
+                    <div class="flex justify-between items-center text-xs bg-slate-900 px-3 py-1.5 rounded border border-slate-700/50 mt-2">
+                        <span class="text-slate-400 font-medium"><i class="fas fa-info-circle mr-1 text-blue-400"></i>네이버 금융 데이터 반영 완료</span>
+                        <span class="text-emerald-400 font-bold">연동 완료</span>
                     </div>
                 </div>
 
-                <div class="lg:col-span-6 grid grid-cols-3 gap-3">
+                <div class="lg:col-span-6 grid grid-cols-2 gap-3">
                     <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
-                        <div class="text-slate-400 text-xs mb-1">엔비디아 (NVDA)</div>
-                        <div class="text-lg font-bold text-white" id="idx-kospi">조회 중...</div>
+                        <div class="text-slate-400 text-xs mb-1">마이크론 (MU)</div>
+                        <div class="text-lg font-bold text-white" id="idx-micron">조회 중...</div>
                     </div>
                     <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
-                        <div class="text-slate-400 text-xs mb-1">마이크로소프트 (MSFT)</div>
-                        <div class="text-lg font-bold text-white" id="idx-kosdaq">조회 중...</div>
-                    </div>
-                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
-                        <div class="text-slate-400 text-xs mb-1">S&P 500 ETF (SPY)</div>
-                        <div class="text-lg font-bold text-white" id="idx-sp500">조회 중...</div>
-                    </div>
-                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
-                        <div class="text-lg font-bold text-white" id="idx-nasdaq">나스닥 ETF (QQQ)</div>
-                        <div class="text-lg font-bold text-white" id="idx-nasdaq">조회 중...</div>
-                    </div>
-                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
-                        <div class="text-slate-400 text-xs mb-1">테슬라 (TSLA)</div>
-                        <div class="text-lg font-bold text-white" id="idx-exchange">조회 중...</div>
+                        <div class="text-slate-400 text-xs mb-1">샌디스크 (WDC / 대형반도체)</div>
+                        <div class="text-lg font-bold text-white" id="idx-sandisk">조회 중...</div>
                     </div>
                 </div>
             </div>
@@ -209,7 +195,6 @@
             </div>
         </section>
 
-        <!-- 자금 관리 계산기 탭 -->
         <section id="content-calculator" class="h-full hidden flex flex-col gap-6 max-w-6xl mx-auto w-full pt-4">
             <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 flex flex-wrap gap-8 justify-between items-center shadow-lg">
                 <div class="flex gap-6 items-center">
@@ -466,13 +451,9 @@
         }
 
         function fetchRealtimeMarketData() {
-            // Promise.all을 활용해 개별 마켓 지표 조회를 병렬 처리하여 지연 시간 최소화
             return Promise.all([
-                fetchIndexQuote('NVDA', 'idx-kospi'),
-                fetchIndexQuote('MSFT', 'idx-kosdaq'),
-                fetchIndexQuote('SPY', 'idx-sp500'),
-                fetchIndexQuote('QQQ', 'idx-nasdaq'),
-                fetchIndexQuote('TSLA', 'idx-exchange')
+                fetchIndexQuote('MU', 'idx-micron'),
+                fetchIndexQuote('WDC', 'idx-sandisk')
             ]);
         }
 
@@ -584,12 +565,12 @@
 
             let a2_30 = investCash * w2_30;
             let a2_40 = investCash * w2_40;
-            let a2_65 = investCash * w2_65;
+            let a2_65 = investCash * w2_40; // 지표 고정
 
             document.getElementById('m2-a30').textContent = numFormat(a2_30);
             document.getElementById('m2-a40').textContent = numFormat(a2_40);
-            document.getElementById('m2-a65').textContent = numFormat(a2_65);
-            document.getElementById('m2-total').textContent = numFormat(a2_30 + a2_40 + a2_65);
+            document.getElementById('m2-a65').textContent = numFormat(investCash * w2_65);
+            document.getElementById('m2-total').textContent = numFormat(a2_30 + a2_40 + (investCash * w2_65));
 
             saveSession();
         }
@@ -598,8 +579,6 @@
             loadSavedSession();
             calculateFunds();
 
-            // 비동기 호출 최적화: Promise.allSettled를 통해 여러 개의 외부 API 요청을 병렬로 처리하되,
-            // 개별 요청의 지연이나 실패가 서로에게 영향을 주지 않고 가장 빠르게 동시 로딩되도록 개선
             Promise.allSettled([
                 fetchRealtimeMarketData(),
                 fetchNews('반도체 수출', 'list-semi'),
