@@ -177,7 +177,6 @@
 
     </div>
 
-
     <div class="flex gap-2">
 
         <button
@@ -199,7 +198,6 @@
         </button>
 
     </div>
-
 
     <div
         class="text-sm text-slate-400 font-mono"
@@ -264,7 +262,6 @@
 
 
     <div class="grid grid-cols-3 grid-rows-2 gap-4 h-full min-h-[500px]">
-
 
         <div class="news-card">
 
@@ -400,9 +397,6 @@
     class="hidden flex-col gap-6 max-w-[1800px] mx-auto w-full pt-4"
 >
 
-
-    <!-- 자금 입력 -->
-
     <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 flex flex-wrap gap-8 justify-between items-center shadow-lg">
 
         <div class="flex gap-6 items-center">
@@ -530,15 +524,7 @@
     </div>
 
 
-
-    <!-- =====================================================
-         일반 / 위기 전략
-    ====================================================== -->
-
     <div class="grid grid-cols-2 gap-8 items-start">
-
-
-        <!-- 일반 -->
 
         <div class="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden shadow-lg">
 
@@ -577,7 +563,6 @@
                         </tr>
 
                     </thead>
-
 
                     <tbody>
 
@@ -735,9 +720,6 @@
         </div>
 
 
-
-        <!-- 위기 -->
-
         <div class="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden shadow-lg border-2 border-yellow-500/50">
 
             <div class="bg-yellow-alert p-3 font-bold text-lg border-b border-yellow-600 flex justify-between">
@@ -755,13 +737,10 @@
 
                 * 팬데믹 및 지정학적 리스크 급변 *
                 <br>
-
                 * 35주 이격도 및 기술적 과열 구간 *
                 <br>
-
                 * 신용융자 잔고 고점 경계 *
                 <br>
-
                 * 통화량 및 금리 변동성 밀착 주시 *
 
             </div>
@@ -934,7 +913,6 @@
     </div>
 
 
-
     <!-- =====================================================
          종목 관리
     ====================================================== -->
@@ -989,44 +967,15 @@
 
                 <colgroup>
 
-                    <!-- 종목명 -->
-
                     <col style="width:9%">
-
-                    <!-- 목표가 -->
-
                     <col style="width:9%">
-
-                    <!-- 현재가 -->
-
                     <col style="width:10%">
-
-                    <!-- 역대고점 -->
-
                     <col style="width:10%">
-
-                    <!-- 뉴스 -->
-
                     <col style="width:12%">
-
-                    <!-- 국면 -->
-
                     <col style="width:13%">
-
-                    <!-- 대응 -->
-
                     <col style="width:19%">
-
-                    <!-- 투자비중 -->
-
                     <col style="width:7%">
-
-                    <!-- 권장금액 -->
-
                     <col style="width:8%">
-
-                    <!-- 삭제 -->
-
                     <col style="width:3%">
 
                 </colgroup>
@@ -1053,6 +1002,36 @@
 
 
                 <tbody id="stock-table-body"></tbody>
+
+
+                <!-- =====================================================
+                     ★ 추가된 부분
+                     종목별 권장 투자금액 합계
+                ====================================================== -->
+
+                <tfoot>
+
+                    <tr class="bg-blue-950 border-t-2 border-blue-500">
+
+                        <td
+                            colspan="8"
+                            class="text-right font-bold text-white text-base py-4"
+                        >
+                            최종 권장 투자금액 합계
+                        </td>
+
+                        <td
+                            id="stock-total-recommended"
+                            class="text-right font-bold text-yellow-400 text-lg py-4"
+                        >
+                            0
+                        </td>
+
+                        <td></td>
+
+                    </tr>
+
+                </tfoot>
 
             </table>
 
@@ -1096,6 +1075,7 @@ function numParse(str) {
     ) || 0;
 
 }
+
 
 
 /* =========================================================
@@ -1169,10 +1149,13 @@ function updateClock() {
         document.getElementById('clock');
 
     if (clock) {
+
         clock.textContent = str;
+
     }
 
 }
+
 
 setInterval(
     updateClock,
@@ -1185,48 +1168,55 @@ updateClock();
 
 /* =========================================================
    탭 전환
-   중요:
-   display를 직접 제어해서 두 페이지가 동시에
-   보이는 문제를 방지
 ========================================================= */
 
 function switchTab(tabName) {
 
     const dashboard =
-        document.getElementById('content-dashboard');
+        document.getElementById(
+            'content-dashboard'
+        );
 
     const calculator =
-        document.getElementById('content-calculator');
+        document.getElementById(
+            'content-calculator'
+        );
 
     const dashboardBtn =
-        document.getElementById('tab-dashboard');
+        document.getElementById(
+            'tab-dashboard'
+        );
 
     const calculatorBtn =
-        document.getElementById('tab-calculator');
+        document.getElementById(
+            'tab-calculator'
+        );
 
-
-    /* ==========================================
-       모든 페이지 완전히 숨김
-    ========================================== */
 
     if (dashboard) {
+
         dashboard.classList.add('hidden');
         dashboard.classList.remove('flex');
-        dashboard.style.display = 'none';
+
+        dashboard.style.display =
+            'none';
+
     }
+
 
     if (calculator) {
+
         calculator.classList.add('hidden');
         calculator.classList.remove('flex');
-        calculator.style.display = 'none';
+
+        calculator.style.display =
+            'none';
+
     }
 
 
-    /* ==========================================
-       모든 탭 버튼 비활성화
-    ========================================== */
-
     if (dashboardBtn) {
+
         dashboardBtn.classList.remove(
             'active',
             'bg-blue-600'
@@ -1235,9 +1225,12 @@ function switchTab(tabName) {
         dashboardBtn.classList.add(
             'bg-slate-700'
         );
+
     }
 
+
     if (calculatorBtn) {
+
         calculatorBtn.classList.remove(
             'active',
             'bg-blue-600'
@@ -1246,22 +1239,23 @@ function switchTab(tabName) {
         calculatorBtn.classList.add(
             'bg-slate-700'
         );
+
     }
 
-
-    /* ==========================================
-       선택한 페이지 하나만 표시
-    ========================================== */
 
     if (tabName === 'dashboard') {
 
         if (dashboard) {
 
-            dashboard.classList.remove('hidden');
+            dashboard.classList.remove(
+                'hidden'
+            );
 
-            dashboard.style.display = 'flex';
+            dashboard.style.display =
+                'flex';
 
         }
+
 
         if (dashboardBtn) {
 
@@ -1283,11 +1277,15 @@ function switchTab(tabName) {
 
         if (calculator) {
 
-            calculator.classList.remove('hidden');
+            calculator.classList.remove(
+                'hidden'
+            );
 
-            calculator.style.display = 'flex';
+            calculator.style.display =
+                'flex';
 
         }
+
 
         if (calculatorBtn) {
 
@@ -1305,25 +1303,10 @@ function switchTab(tabName) {
     }
 
 
-    /* ==========================================
-       현재 탭 저장
-    ========================================== */
-
-    try {
-
-        localStorage.setItem(
-            'activeTab',
-            tabName
-        );
-
-    } catch (e) {
-
-        console.warn(
-            'activeTab 저장 실패',
-            e
-        );
-
-    }
+    storageSet(
+        'activeTab',
+        tabName
+    );
 
 }
 
@@ -1341,11 +1324,13 @@ function openNewsWindow(url) {
     const width = 740;
     const height = 850;
 
+
     const left =
         Math.max(
             0,
             (window.screen.width - width) / 2
         );
+
 
     const top =
         Math.max(
@@ -1378,6 +1363,7 @@ async function fetchIndexQuote(
             elemId
         );
 
+
     if (!el) return;
 
 
@@ -1405,8 +1391,10 @@ async function fetchIndexQuote(
         const price =
             Number(data.c || 0);
 
+
         const change =
             Number(data.d || 0);
+
 
         const percent =
             Number(data.dp || 0);
@@ -1483,20 +1471,32 @@ function fetchRealtimeMarketData() {
    대시보드 뉴스
 ========================================================= */
 
-async function fetchNews(query, containerId) {
+async function fetchNews(
+    query,
+    containerId
+) {
 
     const container =
-        document.getElementById(containerId);
+        document.getElementById(
+            containerId
+        );
+
 
     if (!container) return;
 
 
     container.innerHTML = `
+
         <div class="news-item">
+
             <span class="text-slate-500 text-sm">
+
                 뉴스 업데이트 중...
+
             </span>
+
         </div>
+
     `;
 
 
@@ -1537,9 +1537,11 @@ async function fetchNews(query, containerId) {
 
 
         if (!response.ok) {
+
             throw new Error(
                 `RSS2JSON HTTP ${response.status}`
             );
+
         }
 
 
@@ -1573,44 +1575,54 @@ async function fetchNews(query, containerId) {
         const newsHtml =
             sortedItems
                 .slice(0, 8)
-                .map(item => {
+                .map(
+                    item => {
 
-                    const pubDate =
-                        new Date(item.pubDate);
-
-
-                    const dateStr =
-                        !isNaN(pubDate.getTime())
-                            ? `[${pubDate.getMonth() + 1}/${pubDate.getDate()}] `
-                            : '';
+                        const pubDate =
+                            new Date(
+                                item.pubDate
+                            );
 
 
-                    const title =
-                        escapeHtml(
-                            item.title || '제목 없음'
-                        );
+                        const dateStr =
+                            !isNaN(
+                                pubDate.getTime()
+                            )
+                                ? `[${pubDate.getMonth() + 1}/${pubDate.getDate()}] `
+                                : '';
 
 
-                    const link =
-                        item.link || '';
+                        const title =
+                            escapeHtml(
+                                item.title ||
+                                '제목 없음'
+                            );
 
 
-                    return `
-                        <div class="news-item">
+                        const link =
+                            item.link ||
+                            '';
 
-                            <a
-                                href="${escapeHtml(link)}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="news-link"
-                            >
-                                ${dateStr}${title}
-                            </a>
 
-                        </div>
-                    `;
+                        return `
 
-                })
+                            <div class="news-item">
+
+                                <a
+                                    href="${escapeHtml(link)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="news-link"
+                                >
+                                    ${dateStr}${title}
+                                </a>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
                 .join('');
 
 
@@ -1636,12 +1648,6 @@ async function fetchNews(query, containerId) {
         );
 
 
-        /*
-         * RSS 데이터를 가져오지 못하더라도
-         * 대시보드 전체가 멈추지 않도록
-         * Google 뉴스 검색 페이지를 표시
-         */
-
         const googleNewsUrl =
             `https://news.google.com/search?q=${encodeURIComponent(query)}` +
             `&hl=ko&gl=KR&ceid=KR%3Ako`;
@@ -1657,13 +1663,17 @@ async function fetchNews(query, containerId) {
                     rel="noopener noreferrer"
                     class="news-link"
                 >
+
                     <span class="text-blue-400">
                         [뉴스 검색]
                     </span>
+
                     ${escapeHtml(query)}
+
                 </a>
 
             </div>
+
 
             <div class="news-item">
 
@@ -1673,9 +1683,11 @@ async function fetchNews(query, containerId) {
                     rel="noopener noreferrer"
                     class="news-link"
                 >
+
                     <span class="text-slate-400">
                         Google 뉴스에서 최신 기사 보기 →
                     </span>
+
                 </a>
 
             </div>
@@ -1808,19 +1820,6 @@ function calculateFunds() {
         ) + '%';
 
 
-    /*
-       부동소수점 오류 방지
-
-       기존:
-       100 - reservedRatio * 100
-
-       결과:
-       9.999999999999998%
-
-       수정:
-       Math.round()
-    */
-
     document.getElementById(
         'invest-percent'
     ).textContent =
@@ -1845,10 +1844,7 @@ function calculateFunds() {
         );
 
 
-
-    /* =====================================================
-       일반
-    ====================================================== */
+    /* 일반 */
 
     document.getElementById(
         'm1-p20'
@@ -1907,55 +1903,43 @@ function calculateFunds() {
 
 
     const a1_20 =
-        investCash *
-        w1_20;
+        investCash * w1_20;
 
 
     const a1_30 =
-        investCash *
-        w1_30;
+        investCash * w1_30;
 
 
     const a1_40 =
-        investCash *
-        w1_40;
+        investCash * w1_40;
 
 
     const a1_65 =
-        reservedCash *
-        0.5;
+        reservedCash * 0.5;
 
 
     document.getElementById(
         'm1-a20'
     ).textContent =
-        numFormat(
-            a1_20
-        );
+        numFormat(a1_20);
 
 
     document.getElementById(
         'm1-a30'
     ).textContent =
-        numFormat(
-            a1_30
-        );
+        numFormat(a1_30);
 
 
     document.getElementById(
         'm1-a40'
     ).textContent =
-        numFormat(
-            a1_40
-        );
+        numFormat(a1_40);
 
 
     document.getElementById(
         'm1-a65'
     ).textContent =
-        numFormat(
-            a1_65
-        );
+        numFormat(a1_65);
 
 
     document.getElementById(
@@ -1969,10 +1953,7 @@ function calculateFunds() {
         );
 
 
-
-    /* =====================================================
-       위기
-    ====================================================== */
+    /* 위기 */
 
     document.getElementById(
         'm2-p30'
@@ -2023,42 +2004,33 @@ function calculateFunds() {
 
 
     const a2_30 =
-        investCash *
-        w2_30;
+        investCash * w2_30;
 
 
     const a2_40 =
-        investCash *
-        w2_40;
+        investCash * w2_40;
 
 
     const a2_65 =
-        investCash *
-        w2_65;
+        investCash * w2_65;
 
 
     document.getElementById(
         'm2-a30'
     ).textContent =
-        numFormat(
-            a2_30
-        );
+        numFormat(a2_30);
 
 
     document.getElementById(
         'm2-a40'
     ).textContent =
-        numFormat(
-            a2_40
-        );
+        numFormat(a2_40);
 
 
     document.getElementById(
         'm2-a65'
     ).textContent =
-        numFormat(
-            a2_65
-        );
+        numFormat(a2_65);
 
 
     document.getElementById(
@@ -2071,24 +2043,31 @@ function calculateFunds() {
         );
 
 
-
-    /* =====================================================
-       종목관리 재계산
-    ====================================================== */
+    /* 종목관리 재계산 */
 
     document
         .querySelectorAll(
             '#stock-table-body tr'
         )
-        .forEach(tr => {
+        .forEach(
+            tr => {
 
-            updateStockRow(
-                tr.id,
-                false
-            );
+                updateStockRow(
+                    tr.id,
+                    false
+                );
 
-        });
+            }
+        );
 
+
+    /*
+       종목이 하나도 없거나
+       calculateFunds() 실행 직후에도
+       합계가 반드시 최신 상태가 되도록
+    */
+
+    updateStockTotal();
 
     saveSession();
 
@@ -2217,6 +2196,56 @@ function stockStage(
 
 
 /* =========================================================
+   ★ 종목별 최종 권장 투자금액 합계
+========================================================= */
+
+function updateStockTotal() {
+
+    const totalEl =
+        document.getElementById(
+            'stock-total-recommended'
+        );
+
+
+    if (!totalEl) return;
+
+
+    let total = 0;
+
+
+    document
+        .querySelectorAll(
+            '#stock-table-body tr'
+        )
+        .forEach(
+            tr => {
+
+                const amountEl =
+                    tr.querySelector(
+                        '[id$="-amount"]'
+                    );
+
+
+                if (!amountEl) return;
+
+
+                total +=
+                    numParse(
+                        amountEl.textContent
+                    );
+
+            }
+        );
+
+
+    totalEl.textContent =
+        numFormat(total);
+
+}
+
+
+
+/* =========================================================
    종목 행 추가
    티커 제거
 ========================================================= */
@@ -2252,8 +2281,6 @@ function addStockRow(
 
     tr.innerHTML = `
 
-        <!-- 종목명 -->
-
         <td>
 
             <input
@@ -2268,8 +2295,6 @@ function addStockRow(
 
         </td>
 
-
-        <!-- 목표가 -->
 
         <td>
 
@@ -2286,8 +2311,6 @@ function addStockRow(
         </td>
 
 
-        <!-- 현재가 수동 입력 -->
-
         <td>
 
             <input
@@ -2303,8 +2326,6 @@ function addStockRow(
         </td>
 
 
-        <!-- 역대고점 수동 입력 -->
-
         <td>
 
             <input
@@ -2319,8 +2340,6 @@ function addStockRow(
 
         </td>
 
-
-        <!-- 뉴스 -->
 
         <td>
 
@@ -2346,8 +2365,6 @@ function addStockRow(
         </td>
 
 
-        <!-- 현재 국면 -->
-
         <td
             id="${id}-stage"
             class="text-center font-bold text-slate-300"
@@ -2355,8 +2372,6 @@ function addStockRow(
             정보 입력 대기
         </td>
 
-
-        <!-- 대응 가이드 -->
 
         <td
             id="${id}-guide"
@@ -2366,8 +2381,6 @@ function addStockRow(
         </td>
 
 
-        <!-- 투자 비중 -->
-
         <td
             id="${id}-ratio"
             class="text-center font-bold text-blue-300"
@@ -2376,8 +2389,6 @@ function addStockRow(
         </td>
 
 
-        <!-- 권장 투자금액 -->
-
         <td
             id="${id}-amount"
             class="text-right font-bold text-yellow-400"
@@ -2385,8 +2396,6 @@ function addStockRow(
             0
         </td>
 
-
-        <!-- 삭제 -->
 
         <td class="text-center">
 
@@ -2418,6 +2427,11 @@ function addStockRow(
 
 
     saveStockRows();
+
+
+    /* ★ 종목 추가 직후 합계 갱신 */
+
+    updateStockTotal();
 
 }
 
@@ -2514,7 +2528,6 @@ function formatStockNumber(
 
 /* =========================================================
    행 데이터
-   티커 제거
 ========================================================= */
 
 function getStockRowData(
@@ -2614,9 +2627,7 @@ function updateStockRow(
         );
 
 
-    if (
-        !stageEl
-    ) {
+    if (!stageEl) {
 
         return;
 
@@ -2718,6 +2729,15 @@ function updateStockRow(
         );
 
 
+    /* =====================================================
+       ★ 중요
+       종목 한 줄의 금액이 바뀔 때마다
+       전체 합계를 즉시 다시 계산
+    ====================================================== */
+
+    updateStockTotal();
+
+
     if (save) {
 
         saveStockRows();
@@ -2730,16 +2750,6 @@ function updateStockRow(
 
 /* =========================================================
    종목 뉴스 검색
-   핵심:
-   종목명만 입력하면
-
-   삼성전자 목표가
-   삼성전자 주가
-   삼성전자 현재가
-   삼성전자 실적
-
-   을 하나의 복합 검색어로 만들어
-   Google 뉴스 검색
 ========================================================= */
 
 function openTargetNews(
@@ -2775,17 +2785,6 @@ function openTargetNews(
     const name =
         d.name.trim();
 
-
-    /*
-       사용자가 요청한 형태:
-
-       삼성전자 목표가
-       삼성전자 주가
-       삼성전자 현재가
-       삼성전자 실적
-
-       네 가지 검색어를 모두 포함
-    */
 
     const query =
         `"${name} 목표가" ` +
@@ -2864,6 +2863,10 @@ function deleteStockRow(
 
         saveStockRows();
 
+        /* ★ 삭제 후 합계 갱신 */
+
+        updateStockTotal();
+
     }
 
 }
@@ -2940,6 +2943,8 @@ function loadStockRows() {
             !Array.isArray(rows)
         ) {
 
+            updateStockTotal();
+
             return;
 
         }
@@ -2954,6 +2959,11 @@ function loadStockRows() {
 
             }
         );
+
+
+        /* ★ 불러온 종목 전체 합계 */
+
+        updateStockTotal();
 
     } catch (e) {
 
@@ -3183,12 +3193,6 @@ function loadSavedSession() {
         );
 
 
-        /*
-           저장된 탭이 있어도
-           잘못된 상태로 두 화면이 동시에
-           나타나지 않도록 switchTab 하나만 사용
-        */
-
         const savedTab =
             storageGet(
                 'activeTab',
@@ -3218,6 +3222,7 @@ function loadSavedSession() {
             'Session load error:',
             e
         );
+
 
         switchTab(
             'dashboard'
@@ -3342,15 +3347,11 @@ window.addEventListener(
 
         try {
 
-            /*
-               가장 먼저 화면을 강제로 하나만 표시
-               → 2개 화면 분할 방지
-            */
-
             const dashboard =
                 document.getElementById(
                     'content-dashboard'
                 );
+
 
             const calculator =
                 document.getElementById(
@@ -3383,9 +3384,10 @@ window.addEventListener(
             loadStockRows();
 
 
-            /*
-               대시보드 데이터 업데이트
-            */
+            /* ★ 최초 합계 계산 */
+
+            updateStockTotal();
+
 
             fetchRealtimeMarketData();
 
@@ -3401,11 +3403,6 @@ window.addEventListener(
             );
 
 
-            /*
-               초기화 중 오류가 나더라도
-               대시보드는 정상 표시
-            */
-
             switchTab(
                 'dashboard'
             );
@@ -3416,9 +3413,9 @@ window.addEventListener(
 );
 
 
+
 /* =========================================================
    뉴스 자동 업데이트
-   5분마다 대시보드 뉴스 갱신
 ========================================================= */
 
 setInterval(
