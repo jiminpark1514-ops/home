@@ -220,7 +220,7 @@
 
 <section
     id="content-dashboard"
-    class="h-full flex flex-col gap-4"
+    class="hidden flex-col gap-6 max-w-[1800px] mx-auto w-full pt-4"
 >
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
@@ -1192,84 +1192,138 @@ updateClock();
 
 function switchTab(tabName) {
 
-    const tabs = [
-        'dashboard',
-        'calculator'
-    ];
+    const dashboard =
+        document.getElementById('content-dashboard');
+
+    const calculator =
+        document.getElementById('content-calculator');
+
+    const dashboardBtn =
+        document.getElementById('tab-dashboard');
+
+    const calculatorBtn =
+        document.getElementById('tab-calculator');
 
 
-    tabs.forEach(name => {
+    /* ==========================================
+       모든 페이지 완전히 숨김
+    ========================================== */
 
-        const btn =
-            document.getElementById(
-                'tab-' + name
-            );
+    if (dashboard) {
+        dashboard.classList.add('hidden');
+        dashboard.classList.remove('flex');
+        dashboard.style.display = 'none';
+    }
 
-        const content =
-            document.getElementById(
-                'content-' + name
-            );
+    if (calculator) {
+        calculator.classList.add('hidden');
+        calculator.classList.remove('flex');
+        calculator.style.display = 'none';
+    }
 
 
-        if (btn) {
+    /* ==========================================
+       모든 탭 버튼 비활성화
+    ========================================== */
 
-            btn.classList.remove(
+    if (dashboardBtn) {
+        dashboardBtn.classList.remove(
+            'active',
+            'bg-blue-600'
+        );
+
+        dashboardBtn.classList.add(
+            'bg-slate-700'
+        );
+    }
+
+    if (calculatorBtn) {
+        calculatorBtn.classList.remove(
+            'active',
+            'bg-blue-600'
+        );
+
+        calculatorBtn.classList.add(
+            'bg-slate-700'
+        );
+    }
+
+
+    /* ==========================================
+       선택한 페이지 하나만 표시
+    ========================================== */
+
+    if (tabName === 'dashboard') {
+
+        if (dashboard) {
+
+            dashboard.classList.remove('hidden');
+
+            dashboard.style.display = 'flex';
+
+        }
+
+        if (dashboardBtn) {
+
+            dashboardBtn.classList.add(
                 'active',
                 'bg-blue-600'
             );
 
-            btn.classList.add(
+            dashboardBtn.classList.remove(
                 'bg-slate-700'
             );
 
         }
 
+    }
 
-        if (content) {
 
-            content.style.display = 'none';
+    if (tabName === 'calculator') {
+
+        if (calculator) {
+
+            calculator.classList.remove('hidden');
+
+            calculator.style.display = 'flex';
 
         }
 
-    });
+        if (calculatorBtn) {
 
+            calculatorBtn.classList.add(
+                'active',
+                'bg-blue-600'
+            );
 
-    const targetBtn =
-        document.getElementById(
-            'tab-' + tabName
-        );
+            calculatorBtn.classList.remove(
+                'bg-slate-700'
+            );
 
-
-    const targetContent =
-        document.getElementById(
-            'content-' + tabName
-        );
-
-
-    if (!targetBtn || !targetContent) {
-
-        return;
+        }
 
     }
 
 
-    targetBtn.classList.add(
-        'active',
-        'bg-blue-600'
-    );
+    /* ==========================================
+       현재 탭 저장
+    ========================================== */
 
-    targetBtn.classList.remove(
-        'bg-slate-700'
-    );
+    try {
 
+        localStorage.setItem(
+            'activeTab',
+            tabName
+        );
 
-    targetContent.style.display = 'flex';
+    } catch (e) {
 
+        console.warn(
+            'activeTab 저장 실패',
+            e
+        );
 
-    storageSet(
-        'activeTab',
-        tabName
-    );
+    }
 
 }
 
