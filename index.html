@@ -6,9 +6,10 @@
     <title>달려라 삼전 대시보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
-        
+
         body {
             font-family: 'Noto Sans KR', sans-serif;
             background-color: #0f172a;
@@ -20,20 +21,24 @@
             color: white;
             font-weight: bold;
         }
-        
+
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: #1e293b;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #475569;
             border-radius: 3px;
         }
 
-        input[type="text"], input[type="password"], select {
+        input[type="text"],
+        input[type="password"],
+        select {
             background-color: #1e293b;
             border: 1px solid #334155;
             color: #60a5fa;
@@ -67,7 +72,7 @@
             border-bottom: 1px solid #334155;
             padding-bottom: 0.4rem;
         }
-        
+
         .news-link {
             color: #cbd5e1;
             font-size: 0.92rem;
@@ -104,2539 +109,2586 @@
             background-color: #eab308;
             color: #000;
         }
+
+        .stock-input {
+            background-color: #0f172a !important;
+            border: 1px solid #475569 !important;
+            color: white !important;
+        }
+
+        .stock-input:focus {
+            border-color: #3b82f6 !important;
+        }
+
+        .stock-news {
+            line-height: 1.35;
+        }
+
+        .stock-news a {
+            color: #94a3b8;
+            text-decoration: none;
+        }
+
+        .stock-news a:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
     </style>
 </head>
 
 <body class="h-screen flex flex-col">
 
-    <header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center shrink-0">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-600 text-white p-2 rounded-lg">
-                <i class="fas fa-chart-line text-xl"></i>
-            </div>
+<header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center shrink-0">
 
-            <h1 class="text-2xl font-bold text-white tracking-wider">
-                달려라 삼전
-                <span class="text-blue-400 text-lg">STUDIO</span>
-            </h1>
+    <div class="flex items-center gap-3">
+        <div class="bg-blue-600 text-white p-2 rounded-lg">
+            <i class="fas fa-chart-line text-xl"></i>
         </div>
-        
-        <div class="flex gap-2">
-            <button onclick="switchTab('dashboard')"
-                    id="tab-dashboard"
-                    class="tab-btn active px-5 py-2 rounded-md transition-colors text-slate-300 bg-slate-700 hover:bg-slate-600 text-sm">
-                <i class="fas fa-tv mr-2"></i>대시보드
-            </button>
 
-            <button onclick="switchTab('calculator')"
-                    id="tab-calculator"
-                    class="tab-btn px-5 py-2 rounded-md transition-colors text-slate-300 bg-slate-700 hover:bg-slate-600 text-sm">
-                <i class="fas fa-calculator mr-2"></i>자금 관리 계산기
-            </button>
-        </div>
-        
-        <div class="text-sm text-slate-400 font-mono" id="clock">
-            0000. 00. 00 00:00:00
-        </div>
-    </header>
+        <h1 class="text-2xl font-bold text-white tracking-wider">
+            달려라 삼전
+            <span class="text-blue-400 text-lg">STUDIO</span>
+        </h1>
+    </div>
 
-    <main class="flex-1 overflow-auto p-4">
-        
-        <!-- ========================= -->
-        <!-- 대시보드 탭 -->
-        <!-- ========================= -->
+    <div class="flex gap-2">
 
-        <section id="content-dashboard" class="h-full flex flex-col gap-4">
+        <button
+            onclick="switchTab('dashboard')"
+            id="tab-dashboard"
+            class="tab-btn active px-5 py-2 rounded-md transition-colors text-slate-300 bg-slate-700 hover:bg-slate-600 text-sm">
+            <i class="fas fa-tv mr-2"></i>대시보드
+        </button>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
+        <button
+            onclick="switchTab('calculator')"
+            id="tab-calculator"
+            class="tab-btn px-5 py-2 rounded-md transition-colors text-slate-300 bg-slate-700 hover:bg-slate-600 text-sm">
+            <i class="fas fa-calculator mr-2"></i>자금 관리 계산기
+        </button>
 
-                <div class="lg:col-span-12 grid grid-cols-2 gap-3">
+    </div>
 
-                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
-                        <div class="text-slate-400 text-xs mb-1">
-                            마이크론 (MU)
-                        </div>
+    <div class="text-sm text-slate-400 font-mono" id="clock">
+        0000. 00. 00 00:00:00
+    </div>
 
-                        <div class="text-lg font-bold text-white" id="idx-micron">
-                            조회 중...
-                        </div>
-                    </div>
+</header>
 
-                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
-                        <div class="text-slate-400 text-xs mb-1">
-                            샌디스크 (WDC / 대형반도체)
-                        </div>
+<main class="flex-1 overflow-auto p-4">
 
-                        <div class="text-lg font-bold text-white" id="idx-sandisk">
-                            조회 중...
-                        </div>
-                    </div>
+    <!-- =========================================================
+         대시보드
+    ========================================================== -->
 
-                </div>
-            </div>
+    <section id="content-dashboard" class="h-full flex flex-col gap-4">
 
-            <div class="grid grid-cols-3 grid-rows-2 gap-4 h-full min-h-[500px]">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
 
-                <div class="news-card">
-                    <h3 class="text-lg font-bold text-yellow-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
-                        <span>반도체 및 수출</span>
-                        <i class="fas fa-microchip"></i>
-                    </h3>
-                    <div class="news-content" id="list-semi">
-                        로딩 중...
+            <div class="lg:col-span-12 grid grid-cols-2 gap-3">
+
+                <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+                    <div class="text-slate-400 text-xs mb-1">마이크론 (MU)</div>
+                    <div class="text-lg font-bold text-white" id="idx-micron">
+                        조회 중...
                     </div>
                 </div>
 
-                <div class="news-card">
-                    <h3 class="text-lg font-bold text-emerald-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
-                        <span>채권금리</span>
-                        <i class="fas fa-percent"></i>
-                    </h3>
-                    <div class="news-content" id="list-bond">
-                        로딩 중...
+                <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+                    <div class="text-slate-400 text-xs mb-1">
+                        샌디스크 (WDC / 대형반도체)
                     </div>
-                </div>
-
-                <div class="news-card">
-                    <h3 class="text-lg font-bold text-pink-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
-                        <span>기준금리</span>
-                        <i class="fas fa-university"></i>
-                    </h3>
-                    <div class="news-content" id="list-base">
-                        로딩 중...
-                    </div>
-                </div>
-
-                <div class="news-card">
-                    <h3 class="text-lg font-bold text-blue-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
-                        <span>연준(Fed) 관련</span>
-                        <i class="fas fa-landmark"></i>
-                    </h3>
-                    <div class="news-content" id="list-fed">
-                        로딩 중...
-                    </div>
-                </div>
-
-                <div class="news-card">
-                    <h3 class="text-lg font-bold text-orange-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
-                        <span>삼성 매출/실적/기업분석</span>
-                        <i class="fas fa-building"></i>
-                    </h3>
-                    <div class="news-content" id="list-samsung">
-                        로딩 중...
-                    </div>
-                </div>
-
-                <div class="news-card">
-                    <h3 class="text-lg font-bold text-purple-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
-                        <span>신용/대출/마진잔고</span>
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </h3>
-                    <div class="news-content" id="list-credit">
-                        로딩 중...
+                    <div class="text-lg font-bold text-white" id="idx-sandisk">
+                        조회 중...
                     </div>
                 </div>
 
             </div>
-        </section>
+
+        </div>
+
+        <div class="grid grid-cols-3 grid-rows-2 gap-4 h-full min-h-[500px]">
+
+            <div class="news-card">
+
+                <h3 class="text-lg font-bold text-yellow-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
+                    <span>반도체 및 수출</span>
+                    <i class="fas fa-microchip"></i>
+                </h3>
+
+                <div class="news-content" id="list-semi">
+                    로딩 중...
+                </div>
+
+            </div>
+
+            <div class="news-card">
+
+                <h3 class="text-lg font-bold text-emerald-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
+                    <span>채권금리</span>
+                    <i class="fas fa-percent"></i>
+                </h3>
+
+                <div class="news-content" id="list-bond">
+                    로딩 중...
+                </div>
+
+            </div>
+
+            <div class="news-card">
+
+                <h3 class="text-lg font-bold text-pink-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
+                    <span>기준금리</span>
+                    <i class="fas fa-university"></i>
+                </h3>
+
+                <div class="news-content" id="list-base">
+                    로딩 중...
+                </div>
+
+            </div>
+
+            <div class="news-card">
+
+                <h3 class="text-lg font-bold text-blue-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
+                    <span>연준(Fed) 관련</span>
+                    <i class="fas fa-landmark"></i>
+                </h3>
+
+                <div class="news-content" id="list-fed">
+                    로딩 중...
+                </div>
+
+            </div>
+
+            <div class="news-card">
+
+                <h3 class="text-lg font-bold text-orange-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
+                    <span>삼성 매출/실적/기업분석</span>
+                    <i class="fas fa-building"></i>
+                </h3>
+
+                <div class="news-content" id="list-samsung">
+                    로딩 중...
+                </div>
+
+            </div>
+
+            <div class="news-card">
+
+                <h3 class="text-lg font-bold text-purple-400 mb-3 border-b border-slate-600 pb-2 flex justify-between items-center">
+                    <span>신용/대출/마진잔고</span>
+                    <i class="fas fa-exclamation-triangle"></i>
+                </h3>
+
+                <div class="news-content" id="list-credit">
+                    로딩 중...
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
 
-        <!-- ========================= -->
-        <!-- 자금 관리 계산기 탭 -->
-        <!-- ========================= -->
+    <!-- =========================================================
+         자금 관리 계산기
+    ========================================================== -->
 
-        <section id="content-calculator"
-                 class="h-full hidden flex flex-col gap-6 max-w-6xl mx-auto w-full pt-4">
+    <section
+        id="content-calculator"
+        class="h-full hidden flex flex-col gap-6 max-w-6xl mx-auto w-full pt-4">
 
-            <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 flex flex-wrap gap-8 justify-between items-center shadow-lg">
+        <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 flex flex-wrap gap-8 justify-between items-center shadow-lg">
 
-                <div class="flex gap-6 items-center">
+            <div class="flex gap-6 items-center">
 
-                    <div>
-                        <label class="block text-slate-400 text-sm mb-1">
-                            가용자금 (마통포함, 원)
+                <div>
+                    <label class="block text-slate-400 text-sm mb-1">
+                        가용자금 (마통포함, 원)
+                    </label>
+
+                    <input
+                        type="text"
+                        id="calc-total-funds"
+                        value="60,000,000"
+                        class="p-2 rounded w-48 text-lg"
+                        oninput="calculateFunds()">
+                </div>
+
+                <div>
+
+                    <label class="block text-slate-400 text-sm mb-1">
+                        연령대
+                    </label>
+
+                    <select
+                        id="calc-age"
+                        class="p-2 rounded w-32 text-lg"
+                        onchange="calculateFunds()">
+
+                        <option value="under30">30대 이하</option>
+                        <option value="over40" selected>40대 이상</option>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label class="block text-red-500 text-sm mb-1 font-bold">
+                        금리인상기 체크
+                    </label>
+
+                    <div class="h-[42px] flex items-center justify-center">
+
+                        <input
+                            type="checkbox"
+                            id="calc-rate-hike"
+                            class="w-5 h-5 accent-red-500"
+                            onchange="calculateFunds()">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="flex gap-6">
+
+                <div class="bg-slate-900 px-6 py-3 rounded border border-slate-600 text-center">
+
+                    <div class="text-slate-400 text-sm">
+                        보유현금(사용금지)
+                        <span id="reserved-percent" class="text-yellow-400 font-bold">
+                            40%
+                        </span>
+                    </div>
+
+                    <div
+                        class="text-2xl font-bold text-white mt-1"
+                        id="val-reserved-cash">
+                        24,000,000
+                    </div>
+
+                </div>
+
+
+                <div class="bg-blue-900/50 px-6 py-3 rounded border border-blue-500 text-center">
+
+                    <div class="text-slate-300 text-sm">
+                        실전 투자금
+                        <span id="invest-percent" class="text-blue-300 font-bold">
+                            60%
+                        </span>
+                    </div>
+
+                    <div
+                        class="text-2xl font-bold text-blue-400 mt-1"
+                        id="val-invest-cash">
+                        36,000,000
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="grid grid-cols-2 gap-8 flex-1 items-start">
+
+            <!-- 일반 전략 -->
+
+            <div class="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden shadow-lg">
+
+                <div class="bg-slate-700 p-3 border-b border-slate-600 font-bold text-lg text-white">
+                    &lt;일반&gt; 평시 투자 전략
+                </div>
+
+                <div class="p-4">
+
+                    <div class="flex justify-between items-center mb-4">
+
+                        <label class="text-slate-300">
+                            현재고점 (종목 기준가)
                         </label>
 
-                        <input type="text"
-                               id="calc-total-funds"
-                               value="60,000,000"
-                               class="p-2 rounded w-48 text-lg"
-                               oninput="calculateFunds()">
-                    </div>
-
-                    <div>
-                        <label class="block text-slate-400 text-sm mb-1">
-                            연령대
-                        </label>
-
-                        <select id="calc-age"
-                                class="p-2 rounded w-32 text-lg"
-                                onchange="calculateFunds()">
-
-                            <option value="under30">30대 이하</option>
-                            <option value="over40" selected>40대 이상</option>
-
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-red-500 text-sm mb-1 font-bold">
-                            금리인상기 체크
-                        </label>
-
-                        <div class="h-[42px] flex items-center justify-center">
-
-                            <input type="checkbox"
-                                   id="calc-rate-hike"
-                                   class="w-5 h-5 accent-red-500"
-                                   onchange="calculateFunds()">
-
-                        </div>
-                    </div>
-
-                </div>
-
-
-                <div class="flex gap-6">
-
-                    <div class="bg-slate-900 px-6 py-3 rounded border border-slate-600 text-center">
-
-                        <div class="text-slate-400 text-sm">
-                            보유현금(사용금지)
-                            <span id="reserved-percent"
-                                  class="text-yellow-400 font-bold">
-                                40%
-                            </span>
-                        </div>
-
-                        <div class="text-2xl font-bold text-white mt-1"
-                             id="val-reserved-cash">
-                            24,000,000
-                        </div>
+                        <input
+                            type="text"
+                            id="calc-base-price-1"
+                            value="374,500"
+                            class="p-2 rounded w-32 text-right font-bold"
+                            oninput="syncPrices(1)">
 
                     </div>
 
 
-                    <div class="bg-blue-900/50 px-6 py-3 rounded border border-blue-500 text-center">
-
-                        <div class="text-slate-300 text-sm">
-                            실전 투자금
-                            <span id="invest-percent"
-                                  class="text-blue-300 font-bold">
-                                60%
-                            </span>
-                        </div>
-
-                        <div class="text-2xl font-bold text-blue-400 mt-1"
-                             id="val-invest-cash">
-                            36,000,000
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="grid grid-cols-2 gap-8 flex-1 items-start">
-
-                <!-- 일반 투자 전략 -->
-
-                <div class="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden shadow-lg">
-
-                    <div class="bg-slate-700 p-3 border-b border-slate-600 font-bold text-lg text-white">
-                        &lt;일반&gt; 평시 투자 전략
-                    </div>
-
-                    <div class="p-4">
-
-                        <div class="flex justify-between items-center mb-4">
-
-                            <label class="text-slate-300">
-                                현재고점 (종목 기준가)
-                            </label>
-
-                            <input type="text"
-                                   id="calc-base-price-1"
-                                   value="374,500"
-                                   class="p-2 rounded w-32 text-right font-bold"
-                                   oninput="syncPrices(1)">
-
-                        </div>
-
-
-                        <table class="w-full calc-table text-sm">
-
-                            <thead>
-                                <tr>
-                                    <th class="w-1/4">하락 구간</th>
-                                    <th class="w-1/4">목표 매수가</th>
-                                    <th class="w-1/4">투자 비중</th>
-                                    <th class="w-1/4">투입 금액</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                                <tr>
-                                    <td class="text-center font-bold text-red-400">
-                                        -20% 하락
-                                    </td>
-
-                                    <td id="m1-p20" class="text-right">
-                                        299,600
-                                    </td>
-
-                                    <td class="text-center">
-                                        <input type="number"
-                                               id="m1-w20"
-                                               value="40"
-                                               class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
-                                               oninput="calculateFunds()"> %
-                                    </td>
-
-                                    <td id="m1-a20"
-                                        class="font-bold text-blue-300 text-right">
-                                        14,400,000
-                                    </td>
-                                </tr>
-
-
-                                <tr>
-                                    <td class="text-center font-bold text-red-400">
-                                        -30% 하락
-                                    </td>
-
-                                    <td id="m1-p30" class="text-right">
-                                        262,150
-                                    </td>
-
-                                    <td class="text-center">
-
-                                        <input type="number"
-                                               id="m1-w30"
-                                               value="30"
-                                               class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
-                                               oninput="calculateFunds()"> %
-
-                                    </td>
-
-                                    <td id="m1-a30"
-                                        class="font-bold text-blue-300 text-right">
-                                        10,800,000
-                                    </td>
-
-                                </tr>
-
-
-                                <tr>
-                                    <td class="text-center font-bold text-red-400">
-                                        -40% 하락
-                                    </td>
-
-                                    <td id="m1-p40" class="text-right">
-                                        224,700
-                                    </td>
-
-                                    <td class="text-center">
-
-                                        <input type="number"
-                                               id="m1-w40"
-                                               value="30"
-                                               class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
-                                               oninput="calculateFunds()"> %
-
-                                    </td>
-
-                                    <td id="m1-a40"
-                                        class="font-bold text-blue-300 text-right">
-                                        10,800,000
-                                    </td>
-                                </tr>
-
-
-                                <tr class="bg-slate-900/50">
-
-                                    <td class="text-center font-bold text-red-500">
-                                        -65% 하락
-                                    </td>
-
-                                    <td id="m1-p65" class="text-right">
-                                        131,075
-                                    </td>
-
-                                    <td class="text-center text-xs text-yellow-500">
-                                        보유현금 50% 투입
-                                    </td>
-
-                                    <td id="m1-a65"
-                                        class="font-bold text-yellow-400 text-right">
-                                        12,000,000
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-
-                            <tfoot>
-
-                                <tr class="bg-slate-900 border-t-2 border-slate-500">
-
-                                    <td colspan="3"
-                                        class="text-center font-bold text-white">
-                                        합계 (투자금 + 현금투입)
-                                    </td>
-
-                                    <td id="m1-total"
-                                        class="font-bold text-white text-lg text-right">
-                                        48,000,000
-                                    </td>
-
-                                </tr>
-
-                            </tfoot>
-
-                        </table>
-
-                    </div>
-                </div>
-
-
-                <!-- 위기감지 전략 -->
-
-                <div class="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden shadow-lg border-2 border-yellow-500/50">
-
-                    <div class="bg-yellow-alert p-3 font-bold text-lg border-b border-yellow-600 flex justify-between">
-
-                        <span>&lt;위기감지&gt; 대응 전략</span>
-
-                        <i class="fas fa-exclamation-triangle"></i>
-
-                    </div>
-
-
-                    <div class="bg-yellow-100 text-red-700 p-4 text-sm font-bold leading-relaxed border-b border-slate-700">
-
-                        * 팬데믹 및 지정학적 리스크 급변 *<br>
-                        * 35주 이격도 및 기술적 과열 구간 *<br>
-                        * 신용융자 잔고 고점 경계 *<br>
-                        * 통화량 및 금리 변동성 밀착 주시 *
-
-                    </div>
-
-
-                    <div class="p-4">
-
-                        <div class="flex justify-between items-center mb-4">
-
-                            <label class="text-slate-300">
-                                현재고점 (종목 기준가)
-                            </label>
-
-                            <input type="text"
-                                   id="calc-base-price-2"
-                                   value="374,500"
-                                   class="p-2 rounded w-32 text-right font-bold"
-                                   oninput="syncPrices(2)">
-
-                        </div>
-
-
-                        <table class="w-full calc-table text-sm">
-
-                            <thead>
-                                <tr>
-                                    <th class="w-1/4">하락 구간</th>
-                                    <th class="w-1/4">목표 매수가</th>
-                                    <th class="w-1/4">투자 비중</th>
-                                    <th class="w-1/4">투입 금액</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                                <tr>
-                                    <td class="text-center font-bold text-red-400">
-                                        -30% 하락
-                                    </td>
-
-                                    <td id="m2-p30" class="text-right">
-                                        262,150
-                                    </td>
-
-                                    <td class="text-center">
-
-                                        <input type="number"
-                                               id="m2-w30"
-                                               value="0"
-                                               class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
-                                               oninput="calculateFunds()"> %
-
-                                    </td>
-
-                                    <td id="m2-a30"
-                                        class="font-bold text-blue-300 text-right">
-                                        0
-                                    </td>
-
-                                </tr>
-
-
-                                <tr>
-                                    <td class="text-center font-bold text-red-400">
-                                        -40% 하락
-                                    </td>
-
-                                    <td id="m2-p40" class="text-right">
-                                        224,700
-                                    </td>
-
-                                    <td class="text-center">
-
-                                        <input type="number"
-                                               id="m2-w40"
-                                               value="50"
-                                               class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
-                                               oninput="calculateFunds()"> %
-
-                                    </td>
-
-                                    <td id="m2-a40"
-                                        class="font-bold text-blue-300 text-right">
-                                        18,000,000
-                                    </td>
-
-                                </tr>
-
-
-                                <tr>
-                                    <td class="text-center font-bold text-red-500">
-                                        -65% 하락
-                                    </td>
-
-                                    <td id="m2-p65" class="text-right">
-                                        131,075
-                                    </td>
-
-                                    <td class="text-center">
-
-                                        <input type="number"
-                                               id="m2-w65"
-                                               value="50"
-                                               class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
-                                               oninput="calculateFunds()"> %
-
-                                    </td>
-
-                                    <td id="m2-a65"
-                                        class="font-bold text-blue-300 text-right">
-                                        18,000,000
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-
-
-                            <tfoot>
-
-                                <tr class="bg-slate-900 border-t-2 border-slate-500">
-
-                                    <td colspan="3"
-                                        class="text-center font-bold text-white">
-                                        합계 (투자금액)
-                                    </td>
-
-                                    <td id="m2-total"
-                                        class="font-bold text-white text-lg text-right">
-                                        36,000,000
-                                    </td>
-
-                                </tr>
-
-                            </tfoot>
-
-                        </table>
-
-                    </div>
-                </div>
-
-            </div>
-
-
-            <!-- ========================= -->
-            <!-- 종목 관리 -->
-            <!-- ========================= -->
-
-            <section id="stock-manager"
-                     class="bg-slate-800 rounded-lg border border-slate-700 shadow-lg p-6 mt-2">
-
-                <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-
-                    <div>
-
-                        <h3 class="text-xl font-bold text-white">
-                            <i class="fas fa-list-check text-blue-400 mr-2"></i>
-                            종목 관리
-                        </h3>
-
-                        <p class="text-xs text-slate-400 mt-1">
-                            종목명과 티커를 입력한 후 Enter를 누르면 현재가·역대 고점·현재 국면·대응 가이드·권장 투자 금액·뉴스를 자동 조회합니다.
-                        </p>
-
-                    </div>
-
-                    <button onclick="addStockRow()"
-                            class="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm">
-
-                        <i class="fas fa-plus mr-2"></i>
-                        종목추가
-
-                    </button>
-
-                </div>
-
-
-                <div class="overflow-x-auto">
-
-                    <table class="w-full calc-table text-sm min-w-[1500px]">
+                    <table class="w-full calc-table text-sm">
 
                         <thead>
 
                             <tr>
-
-                                <th>종목명</th>
-                                <th>티커</th>
-                                <th>목표가</th>
-                                <th>현재가</th>
-                                <th>역대 고점</th>
-                                <th>목표가 관련 뉴스</th>
-                                <th>현재 국면</th>
-                                <th>대응 가이드</th>
-                                <th>투자 비중</th>
-                                <th>권장 투자 금액</th>
-                                <th>실적 뉴스 헤드라인 3건</th>
-
+                                <th class="w-1/4">하락 구간</th>
+                                <th class="w-1/4">목표 매수가</th>
+                                <th class="w-1/4">투자 비중</th>
+                                <th class="w-1/4">투입 금액</th>
                             </tr>
 
                         </thead>
 
-                        <tbody id="stock-table-body"></tbody>
+                        <tbody>
+
+                            <tr>
+
+                                <td class="text-center font-bold text-red-400">
+                                    -20% 하락
+                                </td>
+
+                                <td id="m1-p20" class="text-right">
+                                    299,600
+                                </td>
+
+                                <td class="text-center">
+
+                                    <input
+                                        type="number"
+                                        id="m1-w20"
+                                        value="40"
+                                        class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
+                                        oninput="calculateFunds()">
+
+                                    %
+
+                                </td>
+
+                                <td
+                                    id="m1-a20"
+                                    class="font-bold text-blue-300 text-right">
+                                    14,400,000
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td class="text-center font-bold text-red-400">
+                                    -30% 하락
+                                </td>
+
+                                <td id="m1-p30" class="text-right">
+                                    262,150
+                                </td>
+
+                                <td class="text-center">
+
+                                    <input
+                                        type="number"
+                                        id="m1-w30"
+                                        value="30"
+                                        class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
+                                        oninput="calculateFunds()">
+
+                                    %
+
+                                </td>
+
+                                <td
+                                    id="m1-a30"
+                                    class="font-bold text-blue-300 text-right">
+                                    10,800,000
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td class="text-center font-bold text-red-400">
+                                    -40% 하락
+                                </td>
+
+                                <td id="m1-p40" class="text-right">
+                                    224,700
+                                </td>
+
+                                <td class="text-center">
+
+                                    <input
+                                        type="number"
+                                        id="m1-w40"
+                                        value="30"
+                                        class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
+                                        oninput="calculateFunds()">
+
+                                    %
+
+                                </td>
+
+                                <td
+                                    id="m1-a40"
+                                    class="font-bold text-blue-300 text-right">
+                                    10,800,000
+                                </td>
+
+                            </tr>
+
+
+                            <tr class="bg-slate-900/50">
+
+                                <td class="text-center font-bold text-red-500">
+                                    -65% 하락
+                                </td>
+
+                                <td id="m1-p65" class="text-right">
+                                    131,075
+                                </td>
+
+                                <td class="text-center text-xs text-yellow-500">
+                                    보유현금 50% 투입
+                                </td>
+
+                                <td
+                                    id="m1-a65"
+                                    class="font-bold text-yellow-400 text-right">
+                                    12,000,000
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+
+                        <tfoot>
+
+                            <tr class="bg-slate-900 border-t-2 border-slate-500">
+
+                                <td
+                                    colspan="3"
+                                    class="text-center font-bold text-white">
+                                    합계 (투자금 + 현금투입)
+                                </td>
+
+                                <td
+                                    id="m1-total"
+                                    class="font-bold text-white text-lg text-right">
+                                    48,000,000
+                                </td>
+
+                            </tr>
+
+                        </tfoot>
 
                     </table>
 
                 </div>
 
-            </section>
-
-        </section>
-
-    </main>
+            </div>
 
 
-    <script>
+            <!-- 위기 전략 -->
 
-        /* =========================================================
-           FINNHUB API KEY
-        ========================================================= */
+            <div class="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden shadow-lg border-2 border-yellow-500/50">
 
-        const FINNHUB_API_KEY =
-            'd9vckp1r01qv408k25mgd9vckp1r01qv408k25n0';
+                <div class="bg-yellow-alert p-3 font-bold text-lg border-b border-yellow-600 flex justify-between">
 
+                    <span>&lt;위기감지&gt; 대응 전략</span>
 
-        /* =========================================================
-           세션 저장
-        ========================================================= */
+                    <i class="fas fa-exclamation-triangle"></i>
 
-        function loadSavedSession() {
-
-            try {
-
-                if(localStorage.getItem('calc-total-funds'))
-                    document.getElementById('calc-total-funds').value =
-                        localStorage.getItem('calc-total-funds');
-
-                if(localStorage.getItem('calc-age'))
-                    document.getElementById('calc-age').value =
-                        localStorage.getItem('calc-age');
-
-                if(localStorage.getItem('calc-rate-hike'))
-                    document.getElementById('calc-rate-hike').checked =
-                        localStorage.getItem('calc-rate-hike') === 'true';
-
-                if(localStorage.getItem('calc-base-price')) {
-
-                    const savedPrice =
-                        localStorage.getItem('calc-base-price');
-
-                    document.getElementById('calc-base-price-1').value =
-                        savedPrice;
-
-                    document.getElementById('calc-base-price-2').value =
-                        savedPrice;
-                }
-
-                if(localStorage.getItem('m1-w20'))
-                    document.getElementById('m1-w20').value =
-                        localStorage.getItem('m1-w20');
-
-                if(localStorage.getItem('m1-w30'))
-                    document.getElementById('m1-w30').value =
-                        localStorage.getItem('m1-w30');
-
-                if(localStorage.getItem('m1-w40'))
-                    document.getElementById('m1-w40').value =
-                        localStorage.getItem('m1-w40');
-
-                if(localStorage.getItem('m2-w30'))
-                    document.getElementById('m2-w30').value =
-                        localStorage.getItem('m2-w30');
-
-                if(localStorage.getItem('m2-w40'))
-                    document.getElementById('m2-w40').value =
-                        localStorage.getItem('m2-w40');
-
-                if(localStorage.getItem('m2-w65'))
-                    document.getElementById('m2-w65').value =
-                        localStorage.getItem('m2-w65');
+                </div>
 
 
-                const savedTab =
-                    localStorage.getItem('activeTab');
+                <div class="bg-yellow-100 text-red-700 p-4 text-sm font-bold leading-relaxed border-b border-slate-700">
 
-                if(savedTab)
-                    switchTab(savedTab);
+                    * 팬데믹 및 지정학적 리스크 급변 *<br>
+                    * 35주 이격도 및 기술적 과열 구간 *<br>
+                    * 신용융자 잔고 고점 경계 *<br>
+                    * 통화량 및 금리 변동성 밀착 주시 *
 
-            } catch (e) {
+                </div>
 
-                console.error("Session load error:", e);
+
+                <div class="p-4">
+
+                    <div class="flex justify-between items-center mb-4">
+
+                        <label class="text-slate-300">
+                            현재고점 (종목 기준가)
+                        </label>
+
+                        <input
+                            type="text"
+                            id="calc-base-price-2"
+                            value="374,500"
+                            class="p-2 rounded w-32 text-right font-bold"
+                            oninput="syncPrices(2)">
+
+                    </div>
+
+
+                    <table class="w-full calc-table text-sm">
+
+                        <thead>
+
+                            <tr>
+                                <th class="w-1/4">하락 구간</th>
+                                <th class="w-1/4">목표 매수가</th>
+                                <th class="w-1/4">투자 비중</th>
+                                <th class="w-1/4">투입 금액</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+
+                                <td class="text-center font-bold text-red-400">
+                                    -30% 하락
+                                </td>
+
+                                <td id="m2-p30" class="text-right">
+                                    262,150
+                                </td>
+
+                                <td class="text-center">
+
+                                    <input
+                                        type="number"
+                                        id="m2-w30"
+                                        value="0"
+                                        class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
+                                        oninput="calculateFunds()">
+
+                                    %
+
+                                </td>
+
+                                <td
+                                    id="m2-a30"
+                                    class="font-bold text-blue-300 text-right">
+                                    0
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td class="text-center font-bold text-red-400">
+                                    -40% 하락
+                                </td>
+
+                                <td id="m2-p40" class="text-right">
+                                    224,700
+                                </td>
+
+                                <td class="text-center">
+
+                                    <input
+                                        type="number"
+                                        id="m2-w40"
+                                        value="50"
+                                        class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
+                                        oninput="calculateFunds()">
+
+                                    %
+
+                                </td>
+
+                                <td
+                                    id="m2-a40"
+                                    class="font-bold text-blue-300 text-right">
+                                    18,000,000
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td class="text-center font-bold text-red-500">
+                                    -65% 하락
+                                </td>
+
+                                <td id="m2-p65" class="text-right">
+                                    131,075
+                                </td>
+
+                                <td class="text-center">
+
+                                    <input
+                                        type="number"
+                                        id="m2-w65"
+                                        value="50"
+                                        class="w-16 p-1 text-center bg-slate-900 border border-slate-600 text-white rounded"
+                                        oninput="calculateFunds()">
+
+                                    %
+
+                                </td>
+
+                                <td
+                                    id="m2-a65"
+                                    class="font-bold text-blue-300 text-right">
+                                    18,000,000
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+
+                        <tfoot>
+
+                            <tr class="bg-slate-900 border-t-2 border-slate-500">
+
+                                <td
+                                    colspan="3"
+                                    class="text-center font-bold text-white">
+                                    합계 (투자금액)
+                                </td>
+
+                                <td
+                                    id="m2-total"
+                                    class="font-bold text-white text-lg text-right">
+                                    36,000,000
+                                </td>
+
+                            </tr>
+
+                        </tfoot>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         종목 관리
+         여기만 기능 수정
+    ========================================================== -->
+
+    <section
+        id="stock-manager"
+        class="bg-slate-800 rounded-lg border border-slate-700 shadow-lg p-6 mt-4">
+
+        <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+
+            <div>
+
+                <h3 class="text-xl font-bold text-white">
+
+                    <i class="fas fa-list-check text-blue-400 mr-2"></i>
+                    종목 관리
+
+                </h3>
+
+                <p class="text-xs text-slate-400 mt-1">
+
+                    종목명과 티커를 입력한 후 엔터를 누르면
+                    현재가·역대 고점·목표가 관련 뉴스·현재 국면·대응 가이드·투자 비중·권장 투자 금액이 자동 계산됩니다.
+
+                </p>
+
+            </div>
+
+
+            <button
+                onclick="addStockRow()"
+                class="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm">
+
+                <i class="fas fa-plus mr-2"></i>
+                종목추가
+
+            </button>
+
+        </div>
+
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full calc-table text-sm min-w-[1400px]">
+
+                <thead>
+
+                    <tr>
+
+                        <th>종목명</th>
+                        <th>티커</th>
+                        <th>목표가</th>
+                        <th>현재가</th>
+                        <th>역대 고점</th>
+                        <th>목표가 관련 뉴스</th>
+                        <th>현재 국면</th>
+                        <th>대응 가이드</th>
+                        <th>투자 비중</th>
+                        <th>권장 투자 금액</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="stock-table-body"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    /* =========================================================
+       FINNHUB
+    ========================================================== */
+
+    const FINNHUB_API_KEY =
+        'd9vckp1r01qv408k25mgd9vckp1r01qv408k25n0';
+
+
+    /* =========================================================
+       세션 저장
+    ========================================================== */
+
+    function loadSavedSession() {
+
+        try {
+
+            if (localStorage.getItem('calc-total-funds'))
+                document.getElementById('calc-total-funds').value =
+                    localStorage.getItem('calc-total-funds');
+
+            if (localStorage.getItem('calc-age'))
+                document.getElementById('calc-age').value =
+                    localStorage.getItem('calc-age');
+
+            if (localStorage.getItem('calc-rate-hike'))
+                document.getElementById('calc-rate-hike').checked =
+                    localStorage.getItem('calc-rate-hike') === 'true';
+
+            if (localStorage.getItem('calc-base-price')) {
+
+                const savedPrice =
+                    localStorage.getItem('calc-base-price');
+
+                document.getElementById('calc-base-price-1').value =
+                    savedPrice;
+
+                document.getElementById('calc-base-price-2').value =
+                    savedPrice;
 
             }
 
-        }
+            const fields = [
+                'm1-w20',
+                'm1-w30',
+                'm1-w40',
+                'm2-w30',
+                'm2-w40',
+                'm2-w65'
+            ];
 
+            fields.forEach(id => {
 
-        function saveSession() {
-
-            try {
-
-                localStorage.setItem(
-                    'calc-total-funds',
-                    document.getElementById('calc-total-funds').value
-                );
-
-                localStorage.setItem(
-                    'calc-age',
-                    document.getElementById('calc-age').value
-                );
-
-                localStorage.setItem(
-                    'calc-rate-hike',
-                    document.getElementById('calc-rate-hike').checked
-                );
-
-                localStorage.setItem(
-                    'calc-base-price',
-                    document.getElementById('calc-base-price-1').value
-                );
-
-                localStorage.setItem(
-                    'm1-w20',
-                    document.getElementById('m1-w20').value
-                );
-
-                localStorage.setItem(
-                    'm1-w30',
-                    document.getElementById('m1-w30').value
-                );
-
-                localStorage.setItem(
-                    'm1-w40',
-                    document.getElementById('m1-w40').value
-                );
-
-                localStorage.setItem(
-                    'm2-w30',
-                    document.getElementById('m2-w30').value
-                );
-
-                localStorage.setItem(
-                    'm2-w40',
-                    document.getElementById('m2-w40').value
-                );
-
-                localStorage.setItem(
-                    'm2-w65',
-                    document.getElementById('m2-w65').value
-                );
-
-            } catch (e) {
-
-                console.error("Session save error:", e);
-
-            }
-
-        }
-
-
-        /* =========================================================
-           시계
-        ========================================================= */
-
-        function updateClock() {
-
-            const now = new Date();
-
-            const str =
-                now.getFullYear() + '.' +
-                String(now.getMonth() + 1).padStart(2, '0') + '.' +
-                String(now.getDate()).padStart(2, '0') + ' ' +
-                String(now.getHours()).padStart(2, '0') + ':' +
-                String(now.getMinutes()).padStart(2, '0') + ':' +
-                String(now.getSeconds()).padStart(2, '0');
-
-            document.getElementById('clock').textContent = str;
-
-        }
-
-        setInterval(updateClock, 1000);
-
-        updateClock();
-
-
-        /* =========================================================
-           탭
-        ========================================================= */
-
-        function switchTab(tabName) {
-
-            ['dashboard', 'calculator'].forEach(name => {
-
-                const btn =
-                    document.getElementById('tab-' + name);
-
-                const content =
-                    document.getElementById('content-' + name);
-
-                if(btn)
-                    btn.classList.remove('active', 'bg-blue-600');
-
-                if(content) {
-
-                    content.classList.add('hidden');
-                    content.classList.remove('flex');
-
-                }
+                if (localStorage.getItem(id))
+                    document.getElementById(id).value =
+                        localStorage.getItem(id);
 
             });
 
 
-            const targetBtn =
-                document.getElementById('tab-' + tabName);
+            const savedTab =
+                localStorage.getItem('activeTab');
 
-            const targetContent =
-                document.getElementById('content-' + tabName);
+            if (savedTab)
+                switchTab(savedTab);
 
+        } catch (e) {
 
-            if(targetBtn)
-                targetBtn.classList.add('active');
-
-
-            if(targetContent) {
-
-                targetContent.classList.remove('hidden');
-                targetContent.classList.add('flex');
-
-            }
-
-
-            try {
-
-                localStorage.setItem(
-                    'activeTab',
-                    tabName
-                );
-
-            } catch(e) {}
+            console.error("Session load error:", e);
 
         }
 
+    }
 
-        /* =========================================================
-           뉴스 창
-        ========================================================= */
 
-        function openNewsWindow(url) {
+    function saveSession() {
 
-            const width = 740;
-            const height = 850;
+        try {
 
-            const left =
-                (window.screen.width - width) / 2;
-
-            const top =
-                (window.screen.height - height) / 2;
-
-            window.open(
-                url,
-                'newsWindow',
-                `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
+            localStorage.setItem(
+                'calc-total-funds',
+                document.getElementById('calc-total-funds').value
             );
 
+            localStorage.setItem(
+                'calc-age',
+                document.getElementById('calc-age').value
+            );
+
+            localStorage.setItem(
+                'calc-rate-hike',
+                document.getElementById('calc-rate-hike').checked
+            );
+
+            localStorage.setItem(
+                'calc-base-price',
+                document.getElementById('calc-base-price-1').value
+            );
+
+            [
+                'm1-w20',
+                'm1-w30',
+                'm1-w40',
+                'm2-w30',
+                'm2-w40',
+                'm2-w65'
+            ].forEach(id => {
+
+                localStorage.setItem(
+                    id,
+                    document.getElementById(id).value
+                );
+
+            });
+
+        } catch (e) {
+
+            console.error("Session save error:", e);
+
+        }
+
+    }
+
+
+    /* =========================================================
+       시계
+    ========================================================== */
+
+    function updateClock() {
+
+        const now = new Date();
+
+        const str =
+            now.getFullYear() + '.' +
+            String(now.getMonth() + 1).padStart(2, '0') + '.' +
+            String(now.getDate()).padStart(2, '0') + ' ' +
+            String(now.getHours()).padStart(2, '0') + ':' +
+            String(now.getMinutes()).padStart(2, '0') + ':' +
+            String(now.getSeconds()).padStart(2, '0');
+
+        document.getElementById('clock').textContent = str;
+
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+
+    /* =========================================================
+       탭
+    ========================================================== */
+
+    function switchTab(tabName) {
+
+        ['dashboard', 'calculator'].forEach(name => {
+
+            const btn =
+                document.getElementById('tab-' + name);
+
+            const content =
+                document.getElementById('content-' + name);
+
+            if (btn)
+                btn.classList.remove(
+                    'active',
+                    'bg-blue-600'
+                );
+
+            if (content) {
+
+                content.classList.add('hidden');
+                content.classList.remove('flex');
+
+            }
+
+        });
+
+
+        const targetBtn =
+            document.getElementById('tab-' + tabName);
+
+        const targetContent =
+            document.getElementById('content-' + tabName);
+
+
+        if (targetBtn)
+            targetBtn.classList.add('active');
+
+
+        if (targetContent) {
+
+            targetContent.classList.remove('hidden');
+            targetContent.classList.add('flex');
+
         }
 
 
-        /* =========================================================
-           실시간 지수
-        ========================================================= */
+        try {
 
-        async function fetchIndexQuote(symbol, elemId) {
+            localStorage.setItem(
+                'activeTab',
+                tabName
+            );
 
-            try {
+        } catch (e) {}
 
-                const res = await fetch(
-                    `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`
-                );
-
-                if(res.ok) {
-
-                    const data = await res.json();
-
-                    const price = data.c;
-                    const change = data.d;
-                    const percent = data.dp;
-
-                    let signSymbol =
-                        change > 0 ? '▲' :
-                        (change < 0 ? '▼' : '');
-
-                    let colorClass =
-                        change > 0 ? 'text-red-400' :
-                        (change < 0 ? 'text-blue-400' :
-                        'text-slate-300');
+    }
 
 
-                    if(document.getElementById(elemId)) {
+    /* =========================================================
+       뉴스 팝업
+    ========================================================== */
 
-                        document.getElementById(elemId).innerHTML =
-                            `$${price.toLocaleString()}
-                            <span class="${colorClass} text-xs ml-1">
-                                ${signSymbol} ${percent.toFixed(2)}%
-                            </span>`;
+    function openNewsWindow(url) {
 
-                    }
+        const width = 740;
+        const height = 850;
 
-                }
+        const left =
+            (window.screen.width - width) / 2;
 
-            } catch(e) {
+        const top =
+            (window.screen.height - height) / 2;
 
-                if(document.getElementById(elemId)) {
+        window.open(
+            url,
+            'newsWindow',
+            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
+        );
 
-                    document.getElementById(elemId).innerHTML =
-                        '<span class="text-xs text-red-400">조회 실패</span>';
+    }
 
-                }
+
+    /* =========================================================
+       미국 종목 지수
+    ========================================================== */
+
+    async function fetchIndexQuote(symbol, elemId) {
+
+        try {
+
+            const res = await fetch(
+                `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`
+            );
+
+            if (!res.ok)
+                throw new Error();
+
+            const data = await res.json();
+
+            const price = data.c;
+            const change = data.d;
+            const percent = data.dp;
+
+
+            const signSymbol =
+                change > 0
+                    ? '▲'
+                    : change < 0
+                        ? '▼'
+                        : '';
+
+
+            const colorClass =
+                change > 0
+                    ? 'text-red-400'
+                    : change < 0
+                        ? 'text-blue-400'
+                        : 'text-slate-300';
+
+
+            if (document.getElementById(elemId)) {
+
+                document.getElementById(elemId).innerHTML =
+                    `$${price.toLocaleString()} 
+                    <span class="${colorClass} text-xs ml-1">
+                        ${signSymbol} ${percent.toFixed(2)}%
+                    </span>`;
+
+            }
+
+        } catch (e) {
+
+            if (document.getElementById(elemId)) {
+
+                document.getElementById(elemId).innerHTML =
+                    '<span class="text-xs text-red-400">조회 실패</span>';
 
             }
 
         }
 
-
-        function fetchRealtimeMarketData() {
-
-            return Promise.all([
-
-                fetchIndexQuote(
-                    'MU',
-                    'idx-micron'
-                ),
-
-                fetchIndexQuote(
-                    'WDC',
-                    'idx-sandisk'
-                )
-
-            ]);
-
-        }
+    }
 
 
-        /* =========================================================
-           대시보드 뉴스
-        ========================================================= */
+    function fetchRealtimeMarketData() {
 
-        async function fetchNews(query, containerId) {
+        return Promise.all([
+            fetchIndexQuote('MU', 'idx-micron'),
+            fetchIndexQuote('WDC', 'idx-sandisk')
+        ]);
 
-            const container =
-                document.getElementById(containerId);
+    }
 
-            try {
 
-                const rssUrl =
-                    `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
+    /* =========================================================
+       대시보드 뉴스
+    ========================================================== */
 
-                const controller =
-                    new AbortController();
+    async function fetchNews(query, containerId) {
 
-                const timeoutId =
-                    setTimeout(
-                        () => controller.abort(),
-                        3000
+        const container =
+            document.getElementById(containerId);
+
+        try {
+
+            const rssUrl =
+                `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
+
+            const controller =
+                new AbortController();
+
+            const timeoutId =
+                setTimeout(() => controller.abort(), 3000);
+
+
+            const response =
+                await fetch(
+                    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`,
+                    {
+                        signal: controller.signal
+                    }
+                );
+
+
+            clearTimeout(timeoutId);
+
+            const data =
+                await response.json();
+
+
+            if (data.items && data.items.length > 0) {
+
+                const sortedItems =
+                    data.items.sort(
+                        (a, b) =>
+                            new Date(b.pubDate) -
+                            new Date(a.pubDate)
                     );
 
 
-                const response =
-                    await fetch(
-                        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`,
-                        {
-                            signal: controller.signal
-                        }
-                    );
+                container.innerHTML =
+                    sortedItems.slice(0, 8).map(item => {
 
+                        const pubDate =
+                            new Date(item.pubDate);
 
-                clearTimeout(timeoutId);
-
-
-                const data =
-                    await response.json();
-
-
-                if(data.items && data.items.length > 0) {
-
-                    const sortedItems =
-                        data.items.sort(
-                            (a,b) =>
-                                new Date(b.pubDate) -
-                                new Date(a.pubDate)
-                        );
-
-
-                    container.innerHTML =
-                        sortedItems.slice(0,8).map(item => {
-
-                            const pubDate =
-                                new Date(item.pubDate);
-
-                            const dateStr =
-                                !isNaN(pubDate)
-                                ? `[${pubDate.getMonth()+1}/${pubDate.getDate()}] `
+                        const dateStr =
+                            !isNaN(pubDate)
+                                ? `[${pubDate.getMonth() + 1}/${pubDate.getDate()}] `
                                 : '[실시간] ';
 
 
-                            return `
-                                <div class="news-item">
+                        return `
+                            <div class="news-item">
+                                <a
+                                    onclick="openNewsWindow('${escapeJs(item.link)}')"
+                                    class="news-link">
+                                    ${dateStr}${escapeHtml(item.title)}
+                                </a>
+                            </div>
+                        `;
 
-                                    <a
-                                        onclick="openNewsWindow('${item.link}')"
-                                        class="news-link">
+                    }).join('');
 
-                                        ${dateStr}${item.title}
+            } else {
 
-                                    </a>
-
-                                </div>
-                            `;
-
-                        }).join('');
-
-                } else {
-
-                    throw new Error("Empty items");
-
-                }
-
-            } catch(err) {
-
-                container.innerHTML = `
-                    <div class="news-item">
-
-                        <a
-                            onclick="openNewsWindow('https://news.google.com/search?q=${encodeURIComponent(query)}')"
-                            class="news-link">
-
-                            [실시간] 관련 최신 경제 및 증시 동향 확인하기
-
-                        </a>
-
-                    </div>
-                `;
+                throw new Error("Empty items");
 
             }
 
-        }
+        } catch (err) {
 
+            container.innerHTML = `
+                <div class="news-item">
 
-        /* =========================================================
-           숫자
-        ========================================================= */
+                    <a
+                        onclick="openNewsWindow('https://news.google.com/search?q=${encodeURIComponent(query)}')"
+                        class="news-link">
 
-        function numFormat(num) {
+                        [실시간] 관련 최신 경제 및 증시 동향 확인하기
 
-            return Math.round(num)
-                .toLocaleString('ko-KR');
+                    </a>
 
-        }
-
-
-        function numParse(str) {
-
-            return Number(
-                String(str).replace(/,/g,'')
-            ) || 0;
+                </div>
+            `;
 
         }
 
-
-        document
-            .getElementById('calc-total-funds')
-            .addEventListener('input', function(e) {
-
-                let val = numParse(e.target.value);
-
-                e.target.value =
-                    val === 0 ? '' : numFormat(val);
-
-            });
+    }
 
 
-        document
-            .getElementById('calc-base-price-1')
-            .addEventListener('input', function(e) {
+    /* =========================================================
+       숫자
+    ========================================================== */
 
-                let val = numParse(e.target.value);
+    function numFormat(num) {
 
-                e.target.value =
-                    numFormat(val);
+        return Math.round(num).toLocaleString('ko-KR');
 
-            });
-
-
-        document
-            .getElementById('calc-base-price-2')
-            .addEventListener('input', function(e) {
-
-                let val = numParse(e.target.value);
-
-                e.target.value =
-                    numFormat(val);
-
-            });
+    }
 
 
-        function syncPrices(source) {
+    function numParse(str) {
 
-            let val =
-                source === 1
+        return Number(
+            String(str).replace(/,/g, '')
+        ) || 0;
+
+    }
+
+
+    /* =========================================================
+       계산기 입력 포맷
+    ========================================================== */
+
+    document
+        .getElementById('calc-total-funds')
+        .addEventListener('input', function(e) {
+
+            const val =
+                numParse(e.target.value);
+
+            e.target.value =
+                val === 0
+                    ? ''
+                    : numFormat(val);
+
+        });
+
+
+    document
+        .getElementById('calc-base-price-1')
+        .addEventListener('input', function(e) {
+
+            const val =
+                numParse(e.target.value);
+
+            e.target.value =
+                numFormat(val);
+
+        });
+
+
+    document
+        .getElementById('calc-base-price-2')
+        .addEventListener('input', function(e) {
+
+            const val =
+                numParse(e.target.value);
+
+            e.target.value =
+                numFormat(val);
+
+        });
+
+
+    function syncPrices(source) {
+
+        const val =
+            source === 1
                 ? document.getElementById('calc-base-price-1').value
                 : document.getElementById('calc-base-price-2').value;
 
 
-            document.getElementById('calc-base-price-1').value =
-                val;
+        document.getElementById('calc-base-price-1').value =
+            val;
 
-            document.getElementById('calc-base-price-2').value =
-                val;
-
-            calculateFunds();
-
-        }
+        document.getElementById('calc-base-price-2').value =
+            val;
 
 
-        /* =========================================================
-           종목 관리
-        ========================================================= */
+        calculateFunds();
 
-        const STOCK_STORAGE_KEY =
-            'dashboard-stock-rows';
+    }
 
 
-        function escapeHtml(v) {
+    /* =========================================================
+       종목 관리
+    ========================================================== */
 
-            return String(v ?? '')
-                .replace(/&/g,'&amp;')
-                .replace(/</g,'&lt;')
-                .replace(/>/g,'&gt;')
-                .replace(/"/g,'&quot;')
-                .replace(/'/g,'&#039;');
-
-        }
+    const STOCK_STORAGE_KEY =
+        'dashboard-stock-rows';
 
 
-        function normalizeTicker(name, ticker) {
+    function escapeHtml(v) {
 
-            const n =
-                String(name || '').trim();
+        return String(v ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
 
-            const t =
-                String(ticker || '').trim();
-
-
-            if(t)
-                return t;
-
-
-            if(n === '삼성전자')
-                return 'KRX:005930';
-
-            if(n === 'SK하이닉스')
-                return 'KRX:000660';
-
-            if(n === 'S&P 500 지수')
-                return 'INDEXSP:.INX';
-
-            if(/^\d+$/.test(n))
-                return 'KRX:' + n;
-
-            return n;
-
-        }
+    }
 
 
-        function finnhubSymbol(ticker) {
+    function escapeJs(v) {
 
-            const t =
-                String(ticker || '').trim();
+        return String(v ?? '')
+            .replace(/\\/g, '\\\\')
+            .replace(/'/g, "\\'")
+            .replace(/"/g, '\\"')
+            .replace(/\n/g, '\\n')
+            .replace(/\r/g, '');
 
-            return t
-                .replace(/^KRX:/,'')
-                .replace(/^NASDAQ:/,'')
-                .replace(/^NYSE:/,'');
-
-        }
-
-
-        /* =========================================================
-           현재 국면
-        ========================================================= */
-
-        function stockStage(goal,current,high) {
-
-            if(!goal || !current || !high)
-
-                return [
-                    '정보 입력 대기',
-                    '목표가/현재가/역대 고점 정보를 확인하세요.',
-                    0
-                ];
+    }
 
 
-            if((high-current)/high >= 0.3)
+    /* =========================================================
+       종목명 / 티커 자동 인식
+    ========================================================== */
 
-                return [
-                    '하락기 (-30% 이상 낙폭)',
-                    '고점 대비 -30% 하락: 배분금의 10%만 유지',
-                    0.10
-                ];
+    function normalizeTicker(name, ticker) {
 
+        const n =
+            String(name || '').trim();
 
-            const x =
-                current / goal;
-
-
-            if(x >= 1)
-
-                return [
-                    '초고점기 (목표 100% 달성)',
-                    '초고점기(목표 100%): 99% 매도 / 1% 투자',
-                    0.01
-                ];
+        const t =
+            String(ticker || '').trim();
 
 
-            if(x >= 0.9)
-
-                return [
-                    '초고점기 (목표 90% 달성)',
-                    '초고점기(목표 90%): 99% 매도 / 1% 투자',
-                    0.01
-                ];
+        if (t)
+            return t;
 
 
-            if(x >= 0.8)
-
-                return [
-                    '초고점기 (목표 80% 달성)',
-                    '초고점기(목표 80%): 90% 매도 / 10% 투자',
-                    0.10
-                ];
+        if (n === '삼성전자')
+            return 'KRX:005930';
 
 
-            if(x >= 0.7)
-
-                return [
-                    '고점기 (목표 70% 달성)',
-                    '고점기(목표 70%): 80% 매도 / 20% 투자',
-                    0.20
-                ];
+        if (n === 'SK하이닉스')
+            return 'KRX:000660';
 
 
-            if(x >= 0.6)
+        if (n === '현대차')
+            return 'KRX:005380';
 
-                return [
-                    '상승기 (목표 60% 달성)',
-                    '상승기(목표 60%): 70% 매도 / 30% 투자',
-                    0.30
-                ];
 
+        if (n === '삼성전자우')
+            return 'KRX:005935';
+
+
+        if (/^\d+$/.test(n))
+            return 'KRX:' + n;
+
+
+        return n;
+
+    }
+
+
+    /*
+     * 기존 코드에서는 KRX:를 제거했었음.
+     *
+     * 한국주식:
+     * KRX:005930 그대로 사용
+     *
+     * 미국주식:
+     * NASDAQ:AAPL → AAPL
+     * NYSE:IBM → IBM
+     */
+
+    function finnhubSymbol(ticker) {
+
+        const t =
+            String(ticker || '').trim();
+
+
+        if (/^(KRX|KOSPI|KOSDAQ):/i.test(t))
+            return t;
+
+
+        return t
+            .replace(/^NASDAQ:/i, '')
+            .replace(/^NYSE:/i, '');
+
+    }
+
+
+    /* =========================================================
+       현재 국면 계산
+    ========================================================== */
+
+    function stockStage(goal, current, high) {
+
+        if (!goal || !current || !high) {
 
             return [
-                '바닥기 / 안정세',
-                '바닥기/안정세: 커플링시 33.3% 균등 / 디커플링시 주도주 70~80% 집중',
-                0.333
+                '정보 입력 대기',
+                '목표가/현재가/역대 고점 정보를 확인하세요.',
+                0
             ];
 
         }
 
 
-        /* =========================================================
-           종목 행 추가
-           ========================================================= */
+        if ((high - current) / high >= 0.3) {
 
-        function addStockRow(data = {}) {
+            return [
+                '하락기 (-30% 이상 낙폭)',
+                '고점 대비 -30% 하락: 배분금의 10%만 유지',
+                0.10
+            ];
 
-            const tbody =
-                document.getElementById(
-                    'stock-table-body'
-                );
+        }
 
 
-            const id =
-                'stock-' +
-                Date.now() +
-                '-' +
-                Math.random()
-                    .toString(36)
-                    .slice(2,6);
+        const x =
+            current / goal;
 
 
-            const tr =
-                document.createElement('tr');
+        if (x >= 1) {
 
+            return [
+                '초고점기 (목표 100% 달성)',
+                '초고점기(목표 100%): 99% 매도 / 1% 투자',
+                0.01
+            ];
 
-            tr.id = id;
+        }
 
-            tr.dataset.current =
-                data.current || 0;
 
-            tr.dataset.high =
-                data.high || 0;
+        if (x >= 0.9) {
 
+            return [
+                '초고점기 (목표 90% 달성)',
+                '초고점기(목표 90%): 99% 매도 / 1% 투자',
+                0.01
+            ];
 
-            tr.innerHTML = `
+        }
 
-                <td>
 
-                    <input
-                        data-field="name"
-                        class="w-full p-1.5 rounded bg-slate-900 border border-slate-600 text-white"
-                        value="${escapeHtml(data.name || '')}"
-                        placeholder="삼성전자"
-                        oninput="updateStockRow('${id}')">
+        if (x >= 0.8) {
 
-                </td>
+            return [
+                '초고점기 (목표 80% 달성)',
+                '초고점기(목표 80%): 90% 매도 / 10% 투자',
+                0.10
+            ];
 
+        }
 
-                <td>
 
-                    <input
-                        data-field="ticker"
-                        class="w-full p-1.5 rounded bg-slate-900 border border-slate-600 text-blue-300"
-                        value="${escapeHtml(data.ticker || '')}"
-                        placeholder="KRX:005930"
-                        oninput="updateStockRow('${id}')">
+        if (x >= 0.7) {
 
-                </td>
+            return [
+                '고점기 (목표 70% 달성)',
+                '고점기(목표 70%): 80% 매도 / 20% 투자',
+                0.20
+            ];
 
+        }
 
-                <td>
 
-                    <input
-                        data-field="goal"
-                        class="w-full p-1.5 rounded bg-slate-900 border border-slate-600 text-white text-right font-bold"
-                        value="${data.goal ? numFormat(data.goal) : ''}"
-                        placeholder="목표가"
-                        oninput="formatStockNumber(this);updateStockRow('${id}')">
+        if (x >= 0.6) {
 
-                </td>
+            return [
+                '상승기 (목표 60% 달성)',
+                '상승기(목표 60%): 70% 매도 / 30% 투자',
+                0.30
+            ];
 
+        }
 
-                <td
-                    id="${id}-current"
-                    class="text-right font-bold">
-                    조회 대기
-                </td>
 
+        return [
+            '바닥기 / 안정세',
+            '바닥기/안정세: 커플링시 33.3% 균등 / 디커플링시 주도주 70~80% 집중',
+            0.333
+        ];
 
-                <td
-                    id="${id}-high"
-                    class="text-right">
-                    조회 대기
-                </td>
+    }
 
 
-                <td>
+    /* =========================================================
+       종목 행 생성
+    ========================================================== */
 
-                    <button
-                        onclick="openTargetNews('${id}')"
-                        class="w-full px-2 py-2 rounded bg-slate-700 hover:bg-slate-600 text-blue-300 text-xs font-bold">
+    function addStockRow(data = {}) {
 
-                        목표가 뉴스
+        const tbody =
+            document.getElementById('stock-table-body');
 
-                    </button>
 
-                    <div
-                        id="${id}-target-news"
-                        class="text-xs text-slate-400 mt-1">
+        const id =
+            'stock-' +
+            Date.now() +
+            '-' +
+            Math.random()
+                .toString(36)
+                .slice(2, 6);
 
-                        뉴스 검색
 
-                    </div>
+        const tr =
+            document.createElement('tr');
 
-                </td>
 
+        tr.id = id;
 
-                <td
-                    id="${id}-stage"
-                    class="text-center font-bold text-slate-300">
+        tr.dataset.current =
+            data.current || 0;
 
-                    정보 입력 대기
+        tr.dataset.high =
+            data.high || 0;
 
-                </td>
 
+        tr.innerHTML = `
 
-                <td
-                    id="${id}-guide"
-                    class="text-xs text-slate-300">
+            <td>
 
-                    목표가/현재가/역대 고점 정보를 확인하세요.
+                <input
+                    data-field="name"
+                    class="stock-input w-full p-1.5 rounded"
+                    value="${escapeHtml(data.name || '')}"
+                    placeholder="삼성전자"
+                    oninput="updateStockRow('${id}')"
+                    onkeydown="handleStockEnter(event,'${id}')">
 
-                </td>
+            </td>
 
 
-                <td
-                    id="${id}-ratio"
-                    class="text-center font-bold text-blue-300">
+            <td>
 
-                    0.0%
+                <input
+                    data-field="ticker"
+                    class="stock-input w-full p-1.5 rounded text-blue-300"
+                    value="${escapeHtml(data.ticker || '')}"
+                    placeholder="KRX:005930"
+                    oninput="updateStockRow('${id}')"
+                    onkeydown="handleStockEnter(event,'${id}')">
 
-                </td>
+            </td>
 
 
-                <td
-                    id="${id}-amount"
-                    class="text-right font-bold text-yellow-400">
+            <td>
 
-                    0
+                <input
+                    data-field="goal"
+                    class="stock-input w-full p-1.5 rounded text-right font-bold"
+                    value="${data.goal ? numFormat(data.goal) : ''}"
+                    placeholder="목표가"
+                    oninput="formatStockNumber(this);updateStockRow('${id}')">
 
-                </td>
+            </td>
 
 
-                <td>
+            <td
+                id="${id}-current"
+                class="text-right font-bold text-slate-300">
 
-                    <div
-                        id="${id}-earnings-news"
-                        class="text-xs text-slate-300">
+                조회 대기
 
-                        실적 뉴스 조회 대기
+            </td>
 
-                    </div>
 
-                </td>
+            <td
+                id="${id}-high"
+                class="text-right text-slate-300">
 
-            `;
+                조회 대기
 
+            </td>
 
-            tbody.appendChild(tr);
 
+            <td>
 
-            updateStockRow(id,false);
+                <div
+                    id="${id}-target-news"
+                    class="stock-news text-xs text-slate-400">
 
+                    종목명/티커 입력 후 엔터
 
-            /*
-             * 기존 저장 데이터가 있으면 자동 조회
-             */
-            if(data.name || data.ticker)
+                </div>
+
+            </td>
+
+
+            <td
+                id="${id}-stage"
+                class="text-center font-bold text-slate-300">
+
+                정보 입력 대기
+
+            </td>
+
+
+            <td
+                id="${id}-guide"
+                class="text-xs text-slate-300">
+
+                목표가/현재가/역대 고점 정보를 확인하세요.
+
+            </td>
+
+
+            <td
+                id="${id}-ratio"
+                class="text-center font-bold text-blue-300">
+
+                0.0%
+
+            </td>
+
+
+            <td
+                id="${id}-amount"
+                class="text-right font-bold text-yellow-400">
+
+                0
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(tr);
+
+
+        updateStockRow(id, false);
+
+
+        /*
+         * 저장되어 있던 종목이면
+         * 페이지 로딩 시에도 자동 조회
+         */
+
+        if (data.name || data.ticker) {
+
+            setTimeout(() => {
+
                 fetchStockQuote(id);
 
-
-            /*
-             * =====================================================
-             * 핵심 수정 부분
-             * =====================================================
-             *
-             * 종목명 / 티커 입력 후 Enter
-             * → fetchStockQuote()
-             *
-             * 목표가 입력 후 Enter
-             * → 현재가/고점 기준으로 국면/가이드/투자금 재계산
-             */
-
-            const nameInput =
-                tr.querySelector('[data-field="name"]');
-
-            const tickerInput =
-                tr.querySelector('[data-field="ticker"]');
-
-            const goalInput =
-                tr.querySelector('[data-field="goal"]');
-
-
-            function handleEnter(e) {
-
-                if(e.key !== 'Enter')
-                    return;
-
-                e.preventDefault();
-
-                /*
-                 * 종목명 또는 티커 입력 후 Enter
-                 * 자동 조회
-                 */
-                if(
-                    nameInput.value.trim() ||
-                    tickerInput.value.trim()
-                ) {
-
-                    fetchStockQuote(id);
-
-                }
-
-            }
-
-
-            nameInput.addEventListener(
-                'keydown',
-                handleEnter
-            );
-
-
-            tickerInput.addEventListener(
-                'keydown',
-                handleEnter
-            );
-
-
-            /*
-             * 목표가에서 Enter를 눌러도
-             * 종목 데이터가 이미 있으면 즉시 계산
-             */
-            goalInput.addEventListener(
-                'keydown',
-                function(e) {
-
-                    if(e.key !== 'Enter')
-                        return;
-
-                    e.preventDefault();
-
-                    if(
-                        nameInput.value.trim() ||
-                        tickerInput.value.trim()
-                    ) {
-
-                        fetchStockQuote(id);
-
-                    } else {
-
-                        updateStockRow(id);
-
-                    }
-
-                }
-            );
-
-
-            saveStockRows();
-
-            return id;
+            }, 100);
 
         }
 
 
-        function formatStockNumber(el) {
+        saveStockRows();
 
-            const v =
-                numParse(el.value);
+        return id;
 
-            el.value =
-                v ? numFormat(v) : '';
-
-        }
+    }
 
 
-        function getStockRowData(tr) {
+    /* =========================================================
+       Enter 입력
+       ★ 핵심 수정 부분
+    ========================================================== */
 
-            return {
+    function handleStockEnter(event, id) {
 
-                name:
-                    tr.querySelector(
-                        '[data-field="name"]'
-                    )?.value.trim() || '',
+        if (event.key !== 'Enter')
+            return;
 
-                ticker:
-                    tr.querySelector(
-                        '[data-field="ticker"]'
-                    )?.value.trim() || '',
 
-                goal:
-                    numParse(
-                        tr.querySelector(
-                            '[data-field="goal"]'
-                        )?.value || ''
-                    ),
+        event.preventDefault();
 
-                current:
-                    Number(
-                        tr.dataset.current || 0
-                    ),
 
-                high:
-                    Number(
-                        tr.dataset.high || 0
-                    )
+        const tr =
+            document.getElementById(id);
 
-            };
+        if (!tr)
+            return;
+
+
+        const name =
+            tr.querySelector('[data-field="name"]')?.value.trim();
+
+        const ticker =
+            tr.querySelector('[data-field="ticker"]')?.value.trim();
+
+
+        if (!name && !ticker) {
+
+            return;
 
         }
 
 
-        /* =========================================================
-           종목 계산 업데이트
-        ========================================================= */
+        /*
+         * Enter를 누르는 즉시
+         * 현재가 / 고점 / 뉴스 / 국면 / 투자비중
+         * 전부 다시 계산
+         */
 
-        function updateStockRow(id,save=true) {
+        fetchStockQuote(id);
 
-            const tr =
-                document.getElementById(id);
-
-            if(!tr)
-                return;
+    }
 
 
-            const d =
-                getStockRowData(tr);
+    function formatStockNumber(el) {
+
+        const v =
+            numParse(el.value);
+
+        el.value =
+            v
+                ? numFormat(v)
+                : '';
+
+    }
 
 
-            const s =
-                stockStage(
-                    d.goal,
-                    d.current,
-                    d.high
-                );
+    function getStockRowData(tr) {
 
+        return {
 
-            document.getElementById(
-                id+'-stage'
-            ).textContent = s[0];
+            name:
+                tr.querySelector('[data-field="name']')?.value.trim() || '',
 
+            ticker:
+                tr.querySelector('[data-field="ticker"]')?.value.trim() || '',
 
-            document.getElementById(
-                id+'-guide'
-            ).textContent = s[1];
-
-
-            document.getElementById(
-                id+'-ratio'
-            ).textContent =
-                (s[2] * 100).toFixed(1) + '%';
-
-
-            const total =
+            goal:
                 numParse(
-                    document.getElementById(
-                        'calc-total-funds'
-                    ).value
-                );
+                    tr.querySelector('[data-field="goal"]')?.value || ''
+                ),
+
+            current:
+                Number(tr.dataset.current || 0),
+
+            high:
+                Number(tr.dataset.high || 0)
+
+        };
+
+    }
 
 
-            const age =
-                document.getElementById(
-                    'calc-age'
-                ).value;
+    /*
+     * 위 함수의 selector 오타 방지용으로
+     * 실제 데이터를 가져오는 함수
+     */
+
+    function getStockRowDataSafe(tr) {
+
+        return {
+
+            name:
+                tr.querySelector('[data-field="name"]')?.value.trim() || '',
+
+            ticker:
+                tr.querySelector('[data-field="ticker"]')?.value.trim() || '',
+
+            goal:
+                numParse(
+                    tr.querySelector('[data-field="goal"]')?.value || ''
+                ),
+
+            current:
+                Number(tr.dataset.current || 0),
+
+            high:
+                Number(tr.dataset.high || 0)
+
+        };
+
+    }
 
 
-            const rate =
-                document.getElementById(
-                    'calc-rate-hike'
-                )?.checked;
+    /* =========================================================
+       종목 계산 업데이트
+    ========================================================== */
+
+    function updateStockRow(id, save = true) {
+
+        const tr =
+            document.getElementById(id);
+
+        if (!tr)
+            return;
 
 
-            const reserve =
-                rate
+        const d =
+            getStockRowDataSafe(tr);
+
+
+        const s =
+            stockStage(
+                d.goal,
+                d.current,
+                d.high
+            );
+
+
+        document.getElementById(id + '-stage').textContent =
+            s[0];
+
+
+        document.getElementById(id + '-guide').textContent =
+            s[1];
+
+
+        document.getElementById(id + '-ratio').textContent =
+            (s[2] * 100).toFixed(1) + '%';
+
+
+        const total =
+            numParse(
+                document.getElementById('calc-total-funds').value
+            );
+
+
+        const age =
+            document.getElementById('calc-age').value;
+
+
+        const rate =
+            document.getElementById('calc-rate-hike')?.checked;
+
+
+        const reserve =
+            rate
                 ? 0.9
                 : (
                     age === 'under30'
-                    ? 0.3
-                    : 0.4
+                        ? 0.3
+                        : 0.4
                 );
 
 
-            document.getElementById(
-                id+'-amount'
-            ).textContent =
-                numFormat(
-                    total *
-                    (1-reserve) *
-                    s[2]
-                );
+        const amount =
+            total *
+            (1 - reserve) *
+            s[2];
 
 
-            const stage =
-                document.getElementById(
-                    id+'-stage'
-                );
+        document.getElementById(id + '-amount').textContent =
+            numFormat(amount);
 
 
-            stage.className =
-                'text-center font-bold ' +
-                (
-                    s[0].includes('하락기')
+        const stage =
+            document.getElementById(id + '-stage');
+
+
+        stage.className =
+            'text-center font-bold ' +
+            (
+                s[0].includes('하락기')
                     ? 'text-red-400'
                     : s[0].includes('초고점')
-                    ? 'text-yellow-400'
-                    : s[0].includes('고점기')
-                    ? 'text-orange-400'
-                    : s[0].includes('상승기')
-                    ? 'text-emerald-400'
-                    : 'text-slate-300'
+                        ? 'text-yellow-400'
+                        : s[0].includes('고점기')
+                            ? 'text-orange-400'
+                            : s[0].includes('상승기')
+                                ? 'text-emerald-400'
+                                : 'text-slate-300'
+            );
+
+
+        if (save)
+            saveStockRows();
+
+    }
+
+
+    /* =========================================================
+       현재가 / 역대 고점 조회
+       ★ 핵심 수정 부분
+    ========================================================== */
+
+    async function fetchStockQuote(id) {
+
+        const tr =
+            document.getElementById(id);
+
+        if (!tr)
+            return;
+
+
+        const d =
+            getStockRowDataSafe(tr);
+
+
+        if (!d.name && !d.ticker)
+            return;
+
+
+        const ticker =
+            normalizeTicker(
+                d.name,
+                d.ticker
+            );
+
+
+        /*
+         * 자동으로 티커 칸도 채움
+         */
+
+        tr.querySelector('[data-field="ticker"]').value =
+            ticker;
+
+
+        const symbol =
+            finnhubSymbol(ticker);
+
+
+        const currentEl =
+            document.getElementById(id + '-current');
+
+        const highEl =
+            document.getElementById(id + '-high');
+
+        const newsEl =
+            document.getElementById(id + '-target-news');
+
+
+        currentEl.innerHTML =
+            '<span class="text-blue-400">조회 중...</span>';
+
+        highEl.innerHTML =
+            '<span class="text-blue-400">조회 중...</span>';
+
+        newsEl.innerHTML =
+            '<span class="text-blue-400">관련 뉴스 검색 중...</span>';
+
+
+        try {
+
+            /*
+             * 현재가
+             */
+
+            const res =
+                await fetch(
+                    `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(symbol)}&token=${FINNHUB_API_KEY}`
                 );
 
 
-            if(save)
-                saveStockRows();
-
-        }
-
-
-        /* =========================================================
-           종목 현재가 / 역대고점 조회
-           ========================================================= */
-
-        async function fetchStockQuote(id) {
-
-            const tr =
-                document.getElementById(id);
-
-            if(!tr)
-                return;
+            if (!res.ok)
+                throw new Error(
+                    '현재가 API 오류'
+                );
 
 
-            const d =
-                getStockRowData(tr);
+            const q =
+                await res.json();
 
 
-            if(!d.name && !d.ticker)
-                return;
+            const current =
+                Number(q.c || 0);
+
+
+            if (!current)
+                throw new Error(
+                    '현재가 없음'
+                );
 
 
             /*
-             * 티커가 비어있으면 종목명으로 자동 변환
+             * 역대 고점
+             *
+             * 우선 최근 5년 일봉 데이터를 가져오고
+             * 가능한 범위에서 최고가를 계산
              */
-            const ticker =
-                normalizeTicker(
-                    d.name,
-                    d.ticker
-                );
 
-
-            tr.querySelector(
-                '[data-field="ticker"]'
-            ).value = ticker;
-
-
-            const symbol =
-                finnhubSymbol(ticker);
-
-
-            const ce =
-                document.getElementById(
-                    id+'-current'
-                );
-
-
-            const he =
-                document.getElementById(
-                    id+'-high'
-                );
-
-
-            const targetNews =
-                document.getElementById(
-                    id+'-target-news'
-                );
-
-
-            const earningsNews =
-                document.getElementById(
-                    id+'-earnings-news'
-                );
-
-
-            ce.textContent =
-                '조회 중...';
-
-
-            he.textContent =
-                '조회 중...';
-
-
-            if(targetNews)
-                targetNews.textContent =
-                    '목표가 뉴스 검색 중...';
-
-
-            if(earningsNews)
-                earningsNews.textContent =
-                    '실적 뉴스 조회 중...';
+            let high =
+                Number(q.h || 0);
 
 
             try {
 
-                /*
-                 * 현재가
-                 */
-
-                const res =
-                    await fetch(
-                        `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(symbol)}&token=${FINNHUB_API_KEY}`
+                const end =
+                    Math.floor(
+                        Date.now() / 1000
                     );
 
 
-                if(!res.ok)
-                    throw Error();
+                const start =
+                    end -
+                    5 * 365 * 24 * 60 * 60;
 
 
-                const q =
-                    await res.json();
+                const cr =
+                    await fetch(
+                        `https://finnhub.io/api/v1/stock/candle?symbol=${encodeURIComponent(symbol)}&resolution=D&from=${start}&to=${end}&token=${FINNHUB_API_KEY}`
+                    );
 
 
-                const current =
-                    Number(q.c || 0);
-
-
-                if(!current)
-                    throw Error();
-
-
-                /*
-                 * 기본 고가
-                 */
-                let high =
-                    Number(q.h || 0);
-
-
-                /*
-                 * 최근 1년 일봉 최고가
-                 */
-                try {
-
-                    const end =
-                        Math.floor(
-                            Date.now() / 1000
-                        );
-
-
-                    const start =
-                        end -
-                        365 *
-                        24 *
-                        60 *
-                        60;
-
-
-                    const cr =
-                        await fetch(
-                            `https://finnhub.io/api/v1/stock/candle?symbol=${encodeURIComponent(symbol)}&resolution=D&from=${start}&to=${end}&token=${FINNHUB_API_KEY}`
-                        );
-
+                if (cr.ok) {
 
                     const cd =
                         await cr.json();
 
 
-                    if(
+                    if (
                         Array.isArray(cd.h) &&
                         cd.h.length
                     ) {
 
-                        high =
-                            Math.max(
-                                ...cd.h
-                                    .map(Number)
-                                    .filter(
-                                        Number.isFinite
-                                    )
-                            );
+                        const highs =
+                            cd.h
+                                .map(Number)
+                                .filter(
+                                    Number.isFinite
+                                );
+
+
+                        if (highs.length) {
+
+                            high =
+                                Math.max(
+                                    ...highs
+                                );
+
+                        }
 
                     }
 
-                } catch(e) {}
+                }
 
+            } catch (e) {
 
-                tr.dataset.current =
-                    current;
-
-                tr.dataset.high =
-                    high;
-
-
-                ce.textContent =
-                    numFormat(current);
-
-
-                he.textContent =
-                    numFormat(high);
-
-
-                /*
-                 * 현재 국면 / 대응가이드 /
-                 * 투자비중 / 권장투자금액
-                 * 즉시 업데이트
-                 */
-                updateStockRow(id);
-
-
-                /*
-                 * 실적 뉴스
-                 */
-                fetchStockNews(
-                    id,
-                    symbol
-                );
-
-
-                /*
-                 * 목표가 관련 뉴스
-                 */
-                fetchTargetNews(
-                    id,
-                    d.name || symbol
-                );
-
-
-            } catch(e) {
-
-                console.error(
-                    '종목 조회 실패:',
+                console.warn(
+                    '고점 조회 실패:',
                     e
                 );
 
-
-                ce.innerHTML =
-                    '<span class="text-red-400">조회 실패</span>';
-
-
-                he.innerHTML =
-                    '<span class="text-red-400">조회 실패</span>';
-
-
-                if(targetNews)
-                    targetNews.innerHTML =
-                        '<span class="text-red-400">뉴스 조회 실패</span>';
-
-
-                if(earningsNews)
-                    earningsNews.innerHTML =
-                        '<span class="text-red-400">실적 뉴스 조회 실패</span>';
-
-
-                updateStockRow(id);
-
             }
 
-        }
 
+            /*
+             * 데이터 저장
+             */
 
-        /* =========================================================
-           실적 뉴스 3건
-           ========================================================= */
+            tr.dataset.current =
+                current;
 
-        async function fetchStockNews(id,symbol) {
+            tr.dataset.high =
+                high;
 
-            const el =
-                document.getElementById(
-                    id+'-earnings-news'
-                );
 
+            currentEl.textContent =
+                numFormat(current);
 
-            if(!el)
-                return;
 
+            highEl.textContent =
+                numFormat(high);
 
-            try {
 
-                const to =
-                    new Date();
+            /*
+             * 현재 국면 / 대응가이드 /
+             * 투자비중 / 권장투자금액
+             * 즉시 재계산
+             */
 
+            updateStockRow(id);
 
-                const from =
-                    new Date();
 
+            /*
+             * 목표가 관련 뉴스 자동 검색
+             */
 
-                from.setDate(
-                    to.getDate() - 90
-                );
-
-
-                const f =
-                    d =>
-                        d.toISOString()
-                         .slice(0,10);
-
-
-                const res =
-                    await fetch(
-                        `https://finnhub.io/api/v1/company-news?symbol=${encodeURIComponent(symbol)}&from=${f(from)}&to=${f(to)}&token=${FINNHUB_API_KEY}`
-                    );
-
-
-                if(!res.ok)
-                    throw Error();
-
-
-                const arr =
-                    (await res.json())
-                    .slice(0,3);
-
-
-                el.innerHTML =
-                    arr.length
-                    ? arr.map(
-                        (n,i) => `
-
-                            <div class="mb-1 border-b border-slate-700 pb-1">
-
-                                <a
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    href="${escapeHtml(n.url || '#')}"
-                                    class="hover:text-blue-400">
-
-                                    ${i+1}.
-                                    ${escapeHtml(
-                                        n.headline ||
-                                        '뉴스 제목 없음'
-                                    )}
-
-                                </a>
-
-                            </div>
-
-                        `
-                    ).join('')
-                    : '최근 실적 뉴스 없음';
-
-
-            } catch(e) {
-
-                el.textContent =
-                    '실적 뉴스 조회 실패';
-
-            }
-
-        }
-
-
-        /* =========================================================
-           목표가 관련 뉴스 자동 조회
-           ========================================================= */
-
-        async function fetchTargetNews(id, name) {
-
-            const el =
-                document.getElementById(
-                    id+'-target-news'
-                );
-
-
-            if(!el || !name)
-                return;
-
-
-            try {
-
-                const query =
-                    `${name} 목표가`;
-
-
-                const rssUrl =
-                    `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=ko&gl=KR&ceid=KR:ko`;
-
-
-                const response =
-                    await fetch(
-                        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if(
-                    data.items &&
-                    data.items.length
-                ) {
-
-                    const item =
-                        data.items[0];
-
-
-                    el.innerHTML = `
-
-                        <a
-                            onclick="openNewsWindow('${escapeHtml(item.link)}')"
-                            class="text-blue-300 hover:text-blue-400 cursor-pointer">
-
-                            ${escapeHtml(
-                                item.title
-                            )}
-
-                        </a>
-
-                    `;
-
-                } else {
-
-                    el.textContent =
-                        '관련 뉴스 없음';
-
-                }
-
-
-            } catch(e) {
-
-                el.textContent =
-                    '목표가 뉴스 조회 실패';
-
-            }
-
-        }
-
-
-        /* =========================================================
-           목표가 뉴스 버튼
-           ========================================================= */
-
-        function openTargetNews(id) {
-
-            const tr =
-                document.getElementById(id);
-
-
-            if(!tr)
-                return;
-
-
-            const d =
-                getStockRowData(tr);
-
-
-            if(!d.name)
-                return;
-
-
-            window.open(
-                'https://www.google.com/search?q=' +
-                encodeURIComponent(
-                    d.name + ' 목표가'
-                ) +
-                '&tbm=nws',
-                'targetNewsWindow',
-                'width=900,height=800,scrollbars=yes,resizable=yes'
+            fetchTargetNews(
+                id,
+                d.name,
+                ticker
             );
 
 
+        } catch (e) {
+
+            console.error(
+                '종목 조회 실패:',
+                e
+            );
+
+
+            currentEl.innerHTML =
+                '<span class="text-red-400">조회 실패</span>';
+
+
+            highEl.innerHTML =
+                '<span class="text-red-400">조회 실패</span>';
+
+
+            newsEl.innerHTML =
+                '<span class="text-red-400">관련 뉴스 조회 실패</span>';
+
+
+            updateStockRow(id);
+
+        }
+
+    }
+
+
+    /* =========================================================
+       목표가 관련 뉴스 자동 조회
+       ★ 핵심 수정 부분
+    ========================================================== */
+
+    async function fetchTargetNews(id, name, ticker) {
+
+        const el =
             document.getElementById(
-                id+'-target-news'
-            ).textContent =
-                'Google 뉴스 검색';
-
-        }
+                id + '-target-news'
+            );
 
 
-        /* =========================================================
-           종목 저장
-           ========================================================= */
+        if (!el)
+            return;
 
-        function saveStockRows() {
 
-            try {
+        const keyword =
+            `${name || ticker} 목표가`;
 
-                const rows =
-                    [
-                        ...document.querySelectorAll(
-                            '#stock-table-body tr'
-                        )
-                    ]
-                    .map(
-                        tr =>
-                            getStockRowData(tr)
+
+        try {
+
+            const rssUrl =
+                `https://news.google.com/rss/search?q=${encodeURIComponent(keyword)}&hl=ko&gl=KR&ceid=KR:ko`;
+
+
+            const response =
+                await fetch(
+                    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`
+                );
+
+
+            if (!response.ok)
+                throw new Error();
+
+
+            const data =
+                await response.json();
+
+
+            const items =
+                (data.items || [])
+                    .sort(
+                        (a, b) =>
+                            new Date(b.pubDate) -
+                            new Date(a.pubDate)
                     )
-                    .filter(
-                        x =>
-                            x.name ||
-                            x.ticker ||
-                            x.goal
-                    );
+                    .slice(0, 3);
 
 
-                localStorage.setItem(
-                    STOCK_STORAGE_KEY,
-                    JSON.stringify(rows)
-                );
+            if (!items.length) {
+
+                el.innerHTML =
+                    `<span class="text-slate-500">관련 목표가 뉴스 없음</span>`;
+
+                return;
+
+            }
 
 
-            } catch(e) {}
+            el.innerHTML =
+                items.map((item, index) => {
+
+                    const date =
+                        new Date(item.pubDate);
+
+
+                    const dateStr =
+                        !isNaN(date)
+                            ? `${date.getMonth() + 1}/${date.getDate()}`
+                            : '';
+
+
+                    return `
+                        <div class="mb-1 border-b border-slate-700 pb-1">
+
+                            <a
+                                href="${escapeHtml(item.link || '#')}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="${escapeHtml(item.title || '')}">
+
+                                <span class="text-blue-400">
+                                    ${index + 1}.
+                                </span>
+
+                                ${escapeHtml(item.title || '뉴스 제목 없음')}
+
+                                <span class="text-slate-600 ml-1">
+                                    ${dateStr}
+                                </span>
+
+                            </a>
+
+                        </div>
+                    `;
+
+                }).join('');
+
+
+        } catch (e) {
+
+            /*
+             * RSS 조회 실패 시에도
+             * Google 뉴스 검색 링크 제공
+             */
+
+            el.innerHTML = `
+                <a
+                    href="https://news.google.com/search?q=${encodeURIComponent(keyword)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-blue-400 hover:underline">
+
+                    <i class="fas fa-search mr-1"></i>
+                    ${escapeHtml(keyword)} 뉴스 검색
+
+                </a>
+            `;
 
         }
 
-
-        function loadStockRows() {
-
-            try {
-
-                const rows =
-                    JSON.parse(
-                        localStorage.getItem(
-                            STOCK_STORAGE_KEY
-                        ) || '[]'
-                    );
+    }
 
 
-                rows.forEach(
+    /* =========================================================
+       종목 저장
+    ========================================================== */
+
+    function saveStockRows() {
+
+        try {
+
+            const rows =
+                [
+                    ...document.querySelectorAll(
+                        '#stock-table-body tr'
+                    )
+                ]
+                .map(tr =>
+                    getStockRowDataSafe(tr)
+                )
+                .filter(
                     x =>
-                        addStockRow(x)
+                        x.name ||
+                        x.ticker ||
+                        x.goal
                 );
 
 
-            } catch(e) {}
+            localStorage.setItem(
+                STOCK_STORAGE_KEY,
+                JSON.stringify(rows)
+            );
+
+
+        } catch (e) {
+
+            console.error(
+                '종목 저장 실패:',
+                e
+            );
 
         }
 
+    }
 
-        /* =========================================================
-           자금 계산
-           ========================================================= */
 
-        function calculateFunds() {
+    /* =========================================================
+       저장된 종목 불러오기
+    ========================================================== */
 
-            let totalFunds =
-                numParse(
-                    document.getElementById(
-                        'calc-total-funds'
-                    ).value
+    function loadStockRows() {
+
+        try {
+
+            const rows =
+                JSON.parse(
+                    localStorage.getItem(
+                        STOCK_STORAGE_KEY
+                    ) || '[]'
                 );
 
 
-            let ageGroup =
+            rows.forEach(x =>
+                addStockRow(x)
+            );
+
+
+        } catch (e) {
+
+            console.error(
+                '종목 불러오기 실패:',
+                e
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       자금 계산기
+    ========================================================== */
+
+    function calculateFunds() {
+
+        const totalFunds =
+            numParse(
                 document.getElementById(
-                    'calc-age'
-                ).value;
+                    'calc-total-funds'
+                ).value
+            );
 
 
-            let basePrice =
-                numParse(
-                    document.getElementById(
-                        'calc-base-price-1'
-                    ).value
-                );
+        const ageGroup =
+            document.getElementById(
+                'calc-age'
+            ).value;
 
 
-            const rateHike =
+        const basePrice =
+            numParse(
                 document.getElementById(
-                    'calc-rate-hike'
-                ).checked;
+                    'calc-base-price-1'
+                ).value
+            );
 
 
-            let reservedRatio =
-                rateHike
+        const rateHike =
+            document.getElementById(
+                'calc-rate-hike'
+            ).checked;
+
+
+        const reservedRatio =
+            rateHike
                 ? 0.9
                 : (
                     ageGroup === 'under30'
-                    ? 0.3
-                    : 0.4
+                        ? 0.3
+                        : 0.4
                 );
 
 
-            let reservedCash =
-                totalFunds *
-                reservedRatio;
+        const reservedCash =
+            totalFunds *
+            reservedRatio;
 
 
-            let investCash =
-                totalFunds -
-                reservedCash;
+        const investCash =
+            totalFunds -
+            reservedCash;
 
 
-            document.getElementById(
-                'reserved-percent'
-            ).textContent =
-                (reservedRatio * 100) + '%';
+        document.getElementById(
+            'reserved-percent'
+        ).textContent =
+            (reservedRatio * 100) + '%';
 
 
-            document.getElementById(
-                'invest-percent'
-            ).textContent =
-                (100 - reservedRatio * 100) + '%';
+        document.getElementById(
+            'invest-percent'
+        ).textContent =
+            (100 - reservedRatio * 100) + '%';
 
 
-            document.getElementById(
-                'val-reserved-cash'
-            ).textContent =
-                numFormat(reservedCash);
+        document.getElementById(
+            'val-reserved-cash'
+        ).textContent =
+            numFormat(reservedCash);
 
 
-            document.getElementById(
-                'val-invest-cash'
-            ).textContent =
-                numFormat(investCash);
+        document.getElementById(
+            'val-invest-cash'
+        ).textContent =
+            numFormat(investCash);
 
 
-            /*
-             * 일반 전략
-             */
+        /* 일반 전략 */
 
-            document.getElementById('m1-p20').textContent =
-                numFormat(basePrice * 0.8);
+        document.getElementById(
+            'm1-p20'
+        ).textContent =
+            numFormat(basePrice * 0.8);
 
-            document.getElementById('m1-p30').textContent =
-                numFormat(basePrice * 0.7);
 
-            document.getElementById('m1-p40').textContent =
-                numFormat(basePrice * 0.6);
+        document.getElementById(
+            'm1-p30'
+        ).textContent =
+            numFormat(basePrice * 0.7);
 
-            document.getElementById('m1-p65').textContent =
-                numFormat(basePrice * 0.35);
 
+        document.getElementById(
+            'm1-p40'
+        ).textContent =
+            numFormat(basePrice * 0.6);
 
-            let w1_20 =
-                Number(
-                    document.getElementById(
-                        'm1-w20'
-                    ).value
-                ) / 100;
 
+        document.getElementById(
+            'm1-p65'
+        ).textContent =
+            numFormat(basePrice * 0.35);
 
-            let w1_30 =
-                Number(
-                    document.getElementById(
-                        'm1-w30'
-                    ).value
-                ) / 100;
 
+        const w1_20 =
+            Number(
+                document.getElementById(
+                    'm1-w20'
+                ).value
+            ) / 100;
 
-            let w1_40 =
-                Number(
-                    document.getElementById(
-                        'm1-w40'
-                    ).value
-                ) / 100;
 
+        const w1_30 =
+            Number(
+                document.getElementById(
+                    'm1-w30'
+                ).value
+            ) / 100;
 
-            let a1_20 =
-                investCash * w1_20;
 
+        const w1_40 =
+            Number(
+                document.getElementById(
+                    'm1-w40'
+                ).value
+            ) / 100;
 
-            let a1_30 =
-                investCash * w1_30;
 
+        const a1_20 =
+            investCash * w1_20;
 
-            let a1_40 =
-                investCash * w1_40;
 
+        const a1_30 =
+            investCash * w1_30;
 
-            let a1_65 =
-                reservedCash * 0.5;
 
+        const a1_40 =
+            investCash * w1_40;
 
-            document.getElementById(
-                'm1-a20'
-            ).textContent =
-                numFormat(a1_20);
 
+        const a1_65 =
+            reservedCash * 0.5;
 
-            document.getElementById(
-                'm1-a30'
-            ).textContent =
-                numFormat(a1_30);
 
+        document.getElementById(
+            'm1-a20'
+        ).textContent =
+            numFormat(a1_20);
 
-            document.getElementById(
-                'm1-a40'
-            ).textContent =
-                numFormat(a1_40);
 
+        document.getElementById(
+            'm1-a30'
+        ).textContent =
+            numFormat(a1_30);
 
-            document.getElementById(
-                'm1-a65'
-            ).textContent =
-                numFormat(a1_65);
 
+        document.getElementById(
+            'm1-a40'
+        ).textContent =
+            numFormat(a1_40);
 
-            document.getElementById(
-                'm1-total'
-            ).textContent =
-                numFormat(
-                    a1_20 +
-                    a1_30 +
-                    a1_40 +
-                    a1_65
-                );
 
+        document.getElementById(
+            'm1-a65'
+        ).textContent =
+            numFormat(a1_65);
 
-            /*
-             * 위기 전략
-             */
 
-            document.getElementById('m2-p30').textContent =
-                numFormat(basePrice * 0.7);
+        document.getElementById(
+            'm1-total'
+        ).textContent =
+            numFormat(
+                a1_20 +
+                a1_30 +
+                a1_40 +
+                a1_65
+            );
 
-            document.getElementById('m2-p40').textContent =
-                numFormat(basePrice * 0.6);
 
-            document.getElementById('m2-p65').textContent =
-                numFormat(basePrice * 0.35);
+        /* 위기 전략 */
 
+        document.getElementById(
+            'm2-p30'
+        ).textContent =
+            numFormat(basePrice * 0.7);
 
-            let w2_30 =
-                Number(
-                    document.getElementById(
-                        'm2-w30'
-                    ).value
-                ) / 100;
 
+        document.getElementById(
+            'm2-p40'
+        ).textContent =
+            numFormat(basePrice * 0.6);
 
-            let w2_40 =
-                Number(
-                    document.getElementById(
-                        'm2-w40'
-                    ).value
-                ) / 100;
 
+        document.getElementById(
+            'm2-p65'
+        ).textContent =
+            numFormat(basePrice * 0.35);
 
-            let w2_65 =
-                Number(
-                    document.getElementById(
-                        'm2-w65'
-                    ).value
-                ) / 100;
 
+        const w2_30 =
+            Number(
+                document.getElementById(
+                    'm2-w30'
+                ).value
+            ) / 100;
 
-            let a2_30 =
-                investCash * w2_30;
 
+        const w2_40 =
+            Number(
+                document.getElementById(
+                    'm2-w40'
+                ).value
+            ) / 100;
 
-            let a2_40 =
-                investCash * w2_40;
 
+        const w2_65 =
+            Number(
+                document.getElementById(
+                    'm2-w65'
+                ).value
+            ) / 100;
 
-            let a2_65 =
-                investCash * w2_65;
 
+        const a2_30 =
+            investCash * w2_30;
 
-            document.getElementById(
-                'm2-a30'
-            ).textContent =
-                numFormat(a2_30);
 
+        const a2_40 =
+            investCash * w2_40;
 
-            document.getElementById(
-                'm2-a40'
-            ).textContent =
-                numFormat(a2_40);
 
+        const a2_65 =
+            investCash * w2_65;
 
-            document.getElementById(
-                'm2-a65'
-            ).textContent =
-                numFormat(a2_65);
 
+        document.getElementById(
+            'm2-a30'
+        ).textContent =
+            numFormat(a2_30);
 
-            document.getElementById(
-                'm2-total'
-            ).textContent =
-                numFormat(
-                    a2_30 +
-                    a2_40 +
-                    a2_65
-                );
 
+        document.getElementById(
+            'm2-a40'
+        ).textContent =
+            numFormat(a2_40);
 
-            /*
-             * 종목 관리도 즉시 재계산
-             */
 
-            document
-                .querySelectorAll(
-                    '#stock-table-body tr'
+        document.getElementById(
+            'm2-a65'
+        ).textContent =
+            numFormat(a2_65);
+
+
+        document.getElementById(
+            'm2-total'
+        ).textContent =
+            numFormat(
+                a2_30 +
+                a2_40 +
+                a2_65
+            );
+
+
+        /*
+         * 종목 관리 권장 투자금액도
+         * 자금 변경 시 자동 재계산
+         */
+
+        document
+            .querySelectorAll(
+                '#stock-table-body tr'
+            )
+            .forEach(tr =>
+                updateStockRow(
+                    tr.id,
+                    false
                 )
-                .forEach(
-                    tr =>
-                        updateStockRow(
-                            tr.id,
-                            false
-                        )
-                );
+            );
 
 
-            saveSession();
+        saveSession();
 
-        }
-
-
-        /* =========================================================
-           초기 실행
-           ========================================================= */
-
-        window.onload = () => {
-
-            loadSavedSession();
-
-            calculateFunds();
-
-            loadStockRows();
+    }
 
 
-            Promise.allSettled([
+    /* =========================================================
+       초기 실행
+    ========================================================== */
 
-                fetchRealtimeMarketData(),
+    window.onload = () => {
 
-                fetchNews(
-                    '반도체 수출',
-                    'list-semi'
-                ),
+        loadSavedSession();
 
-                fetchNews(
-                    '채권금리',
-                    'list-bond'
-                ),
+        calculateFunds();
 
-                fetchNews(
-                    '기준금리',
-                    'list-base'
-                ),
+        loadStockRows();
 
-                fetchNews(
-                    '연준 FOMC',
-                    'list-fed'
-                ),
 
-                fetchNews(
-                    '삼성전자 매출 실적 기업분석',
-                    'list-samsung'
-                ),
+        Promise.allSettled([
 
-                fetchNews(
-                    '주식 신용잔고 마진콜',
-                    'list-credit'
-                )
+            fetchRealtimeMarketData(),
 
-            ]);
+            fetchNews(
+                '반도체 수출',
+                'list-semi'
+            ),
 
-        };
+            fetchNews(
+                '채권금리',
+                'list-bond'
+            ),
 
-    </script>
+            fetchNews(
+                '기준금리',
+                'list-base'
+            ),
+
+            fetchNews(
+                '연준 FOMC',
+                'list-fed'
+            ),
+
+            fetchNews(
+                '삼성전자 매출 실적 기업분석',
+                'list-samsung'
+            ),
+
+            fetchNews(
+                '주식 신용잔고 마진콜',
+                'list-credit'
+            )
+
+        ]);
+
+    };
+
+</script>
 
 </body>
 </html>
