@@ -322,6 +322,29 @@
             </div>
         </section>
 
+        <!-- 종목 관리 / 투자 비중 계산 -->
+        <section id="stock-manager" class="bg-slate-800 rounded-lg border border-slate-700 shadow-lg p-6 mt-2">
+            <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white"><i class="fas fa-list-check text-blue-400 mr-2"></i>종목 관리</h3>
+                    <p class="text-xs text-slate-400 mt-1">종목을 추가하면 현재가·역대 고점·현재 국면·대응 가이드·권장 투자 금액을 자동 계산합니다.</p>
+                </div>
+                <button onclick="addStockRow()" class="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm">
+                    <i class="fas fa-plus mr-2"></i>종목추가
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full calc-table text-sm min-w-[1500px]">
+                    <thead><tr>
+                        <th>종목명</th><th>티커</th><th>목표가</th><th>현재가</th><th>역대 고점</th>
+                        <th>목표가 관련 뉴스</th><th>현재 국면</th><th>대응 가이드</th><th>투자 비중</th>
+                        <th>권장 투자 금액</th><th>실적 뉴스 헤드라인 3건</th>
+                    </tr></thead>
+                    <tbody id="stock-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+
     </main>
 
     <script>
@@ -509,6 +532,160 @@
             calculateFunds();
         }
 
+        // ==============================
+        // 종목 관리
+        // ==============================
+        const STOCK_STORAGE_KEY = 'dashboard-stock-rows';
+
+        function escapeHtml(v) {
+            return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+        }
+
+        function normalizeTicker(name, ticker) {
+            const n=String(name||'').trim(), t=String(ticker||'').trim();
+            if(t) return t;
+            if(n==='삼성전자') return 'KRX:005930';
+            if(n==='SK하이닉스') return 'KRX:000660';
+            if(n==='S&P 500 지수') return 'INDEXSP:.INX';
+            if(/^\d+$/.test(n)) return 'KRX:'+n;
+            return n;
+        }
+
+        function finnhubSymbol(ticker) {
+            const t=String(ticker||'').trim();
+            return t.replace(/^KRX:/,'').replace(/^NASDAQ:/,'').replace(/^NYSE:/,'');
+        }
+
+        function stockStage(goal,current,high) {
+            if(!goal||!current||!high) return ['정보 입력 대기','목표가/현재가/역대 고점 정보를 확인하세요.',0];
+            if((high-current)/high>=0.3) return ['하락기 (-30% 이상 낙폭)','고점 대비 -30% 하락: 배분금의 10%만 유지',0.10];
+            const x=current/goal;
+            if(x>=1) return ['초고점기 (목표 100% 달성)','초고점기(목표 100%): 99% 매도 / 1% 투자',0.01];
+            if(x>=0.9) return ['초고점기 (목표 90% 달성)','초고점기(목표 90%): 99% 매도 / 1% 투자',0.01];
+            if(x>=0.8) return ['초고점기 (목표 80% 달성)','초고점기(목표 80%): 90% 매도 / 10% 투자',0.10];
+            if(x>=0.7) return ['고점기 (목표 70% 달성)','고점기(목표 70%): 80% 매도 / 20% 투자',0.20];
+            if(x>=0.6) return ['상승기 (목표 60% 달성)','상승기(목표 60%): 70% 매도 / 30% 투자',0.30];
+            return ['바닥기 / 안정세','바닥기/안정세: 커플링시 33.3% 균등 / 디커플링시 주도주 70~80% 집중',0.333];
+        }
+
+        function addStockRow(data={}) {
+            const tbody=document.getElementById('stock-table-body');
+            const id='stock-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);
+            const tr=document.createElement('tr');
+            tr.id=id; tr.dataset.current=data.current||0; tr.dataset.high=data.high||0;
+            tr.innerHTML=`
+                <td><input data-field="name" class="w-full p-1.5 rounded bg-slate-900 border border-slate-600 text-white" value="${escapeHtml(data.name||'')}" placeholder="삼성전자" oninput="updateStockRow('${id}')"></td>
+                <td><input data-field="ticker" class="w-full p-1.5 rounded bg-slate-900 border border-slate-600 text-blue-300" value="${escapeHtml(data.ticker||'')}" placeholder="KRX:005930" oninput="updateStockRow('${id}')"></td>
+                <td><input data-field="goal" class="w-full p-1.5 rounded bg-slate-900 border border-slate-600 text-white text-right font-bold" value="${data.goal?numFormat(data.goal):''}" placeholder="목표가" oninput="formatStockNumber(this);updateStockRow('${id}')"></td>
+                <td id="${id}-current" class="text-right font-bold">조회 대기</td>
+                <td id="${id}-high" class="text-right">조회 대기</td>
+                <td><button onclick="openTargetNews('${id}')" class="w-full px-2 py-2 rounded bg-slate-700 hover:bg-slate-600 text-blue-300 text-xs font-bold">목표가 뉴스</button><div id="${id}-target-news" class="text-xs text-slate-400 mt-1">뉴스 검색</div></td>
+                <td id="${id}-stage" class="text-center font-bold text-slate-300">정보 입력 대기</td>
+                <td id="${id}-guide" class="text-xs text-slate-300">목표가/현재가/역대 고점 정보를 확인하세요.</td>
+                <td id="${id}-ratio" class="text-center font-bold text-blue-300">0.0%</td>
+                <td id="${id}-amount" class="text-right font-bold text-yellow-400">0</td>
+                <td><div id="${id}-earnings-news" class="text-xs text-slate-300">실적 뉴스 조회 대기</div></td>`;
+            tbody.appendChild(tr);
+            updateStockRow(id,false);
+            if(data.name||data.ticker) fetchStockQuote(id);
+            saveStockRows();
+            return id;
+        }
+
+        function formatStockNumber(el){const v=numParse(el.value);el.value=v?numFormat(v):'';}
+
+        function getStockRowData(tr){
+            return {
+                name:tr.querySelector('[data-field="name"]')?.value.trim()||'',
+                ticker:tr.querySelector('[data-field="ticker"]')?.value.trim()||'',
+                goal:numParse(tr.querySelector('[data-field="goal"]')?.value||''),
+                current:Number(tr.dataset.current||0), high:Number(tr.dataset.high||0)
+            };
+        }
+
+        function updateStockRow(id,save=true){
+            const tr=document.getElementById(id); if(!tr)return;
+            const d=getStockRowData(tr), s=stockStage(d.goal,d.current,d.high);
+            document.getElementById(id+'-stage').textContent=s[0];
+            document.getElementById(id+'-guide').textContent=s[1];
+            document.getElementById(id+'-ratio').textContent=(s[2]*100).toFixed(1)+'%';
+            const total=numParse(document.getElementById('calc-total-funds').value);
+            const age=document.getElementById('calc-age').value;
+            const rate=document.getElementById('calc-rate-hike')?.checked;
+            const reserve=rate?0.9:(age==='under30'?0.3:0.4);
+            document.getElementById(id+'-amount').textContent=numFormat(total*(1-reserve)*s[2]);
+            const stage=document.getElementById(id+'-stage');
+            stage.className='text-center font-bold '+(s[0].includes('하락기')?'text-red-400':s[0].includes('초고점')?'text-yellow-400':s[0].includes('고점기')?'text-orange-400':s[0].includes('상승기')?'text-emerald-400':'text-slate-300');
+            if(save)saveStockRows();
+        }
+
+        async function fetchStockQuote(id){
+            const tr=document.getElementById(id); if(!tr)return;
+            const d=getStockRowData(tr); if(!d.name&&!d.ticker)return;
+            const ticker=normalizeTicker(d.name,d.ticker);
+            tr.querySelector('[data-field="ticker"]').value=ticker;
+            const symbol=finnhubSymbol(ticker);
+            const ce=document.getElementById(id+'-current'), he=document.getElementById(id+'-high');
+            ce.textContent='조회 중...'; he.textContent='조회 중...';
+            try{
+                const res=await fetch(`https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(symbol)}&token=${FINNHUB_API_KEY}`);
+                if(!res.ok)throw Error();
+                const q=await res.json(), current=Number(q.c||0);
+                if(!current)throw Error();
+                let high=Number(q.h||0);
+                // 최근 1년 일봉의 최고가를 역대 고점 칸에 사용
+                try{
+                    const end=Math.floor(Date.now()/1000), start=end-365*24*60*60;
+                    const cr=await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${encodeURIComponent(symbol)}&resolution=D&from=${start}&to=${end}&token=${FINNHUB_API_KEY}`);
+                    const cd=await cr.json();
+                    if(Array.isArray(cd.h)&&cd.h.length)high=Math.max(...cd.h.map(Number).filter(Number.isFinite));
+                }catch(e){}
+                tr.dataset.current=current; tr.dataset.high=high;
+                ce.textContent=numFormat(current); he.textContent=numFormat(high);
+                updateStockRow(id);
+                fetchStockNews(id,symbol);
+            }catch(e){
+                ce.innerHTML='<span class="text-red-400">조회 실패</span>';
+                he.innerHTML='<span class="text-red-400">조회 실패</span>';
+                updateStockRow(id);
+            }
+        }
+
+        async function fetchStockNews(id,symbol){
+            const el=document.getElementById(id+'-earnings-news'); if(!el)return;
+            try{
+                const to=new Date(), from=new Date(); from.setDate(to.getDate()-90);
+                const f=d=>d.toISOString().slice(0,10);
+                const res=await fetch(`https://finnhub.io/api/v1/company-news?symbol=${encodeURIComponent(symbol)}&from=${f(from)}&to=${f(to)}&token=${FINNHUB_API_KEY}`);
+                if(!res.ok)throw Error();
+                const arr=(await res.json()).slice(0,3);
+                el.innerHTML=arr.length?arr.map((n,i)=>`<div class="mb-1 border-b border-slate-700 pb-1"><a target="_blank" rel="noopener noreferrer" href="${escapeHtml(n.url||'#')}" class="hover:text-blue-400">${i+1}. ${escapeHtml(n.headline||'뉴스 제목 없음')}</a></div>`).join(''):'최근 실적 뉴스 없음';
+            }catch(e){el.textContent='실적 뉴스 조회 실패';}
+        }
+
+        function openTargetNews(id){
+            const tr=document.getElementById(id);if(!tr)return;
+            const d=getStockRowData(tr);if(!d.name)return;
+            window.open('https://www.google.com/search?q='+encodeURIComponent(d.name+' 목표가')+'&tbm=nws','targetNewsWindow','width=900,height=800,scrollbars=yes,resizable=yes');
+            document.getElementById(id+'-target-news').textContent='Google 뉴스 검색';
+        }
+
+        function saveStockRows(){
+            try{
+                const rows=[...document.querySelectorAll('#stock-table-body tr')].map(tr=>getStockRowData(tr)).filter(x=>x.name||x.ticker||x.goal);
+                localStorage.setItem(STOCK_STORAGE_KEY,JSON.stringify(rows));
+            }catch(e){}
+        }
+
+        function loadStockRows(){
+            try{
+                const rows=JSON.parse(localStorage.getItem(STOCK_STORAGE_KEY)||'[]');
+                rows.forEach(x=>addStockRow(x));
+            }catch(e){}
+        }
+
+
         function calculateFunds() {
             let totalFunds = numParse(document.getElementById('calc-total-funds').value);
             let ageGroup = document.getElementById('calc-age').value;
@@ -561,12 +738,15 @@
             document.getElementById('m2-a65').textContent = numFormat(a2_65);
             document.getElementById('m2-total').textContent = numFormat(a2_30 + a2_40 + a2_65);
 
+            document.querySelectorAll('#stock-table-body tr').forEach(tr => updateStockRow(tr.id, false));
+
             saveSession();
         }
 
         window.onload = () => {
             loadSavedSession();
             calculateFunds();
+            loadStockRows();
 
             Promise.allSettled([
                 fetchRealtimeMarketData(),
