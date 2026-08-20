@@ -1429,30 +1429,33 @@ function fetchRealtimeMarketData() {
    대시보드 뉴스
 ========================================================= */
 
-async function fetchNews(
-    query,
-    containerId
-) {
+async function fetchNews(query, containerId) {
 
     const container =
-        document.getElementById(
-            containerId
-        );
-
+        document.getElementById(containerId);
 
     if (!container) return;
 
 
-    container.innerHTML =
-        '<div class="text-slate-500 text-sm">뉴스 업데이트 중...</div>';
+    container.innerHTML = `
+        <div class="news-item">
+            <span class="text-slate-500 text-sm">
+                뉴스 업데이트 중...
+            </span>
+        </div>
+    `;
+
+
+    const rssUrl =
+        `https://news.google.com/rss/search?q=${encodeURIComponent(query)}` +
+        `&hl=ko&gl=KR&ceid=KR:ko`;
+
+
+    const apiUrl =
+        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
 
     try {
-
-        const rssUrl =
-            `https://news.google.com/rss/search?q=${encodeURIComponent(query)}` +
-            `&hl=ko&gl=KR&ceid=KR:ko`;
-
 
         const controller =
             new AbortController();
@@ -1467,25 +1470,22 @@ async function fetchNews(
 
         const response =
             await fetch(
-                `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`,
+                apiUrl,
                 {
-                    signal: controller.signal,
-                    cache: 'no-store'
+                    method: 'GET',
+                    cache: 'no-store',
+                    signal: controller.signal
                 }
             );
 
 
-        clearTimeout(
-            timeoutId
-        );
+        clearTimeout(timeoutId);
 
 
         if (!response.ok) {
-
             throw new Error(
-                'RSS error'
+                `RSS2JSON HTTP ${response.status}`
             );
-
         }
 
 
@@ -1494,13 +1494,14 @@ async function fetchNews(
 
 
         if (
-            !data.items ||
+            !data ||
+            data.status !== 'ok' ||
             !Array.isArray(data.items) ||
-            !data.items.length
+            data.items.length === 0
         ) {
 
             throw new Error(
-                'Empty items'
+                '뉴스 데이터가 없습니다.'
             );
 
         }
@@ -1510,37 +1511,37 @@ async function fetchNews(
             [...data.items]
                 .sort(
                     (a, b) =>
-                        new Date(b.pubDate) -
-                        new Date(a.pubDate)
+                        new Date(b.pubDate || 0) -
+                        new Date(a.pubDate || 0)
                 );
 
 
-        container.innerHTML =
+        const newsHtml =
             sortedItems
                 .slice(0, 8)
                 .map(item => {
 
                     const pubDate =
-                        new Date(
-                            item.pubDate
-                        );
+                        new Date(item.pubDate);
 
 
                     const dateStr =
-                        !isNaN(
-                            pubDate.getTime()
-                        )
+                        !isNaN(pubDate.getTime())
                             ? `[${pubDate.getMonth() + 1}/${pubDate.getDate()}] `
-                            : '[실시간] ';
+                            : '';
+
+
+                    const title =
+                        escapeHtml(
+                            item.title || '제목 없음'
+                        );
 
 
                     const link =
-                        item.link ||
-                        `https://news.google.com/search?q=${encodeURIComponent(query)}`;
+                        item.link || '';
 
 
                     return `
-
                         <div class="news-item">
 
                             <a
@@ -1549,30 +1550,47 @@ async function fetchNews(
                                 rel="noopener noreferrer"
                                 class="news-link"
                             >
-                                ${dateStr}${escapeHtml(item.title)}
+                                ${dateStr}${title}
                             </a>
 
                         </div>
-
                     `;
 
                 })
                 .join('');
 
 
-    } catch (err) {
+        if (newsHtml) {
 
-        console.error(
-            '뉴스 업데이트 오류:',
-            query,
-            err
+            container.innerHTML =
+                newsHtml;
+
+        } else {
+
+            throw new Error(
+                '표시할 뉴스가 없습니다.'
+            );
+
+        }
+
+
+    } catch (error) {
+
+        console.warn(
+            `뉴스 업데이트 실패 [${query}]`,
+            error
         );
 
 
-        const fallbackUrl =
-            'https://news.google.com/search?q=' +
-            encodeURIComponent(query) +
-            '&hl=ko&gl=KR&ceid=KR:ko';
+        /*
+         * RSS 데이터를 가져오지 못하더라도
+         * 대시보드 전체가 멈추지 않도록
+         * Google 뉴스 검색 페이지를 표시
+         */
+
+        const googleNewsUrl =
+            `https://news.google.com/search?q=${encodeURIComponent(query)}` +
+            `&hl=ko&gl=KR&ceid=KR%3Ako`;
 
 
         container.innerHTML = `
@@ -1580,12 +1598,30 @@ async function fetchNews(
             <div class="news-item">
 
                 <a
-                    href="${escapeHtml(fallbackUrl)}"
+                    href="${googleNewsUrl}"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="news-link"
                 >
-                    [실시간] ${escapeHtml(query)} 최신 뉴스 확인하기
+                    <span class="text-blue-400">
+                        [뉴스 검색]
+                    </span>
+                    ${escapeHtml(query)}
+                </a>
+
+            </div>
+
+            <div class="news-item">
+
+                <a
+                    href="https://www.google.com/search?tbm=nws&q=${encodeURIComponent(query)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="news-link"
+                >
+                    <span class="text-slate-400">
+                        Google 뉴스에서 최신 기사 보기 →
+                    </span>
                 </a>
 
             </div>
